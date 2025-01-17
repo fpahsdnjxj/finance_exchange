@@ -38,7 +38,7 @@ function CurrencyCalculator() {
     try{
     const response=await axios.get(`/api/base-rate`,{
       params:{
-        country_name:'USA'//나라 이름을 보내주시면 됩니다.
+        country_name:selectedCountry//나라 이름을 보내주시면 됩니다.
       }  
     });
     const currency_data=response.data
