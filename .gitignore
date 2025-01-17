@@ -61,11 +61,10 @@ jest/
 # Docker 관련
 .dockerignore
 Dockerfile
-docker-compose.yml
-docker-compose.override.yml
+
 
 # 기타
 *.bak
 *.swp
 *.tmp
-
+*.drawio
