@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'
 // 이름 목록
 const countries = ["USA", "UK", "China", "Japan", "Europe", "Hongkong", "Taiwan", "Singapore", "Philippines", "Indonesia", "Malaysia", "Canada", "Australia", "New Zealand", "Swiss"];
 const banks = ["하나은행", "KDB산업은행", "전북은행", "한국씨티은행", "NH농협은행", "신한은행", "KB국민은행", "IBK기업은행", "BNK경남은행", "제주은행", "광주은행", "BNK부산은행", "iM뱅크", "SC제일은행", "우리은행", "Sh수협은행"];
@@ -30,9 +30,32 @@ function CurrencyCalculator() {
     setKrwAmount("");    
   };
 
-  const convertedAmount = selectedCountry
-  ? (Number(krwAmount) * exchangeRates[selectedCountry]).toFixed(2)
-  : "N/A";
+  const convertedAmount = selectedCountry&&exchangeRate
+  ? (Number(krwAmount) * exchangeRate).toFixed(2)
+  : "N/A";//서버로 부터 받은 값을 넣을 수 있도록 수정하였습니다.(조은진)
+
+  const getBasicCurrency=async()=>{
+    try{
+    const response=await axios.get(`/api/base-rate`,{
+      params:{
+        country_name:'USA'//나라 이름을 보내주시면 됩니다.
+      }  
+    });
+    const currency_data=response.data
+    console.log(currency_data)
+    setExchangeRate(currency_data.P_per_Won)//1원 당 가격을 전달합니다. exchangerate로 세팅합니다다
+  }catch(error){
+    console.error("Error fetching basic currency:", error)
+    throw error;
+  }
+  }
+
+  useEffect(() => {
+    if (selectedCountry) {
+      getBasicCurrency(selectedCountry);
+    }
+  }, [selectedCountry]);//선택한 나라가 바뀌면 환율을 가져옵니다.
+
 
   return (
     <div>
