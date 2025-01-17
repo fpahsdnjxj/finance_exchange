@@ -32,9 +32,9 @@ function CurrencyCalculator() {
 
   const convertedAmount = selectedCountry&&exchangeRate
   ? (Number(krwAmount) * exchangeRate).toFixed(2)
-  : "N/A";//서버로 부터 받은 값을 넣을 수 있도록 수정하였습니다.(조은진)
+  : "N/A";
 
-  const getBasicCurrency=async()=>{
+  /*const getBasicCurrency=async()=>{
     try{
     const response=await axios.get(`/api/base-rate`,{
       params:{
@@ -48,14 +48,13 @@ function CurrencyCalculator() {
     console.error("Error fetching basic currency:", error)
     throw error;
   }
-  }
+  }*/
 
   useEffect(() => {
     if (selectedCountry) {
-      getBasicCurrency(selectedCountry);
+      setExchangeRate(exchangeRates[selectedCountry]);
     }
-  }, [selectedCountry]);//선택한 나라가 바뀌면 환율을 가져옵니다.
-
+  }, [selectedCountry]);//선택한 나라가 바뀌면 환율을 설정합니다.
 
   return (
     <div>
