@@ -9,7 +9,7 @@ class Currency(Base):
 
     currency_code=Column(CHAR(3), primary_key=True, index=True)
     country_name=Column(VARCHAR(50), nullable=False)
-    update_date=Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    update_date=Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc),  onupdate=lambda: datetime.now(timezone.utc))
     P_per_Won=Column(Double, nullable=False)
 
     def __repr__(self):
