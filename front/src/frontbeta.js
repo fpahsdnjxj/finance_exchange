@@ -32,7 +32,7 @@ function CurrencyCalculator() {
 
   const convertedAmount = selectedCountry&&exchangeRate
   ? (Number(krwAmount) * exchangeRate).toFixed(2)
-  : "N/A";
+  : "N/A";//나라가 바뀌면서 적용된 exchangeRate를 적용합니다.
 
   /*const getBasicCurrency=async()=>{
     try{

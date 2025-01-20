@@ -25,9 +25,8 @@ class CurrencyRepository:
         if not existing_currency:
             raise ValueError(f"Currency with code {currency.currency_code} does not exist.")
         
-        for field, value in currency.__dict__.items():
-            if field != "_sa_instance_state":  
-                setattr(existing_currency, field, value)
+        for field, value in currency.__dict__.items():  
+            setattr(existing_currency, field, value)
         
         self.session.commit()
         self.session.refresh(existing_currency)
