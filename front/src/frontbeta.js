@@ -18,7 +18,6 @@ function CurrencyCalculator() {
   const [selectedBank, setSelectedBank] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [exchangeRate, setExchangeRate] = useState("");
-  const [maxRate, setMaxRate] = useState("");
 
   // KRW 입력 값을 설정하는 함수
   const handleKrwInput = (value) => {
