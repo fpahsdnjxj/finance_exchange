@@ -6,8 +6,8 @@ const banks = ["하나은행", "KDB산업은행", "전북은행", "한국씨티�
 const airportBanks = ["하나은행", "국민은행", "우리은행", "신한은행"];
 const currencies = ["USD", "GBP", "CNY", "JPY", "EUR", "HKD", "TWD", "VND", "THB", "SGD", "PHP", "IDR", "MYR", "CAD", "AUD", "NZD", "CHF"];
 const exchangeRates = {
-  USA: 0.00077
-}; // 일단 기준 환율 예시로 USA만 넣어봤습니다. 나중에 백엔드 쪽에서 수정하게 되면 이 부분은 없애겠습니다.
+  "미국 달러": 1441
+}; // 저기 있는 나라 이름에 맞춰서 환율 추가해주시면 됩니다.
 
 
 
@@ -30,7 +30,7 @@ function CurrencyCalculator() {
   };
 
   const convertedAmount = selectedCountry&&exchangeRate
-  ? (Number(krwAmount) * exchangeRate).toFixed(2)
+  ? (Number(krwAmount)/ exchangeRate).toFixed(2)
   : "N/A";//나라가 바뀌면서 적용된 exchangeRate를 적용합니다.
 
   /*const getBasicCurrency=async()=>{
@@ -42,7 +42,7 @@ function CurrencyCalculator() {
     });
     const currency_data=response.data
     console.log(currency_data)
-    setExchangeRate(currency_data.P_per_Won)//1원 당 가격을 전달합니다. exchangerate로 세팅합니다다
+    setExchangeRate(currency_data.P_per_Won)
   }catch(error){
     console.error("Error fetching basic currency:", error)
     throw error;
@@ -51,7 +51,8 @@ function CurrencyCalculator() {
 
   useEffect(() => {
     if (selectedCountry) {
-      setExchangeRate(exchangeRates[selectedCountry]);
+      setExchangeRate(exchangeRates[selectedCountry])
+      /*getBasicCurrency()*/
     }
   }, [selectedCountry]);//선택한 나라가 바뀌면 환율을 설정합니다.
 
