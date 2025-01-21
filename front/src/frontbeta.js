@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 // 이름 목록
-const countries = ["USA", "UK", "China", "Japan", "Europe", "Hongkong", "Taiwan", "Singapore", "Philippines", "Indonesia", "Malaysia", "Canada", "Australia", "New Zealand", "Swiss"];
+const countries = ["미국 달러","아랍에미리트 디르함", "호주 달러", "바레인 디나르", "브루나이 달러", "캐나다 달러", "스위스 프랑", "위안화", "덴마아크 크로네", "유로", "영국 파운드", "홍콩 달러", "인도네시아 루피아", "일본 옌", "한국 원", "쿠웨이트 디나르", "말레이지아 링기트", "노르웨이 크로네", "뉴질랜드 달러", "사우디 리 얄", "스웨덴 크로나", "싱가포르 달러", "태국 바트"];
 const banks = ["하나은행", "KDB산업은행", "전북은행", "한국씨티은행", "NH농협은행", "신한은행", "KB국민은행", "IBK기업은행", "BNK경남은행", "제주은행", "광주은행", "BNK부산은행", "iM뱅크", "SC제일은행", "우리은행", "Sh수협은행"];
 const airportBanks = ["하나은행", "국민은행", "우리은행", "신한은행"];
 const currencies = ["USD", "GBP", "CNY", "JPY", "EUR", "HKD", "TWD", "VND", "THB", "SGD", "PHP", "IDR", "MYR", "CAD", "AUD", "NZD", "CHF"];
