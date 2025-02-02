@@ -1,3 +1,4 @@
+from typing import List
 from pydantic import BaseModel
 
 class BaseRateRequest(BaseModel):
@@ -10,3 +11,20 @@ class ExchangeInfoRequest(BaseModel):
     currency: str
     benefit:str
 
+class BankInfoDetailRequest(BaseModel):
+    bank_name: str
+    country_name:str
+
+class BankExchangeRequest(BaseModel):
+    bank_name:str
+    country_name:str
+    exchange_amount: float
+    conditions: List[str]
+
+class CardBenefitDetailRequest(BaseModel):
+    country_name:str
+
+class CardInfoRequest(BaseModel):
+    country_name:str
+    exchange_amount:float
+    conditions:List[str]
