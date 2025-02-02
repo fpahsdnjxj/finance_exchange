@@ -1,4 +1,4 @@
-import CurrencyCalculator from "./frontbeta"
+import CurrencyCalculator from "./front_1"
 
 function App() {
   return (
