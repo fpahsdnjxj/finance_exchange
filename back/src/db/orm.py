@@ -1,4 +1,4 @@
-from sqlalchemy import Column, CHAR, VARCHAR, DateTime, Double, Text, ForeignKey
+from sqlalchemy import Column, CHAR, VARCHAR, DateTime, Double, Text, ForeignKey, func
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime, timezone
 import uuid
@@ -11,7 +11,7 @@ class Currency(Base):
     currency_code=Column(CHAR(3), primary_key=True, index=True)
     country_name=Column(VARCHAR(50), nullable=False)
     P_per_Won=Column(Double, nullable=False)
-    update_date=Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc),  onupdate=lambda: datetime.now(timezone.utc))
+    update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return f"Currency(currency_code={self.currency_code}, country_name={self.country_name}, update_time={self.update_date}, price_per_won={self.P_per_Won})"
@@ -32,7 +32,7 @@ class BankInfo(Base):
     exchange_fee_rate=Column(Double, nullable=False)
     basic_preferential_rate=Column(Double, nullable=False)
     max_preferential_rate=Column(Double, nullable=False)
-    update_date=Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc),  onupdate=lambda: datetime.now(timezone.utc))
+    update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
     bank_condition=relationship("BankCondition", backref="bank")
     bank_exchange_amount_discount=relationship("BankExchangeAmountDiscount", backref="bank")
@@ -66,7 +66,7 @@ class BankCondition(Base): #환전 금액당 우대율 제외 저장할 table
     condition_type=Column(VARCHAR(200))
     condition_detail=Column(Text)
     apply_preferential_rate=Column(Double, nullable=False)
-    update_date=Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc),  onupdate=lambda: datetime.now(timezone.utc))
+    update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return(f"BankCondition("
@@ -97,7 +97,7 @@ class BankExchangeAmountDiscount(Base):#환전 금액 당 수수료가 깎이는
     min_amount=Column(Double, nullable=False)
     max_amount=Column(Double, nullable=True)
     apply_preferential_rate=Column(Double, nullable=False)
-    update_date=Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc),  onupdate=lambda: datetime.now(timezone.utc))
+    update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return (f"BankExchangeAmountDiscount("
@@ -129,7 +129,7 @@ class CardInfo(Base):
     exchange_discount_rate=Column(Double, nullable=False)
     re_exchange_discount_rate=Column(Double)
     basic_conditions=Column(Text)
-    update_date=Column(DateTime, nullable=False, default=lambda:datetime.now(timezone.utc))
+    update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
     card_benefit=relationship("CardBenefit", backref="card")
     card_exchange_amount_discount=relationship("CardExchangeAmountDiscount", backref="card")
@@ -164,7 +164,7 @@ class CardBenefit(Base):#카드 해택에 대한 것
     cardinfo_id=Column(CHAR(36), ForeignKey("CardInfo.cardinfo_id"))
     benefit_type=Column(VARCHAR(200), nullable=False)
     benefit_detail=Column(Text, nullable=False)
-    update_date=Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return (f"CardBenefit("
@@ -193,7 +193,7 @@ class CardExchangeAmountDiscount(Base):#환전 금액 당 수수료가 깎이는
     min_amount=Column(Double, nullable=False)
     max_amount=Column(Double, nullable=True)
     apply_preferential_rate=Column(Double, nullable=False)
-    update_date=Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc),  onupdate=lambda: datetime.now(timezone.utc))
+    update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return (f"CardExchangeAmountDiscount("

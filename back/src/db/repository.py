@@ -1,9 +1,8 @@
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from sqlalchemy.orm import Session
-from datetime import datetime, timezone
 from db.connection import get_db
-from db.orm import BankInfo, Currency
+from db.orm import BankCondition, BankExchangeAmountDiscount, BankInfo, Currency
 
 class CurrencyRepository:
     def __init__(self, session:Session=Depends(get_db)):
@@ -25,11 +24,10 @@ class CurrencyRepository:
         existing_currency = self.get_currency_by_currencycode(currency.currency_code)
         if not existing_currency:
             raise ValueError(f"Currency with code {currency.currency_code} does not exist.")
-        
-        existing_currency.update_date = datetime.now(timezone.utc)
 
-        for field, value in currency.__dict__.items():
-            if field not in ["currency_code", "_sa_instance_state","update_date"]:  
+
+        for field, value in vars(currency).items():
+            if field in ["P_per_Won"]:  
                 setattr(existing_currency, field, value)
         
         self.session.commit()
@@ -44,6 +42,9 @@ class BankInfoRepository:
     def get_bankinfo_by_currencycode(self, currency_code:str)->BankInfo|None:
         return self.session.scalar(select(BankInfo).where(BankInfo.currency_code==currency_code))
     
+    def get_particular_bankinfo(self, currency_code:str, bank_name:str)->BankInfo|None:
+        return self.session.scalar(select(BankInfo).where(and_(BankInfo.currency_code==currency_code, BankInfo.bank_name==bank_name)))
+    
     def save_bankinfo(self, bankinfo:BankInfo)->BankInfo:
         self.session.add(instance=bankinfo)
         self.session.commit()
@@ -51,16 +52,39 @@ class BankInfoRepository:
         return bankinfo
     
     def update_bankinfo(self, bankinfo: BankInfo)->BankInfo:
-        return
+        existing_bankinfo=self.get_particular_bankinfo(currency_code=bankinfo.currency_code, bank_name=bankinfo.bank_name)
+        if not existing_bankinfo:
+            raise ValueError("No information for that bank. please save")
+        
+
+        for field, value in vars(bankinfo).items():
+            if field in ["basic_preferential_rate", "max_preferential_rate"] and value is not None:
+                setattr(existing_bankinfo, field, value)
+        
+        self.session.commit()
+        self.session.refresh(existing_bankinfo)
+        return existing_bankinfo
 
 class BankConditionRepository:
     def __init__(self, session:Session=Depends(get_db)):
         self.session=session
+    
+    def save_bankcondition(self, bankcondition:BankCondition)->BankCondition:
+        self.session.add(instance=bankcondition)
+        self.session.commit()
+        self.session.refresh(instance=bankcondition)
+        return bankcondition
+    
 
 class BankExchangeAmountDiscountRepository:
     def __init__(self, session:Session=Depends(get_db)):
         self.session=session
 
+    def save_bankexchangeamountdiscount(self, bankexchangeamountdiscount:BankExchangeAmountDiscount)->BankExchangeAmountDiscount:
+        self.session.add(instance=bankexchangeamountdiscount)
+        self.session.commit()
+        self.session.refresh(instance=bankexchangeamountdiscount)
+        return bankexchangeamountdiscount
 class CardInfoRepository:
     def __init__(self, session:Session=Depends(get_db)):
         self.session=session
