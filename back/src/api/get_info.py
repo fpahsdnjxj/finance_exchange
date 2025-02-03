@@ -15,28 +15,3 @@ def get_base_rate(
         raise HTTPException(status=404, detail="Currency not found")
     return CurrencySchema.model_validate(currency_info)
 
-@router.get("/exchange-fee", status_code=200)
-def get_exchange_fee():
-    return
-
-@router.post("/base-rate", status_code=201)
-def add_currency_info(
-    request:BaseRateRequest,
-    currency_repo:CurrencyRepository=Depends()
-):
-    currency:Currency=Currency.create(currency_code=request.currency_code, 
-                                      country_name=request.country_name,
-                                      P_per_Won=request.P_per_Won)
-    currency=currency_repo.save_currency(currency=currency)
-    return currency
-
-@router.patch("/base-rate", status_code=201)
-def add_currency_info(
-    request:BaseRateRequest,
-    currency_repo:CurrencyRepository=Depends()
-):
-    currency:Currency=Currency.create(currency_code=request.currency_code, 
-                                      country_name=request.country_name,
-                                      P_per_Won=request.P_per_Won)
-    currency=currency_repo.update_currency_info(currency=currency)
-    return currency
