@@ -18,6 +18,9 @@ class CardDetailSchema(BaseModel):
 
 class CardInfoSchema(BaseModel):
     card_name:str
-    condition:List[str]
-    benefit:List[str]
+    condition:str
     preferential_treatment: float
+    re_preferential_treatment: float
+
+class ListCardInfoSchema(BaseModel):
+    card_infos:List[CardInfoSchema]

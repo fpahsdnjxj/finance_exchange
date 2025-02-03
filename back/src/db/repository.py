@@ -39,8 +39,8 @@ class BankInfoRepository:
     def __init__(self, session:Session=Depends(get_db)):
         self.session=session
     
-    def get_bankinfo_by_currencycode(self, currency_code:str)->BankInfo|None:
-        return self.session.scalar(select(BankInfo).where(BankInfo.currency_code==currency_code))
+    def get_bankinfo_by_currencycode(self, currency_code:str)->list[BankInfo]|None:
+        return self.session.scalars(select(BankInfo).where(BankInfo.currency_code==currency_code))
     
     def get_particular_bankinfo(self, currency_code:str, bank_name:str)->BankInfo|None:
         return self.session.scalar(select(BankInfo).where(and_(BankInfo.currency_code==currency_code, BankInfo.bank_name==bank_name)))
@@ -69,8 +69,8 @@ class BankConditionRepository:
     def __init__(self, session:Session=Depends(get_db)):
         self.session=session
     
-    def get_bankcondition_by_bankid(self, bankinfo_id:str)->BankCondition|None:
-        return self.session.scalar(select(BankCondition).where(BankCondition.bankinfo_id==bankinfo_id))
+    def get_bankcondition_by_bankid(self, bankinfo_id:str)->list[BankCondition]|None:
+        return self.session.scalars(select(BankCondition).where(BankCondition.bankinfo_id==bankinfo_id))
 
     def get_particular_bankcondition(self, bankinfo_id:str,condition_type:str )->BankCondition|None:
        return self.session.scalar(select(BankCondition).where(and_(BankCondition.bankinfo_id==bankinfo_id, BankCondition.condition_type==condition_type)))
@@ -100,8 +100,8 @@ class BankExchangeAmountDiscountRepository:
     def __init__(self, session:Session=Depends(get_db)):
         self.session=session
     
-    def get_bankexchangeamountdiscount_by_bankid(self, bankinfo_id:str)->BankExchangeAmountDiscount|None:
-        return self.session.scalar(select(BankExchangeAmountDiscount).where(BankExchangeAmountDiscount.bankinfo_id==bankinfo_id))
+    def get_bankexchangeamountdiscount_by_bankid(self, bankinfo_id:str)->list[BankExchangeAmountDiscount]|None:
+        return self.session.scalars(select(BankExchangeAmountDiscount).where(BankExchangeAmountDiscount.bankinfo_id==bankinfo_id))
 
     def get_particular_bankexchangeamountdiscount(self, bankinfo_id:str, min_amount:float)->BankExchangeAmountDiscount|None:
        return self.session.scalar(select(BankExchangeAmountDiscount).where(and_(BankExchangeAmountDiscount.bankinfo_id==bankinfo_id, BankExchangeAmountDiscount.min_amount==min_amount)))
@@ -129,11 +129,14 @@ class CardInfoRepository:
     def __init__(self, session:Session=Depends(get_db)):
         self.session=session
 
-    def get_cardinfo_by_currencycode(self, currency_code:str)->CardInfo|None:
-        return self.session.scalar(select(CardInfo).where(CardInfo.currency_code==currency_code))
+    def get_cardinfo_by_currencycode(self, currency_code:str)->list[CardInfo]|None:
+        return self.session.scalars(select(CardInfo).where(CardInfo.currency_code==currency_code))
     
     def get_particular_cardinfo(self, currency_code:str, card_name:str)->CardInfo|None:
         return self.session.scalar(select(CardInfo).where(and_(CardInfo.currency_code==currency_code, CardInfo.card_name==card_name)))
+    
+    def search_cardinfo_use_benefit(self, cardids:list[str], currency_code:str)->list[CardInfo]|None:
+        return self.session.scalars(select(CardInfo).where(and_(CardInfo.cardinfo_id.in_(cardids), CardInfo.currency_code==currency_code))).all()
     
     def save_cardinfo(self, cardinfo:CardInfo)->CardInfo:
         self.session.add(instance=cardinfo)
@@ -160,17 +163,21 @@ class CardBenefitRepository:
     def __init__(self, session:Session=Depends(get_db)):
         self.session=session
     
-    def get_cardbenefit_by_cardid(self, cardinfo_id:str)->CardBenefit|None:
-        return self.session.scalar(select(CardBenefit).where(CardBenefit.cardinfo_id==cardinfo_id))
+    def get_cardbenefits_by_cardids(self, cardinfo_ids:list[str])->list[CardBenefit]|None:
+        return self.session.scalars(select(CardBenefit).where(CardBenefit.cardinfo_id.in_(cardinfo_ids))).all()
 
     def get_particular_cardbenefit(self, cardinfo_id:str,benefit_type:str )->CardBenefit|None:
        return self.session.scalar(select(CardBenefit).where(and_(CardBenefit.cardinfo_id==cardinfo_id, CardBenefit.benefit_type==benefit_type)))
+    
+    def get_cardbenefits_by_benefittype(self, benefit_types:list[str])->list[CardBenefit]|None:
+        return self.session.scalars(select(CardBenefit).where(CardBenefit.benefit_type.in_(benefit_types))).all()
     
     def save_cardbenefit(self, cardbenefit:CardBenefit)->CardBenefit:
         self.session.add(instance=cardbenefit)
         self.session.commit()
         self.session.refresh(instance=cardbenefit)
         return cardbenefit
+    
     
     def update_cardbenefit(self, cardbenefit:CardBenefit)->CardBenefit:
         existing_cardbenefit=self.get_particular_cardbenefit(cardinfo_id=cardbenefit.cardinfo_id, benefit_type=cardbenefit.benefit_type)

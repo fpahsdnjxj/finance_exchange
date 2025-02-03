@@ -21,9 +21,6 @@ class BankExchangeRequest(BaseModel):
     exchange_amount: float
     conditions: List[str]
 
-class CardBenefitDetailRequest(BaseModel):
-    country_name:str
-
 class CardInfoRequest(BaseModel):
     country_name:str
     exchange_amount:float
