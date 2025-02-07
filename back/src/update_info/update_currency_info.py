@@ -6,13 +6,12 @@ from db.connection import get_db
 from datetime import datetime
 import os
 
-db_session = next(get_db()) 
-currency_repo = CurrencyRepository(session=db_session)
 
 load_dotenv()
 
-
-def get_data():
+def get_currency_data():
+    db_session = next(get_db()) 
+    currency_repo = CurrencyRepository(session=db_session)
     today_date = datetime.now().strftime("%Y%m%d")
     api_key=os.getenv("BANK_API_KEY")
     url=f'https://www.koreaexim.go.kr/site/program/financial/exchangeJSON'
@@ -41,4 +40,3 @@ def get_data():
         print(f"API 요청 실패: {response.status_code}, {response.text}")
 
 
-get_data()

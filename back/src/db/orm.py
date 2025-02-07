@@ -50,11 +50,13 @@ class BankInfo(Base):
     @classmethod
     def create(cls, bank_name:str,
                 currency_code:str, 
+                exchange_fee_rate:float,
                 basic_preferential_rate: float, 
                 max_preferential_rate:float):
         return cls(
             bank_name=bank_name,
             currency_code=currency_code,
+            exchange_fee_rate=exchange_fee_rate,
             basic_preferential_rate=basic_preferential_rate,
             max_preferential_rate=max_preferential_rate
         )
@@ -132,7 +134,6 @@ class CardInfo(Base):
     update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
     card_benefit=relationship("CardBenefit", backref="card")
-    card_exchange_amount_discount=relationship("CardExchangeAmountDiscount", backref="card")
     
     def __repr__(self):
         return (f"CardInfo("
@@ -186,35 +187,7 @@ class CardBenefit(Base):#카드 해택에 대한 것
         )
 
 
-class CardExchangeAmountDiscount(Base):#환전 금액 당 수수료가 깎이는 애들에 대해서 저장할 것임
-    __tablename__="CardExchangeAmountDiscount"
-    exchangeinfo_id=Column(CHAR(36), primary_key=True, index=True, default=lambda:(uuid.uuid4()))
-    cardinfo_id=Column(CHAR(36), ForeignKey("CardInfo.cardinfo_id"))
-    min_amount=Column(Double, nullable=False)
-    max_amount=Column(Double, nullable=True)
-    apply_preferential_rate=Column(Double, nullable=False)
-    update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
-    def __repr__(self):
-        return (f"CardExchangeAmountDiscount("
-            f"exchangeinfo_id={self.exchangeinfo_id}, "
-            f"cardinfo_id={self.cardinfo_id}, "
-            f"min_amount={self.min_amount}, "
-            f"max_amount={self.max_amount}, "
-            f"apply_preferential_rate={self.apply_preferential_rate}, "
-            f"update_date={self.update_date})")
-    
-    @classmethod
-    def create(cls, cardinfo_id:str,
-               min_amount:float,
-               max_amount:float,
-               apply_preferential_rate:float):
-        return cls(
-            cardinfo_id=cardinfo_id,
-            min_amount=min_amount,
-            max_amount=max_amount,
-            apply_preferential_rate=apply_preferential_rate
-        )
 
 
 
