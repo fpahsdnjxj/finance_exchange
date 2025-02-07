@@ -1,188 +1,249 @@
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #C6C6C6;
-    margin: 0;
-    padding: 0;  
-    justify-content: center;
-    align-items: center;
-    padding: 20px;  
-  }
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #C6C6C6;
+  margin: 0;
+  padding: 0;  
+  justify-content: center;
+  align-items: center;
+  padding: 20px;  
+}
+
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1400px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+
+.top-box {
+  width: 100%;
+  max-width: 1400px;
+  height: 100%;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+}
+
+
+.bottom-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row; 
+  width: 100%;
+  max-width: 1600px;  
+  justify-content: center; 
+  gap: 10px;  
+}
+
+.left-box {
+  flex: 1;
+  width: 100%;    
+  height: 100%;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+}
+
+.right-box { 
+  flex: 1.4;
+  width: 100%; 
+  height: 100%;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+}
+
+.exchange-rate-calculator {
+  background: white;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+
+.input-with-currency {
+  position: relative;  
+}
+
+.input-with-currency input {
+  padding-left: 40px;
+  padding-right: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-with-currency::before {
+  content: attr(data-currency-symbol);
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 1rem;
+  color: #232323;
+}
+
+.input-bank {
+  position: relative;
+  width: 110%;
+  text-align: start;
+}
+
+.input-bank input {
+  padding-left: 30px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-bank::before {
+  content: "₩";
+  position: absolute;
+  left: 10px;
+  top: 25%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 1rem;
+  color: #333;
+}
+
+.input-bankch {
+  position: relative;
+  width: 110%;
+  text-align: start;
+}
+
+.input-bankch input {
+  padding-left: 30px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-bankch::before {
+  content: attr(data-currency-symbol);
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 1rem;
+  color: #333;
+}
+
+
+h2 {
+  font-size: 1rem;
+  margin-top: 1px;
+  margin-bottom: 20px;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
   
-  
-  .container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 1400px;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  
-  
-  .top-box {
-    width: 100%;
-    max-width: 1200px;
-    height: 100%;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    margin-bottom: 20px;
-  }
-  
-  
-  .bottom-container {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row; 
-    width: 100%;
-    max-width: 1200px;  
-    justify-content: center; 
-    gap: 10px;  
-  }
-  
-  .left-box {
-    flex: 1;
-    width: 100%;    
-    height: 100%;
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-  }
-  
-  .right-box { 
-    flex: 1;
-    width: 100%; 
-    height: 100%;
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-  }
-  
-  
-  
-  
-  .exchange-rate-calculator {
-    background: white;
-    padding: 20px;
-    margin: 10px;
-    border-radius: 4px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-  }
-  
-  
-  .input-with-currency {
-    position: relative;  
-  }
-  
-  .input-with-currency input {
-    padding-left: 40px;
-    padding-right: 5px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .input-with-currency::before {
-    content: attr(data-currency-symbol);
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    font-size: 1rem;
-    color: #333;
-  }
-  
-  .input-bank {
-    position: relative;
-    width: 110%;
-    text-align: start;
-  }
-  
-  .input-bank input {
-    padding-left: 30px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .input-bank::before {
-    content: "₩";
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    font-size: 1rem;
-    color: #333;
-  }
-  
-  
-  h2 {
-    font-size: 1rem;
-    margin-top: 1px;
-    margin-bottom: 20px;
-  }
-  
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    
-  }
-  
-  td {  
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: center;
-    vertical-align: middle;
-  }
-  
-  
-  .under {
-    padding: 10px;
-    border: 1px solid #ddd;
-    font-size: 0.8rem;
-    width: 30%;
-    text-align: start;
-    border-left: none;  
-  }
-  
-  select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .amount-buttons {
-    display: flex;
-    flex-wrap: wrap;  
-    gap: 1px;
-    margin-top: 10px;
-  }
-  
-  .amount-buttons button {
-    flex: 1;
-    padding: 5px;
-    height: 20px;
-    border: none;
-    background: #4d4d4d;
-    color: white;
-    font-size: 0.5rem;
-    border-radius: 3%;
-    cursor: pointer;
-  }
-  
-  .amount-buttons button:hover {
-    background: #c4c4c4;
-  }
-  
-  button {
-    margin-right: 5px;
-    background-color: #4d4d4d;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  button:hover {
-    background: #4d4d4d;
-  }
+}
+
+td {  
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+  vertical-align: middle;
+}
+
+
+.under {
+  padding: 10px;
+  border: 1px solid #ddd;
+  font-size: 0.8rem;
+  width: 30%;
+  text-align: start;
+  border-left: none;  
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.amount-buttons {
+  display: flex;
+  flex-wrap: wrap;  
+  gap: 1px;
+  margin-top: 10px;
+}
+
+.amount-buttons button {
+  flex: 1;
+  padding: 5px;
+  height: 20px;
+  border: none;
+  background: #4d4d4d;
+  color: white;
+  font-size: 0.5rem;
+  border-radius: 3%;
+  cursor: pointer;
+}
+
+.amount-buttons button:hover {
+  background: #c4c4c4;
+}
+
+button {
+  margin-right: 5px;
+  background-color: #4d4d4d;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #4d4d4d;
+}
+
+.card-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.card-table th {
+  background: #dbdada;
+  padding: 12px;
+  text-align: center;
+  font-weight: 500;  
+  font-size: 0.9rem;
+}
+
+.card-table td {
+  padding: 12px;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid #ccc;
+  vertical-align: middle;
+  font-size: 0.9rem;
+}
+
+.card-image {
+  width: 60px;
+  padding-left: 10px;
+  padding-right: 0px;
+} 
+
+.benefits-cell {
+  cursor: pointer;
+  color: black;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.benefits-cell:hover {
+  color: rgb(102, 102, 102);
+  text-decoration: underline;
+}
