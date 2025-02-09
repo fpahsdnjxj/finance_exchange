@@ -29,7 +29,7 @@ async def get_get_bank_exchange_fee(
     else:
         final_preferential_rate=bankinfo.basic_preferential_rate
     for condition in condition_info_list:
-        final_preferential_rate+=condition.preferential_rate
+        final_preferential_rate+=condition.apply_preferential_rate
     
     
     final_preferential_rate=min(final_preferential_rate, bankinfo.max_preferential_rate)
