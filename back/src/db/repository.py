@@ -130,7 +130,8 @@ class CardInfoRepository:
         self.session=session
 
     def get_cardinfo_by_currencycode(self, currency_code:str)->list[CardInfo]|None:
-        return self.session.scalars(select(CardInfo).where(CardInfo.currency_code==currency_code))
+        result = self.session.scalars(select(CardInfo).where(CardInfo.currency_code == currency_code))
+        return list(result)
     
     def get_particular_cardinfo(self, currency_code:str, card_name:str)->CardInfo|None:
         return self.session.scalar(select(CardInfo).where(and_(CardInfo.currency_code==currency_code, CardInfo.card_name==card_name)))
@@ -165,6 +166,9 @@ class CardBenefitRepository:
     
     def get_cardbenefits_by_cardids(self, cardinfo_ids:list[str])->list[CardBenefit]|None:
         return self.session.scalars(select(CardBenefit).where(CardBenefit.cardinfo_id.in_(cardinfo_ids))).all()
+    
+    def get_cardbenefits_by_one_cardid(self, cardinfo_id:list[str])->list[CardBenefit]|None:
+        return self.session.scalars(select(CardBenefit).where(CardBenefit.cardinfo_id==cardinfo_id)).all()
 
     def get_particular_cardbenefit(self, cardinfo_id:str,benefit_type:str )->CardBenefit|None:
        return self.session.scalar(select(CardBenefit).where(and_(CardBenefit.cardinfo_id==cardinfo_id, CardBenefit.benefit_type==benefit_type)))
