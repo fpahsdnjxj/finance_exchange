@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import ReactCountryFlag from "react-country-flag";
 
@@ -11,7 +11,6 @@ import Exchange from './components/Exchange';
 import DropdownAdd from './components/DropdownAdd';
 import CountryDropdown from './components/CountryDropdown';
 import Popup from './components/Popup';
-
 /*
 const countries = [
   "미국 달러", "아랍에미리트 디르함", "호주 달러", "바레인 디나르", "브루나이 달러",
@@ -36,9 +35,7 @@ const currencyOptions = [
   { value: "JPY", label: "일본", flag: "JP"},
   { value: "KRW", label: "한국", flag: "KR" },  
   
-
 ];
-
 
 const currencySymbols = {
   USD: "$",
@@ -46,7 +43,6 @@ const currencySymbols = {
   KRW: "₩",
   JPY: "¥",
 };
-
 
 const CurrencyCalculator = () => {
   const [selectedLocation, setSelectedLocation] = useState("일반영업점");
@@ -484,7 +480,7 @@ const closePopup = () => {
 
   return (
     <div className='container'>
-      <div className='top-box exchange-rate-calculator'>
+      <div className='top-container exchange-rate-calculator'>
         <h2>기준 환율 계산기</h2>
         <div
       style={{
