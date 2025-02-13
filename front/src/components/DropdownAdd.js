@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import '../App.css';
 
-const DropdownAdd = () => {
+const DropdownAdd = ({ conditions }) => {
   const [selectedConditionsList, setSelectedConditionsList] = useState([""]);
-  const conditions = [
-    "A 카드 발급",
-    "B 계좌 개설",
-    "우대율 조건 C",
-    "우대율 조건 D",
-  ];
 
   const handleDropdownChange = (index, value) => {
     if (selectedConditionsList.includes(value)) {

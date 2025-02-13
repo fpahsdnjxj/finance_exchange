@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../App.css';
 import Select from "react-select";
 import ReactCountryFlag from "react-country-flag";
+import axios from 'axios';
 
 const currencyOptions = [
     { value: "USD", label: "미국", flag: "US" },
@@ -25,20 +26,32 @@ function Exchange() {
   const [leftCurrency, setLeftCurrency] = useState("KRW");
   const [rightCurrency, setRightCurrency] = useState("KRW");
   const [activeSide, setActiveSide] = useState("left");
+  const [currencyRates, setCurrencyRates] = useState(null);
 
-  const currencyRates = {
-    USD: 0.00069,
-    EUR: 0.00066,
-    JPY: 0.11,
-    KRW: 1,
-  };
+  useEffect(() => {
+    const fetchRates = async () => {
+      try {
+        const response = await axios.get("https://~~~.com/exchange-rates"); //
+        setCurrencyRates(response.data.rates); 
+      } catch (error) {
+        console.error("환율 데이터를 불러오는 중 오류 발생:", error);
+      }
+    };
+
+    fetchRates();
+    const interval = setInterval(fetchRates, 60000); //
+
+    return () => clearInterval(interval);
+  }, []);
+
 
   const convert = (amount, fromCurrency, toCurrency) => {
-    if (!amount) return "";
+    if (!amount || !currencyRates) return "";
     const amt = parseFloat(amount);
     if (isNaN(amt)) return "";
     const rateFrom = currencyRates[fromCurrency];
     const rateTo = currencyRates[toCurrency];
+    if (!rateFrom || !rateTo) return "";
     const result = amt * (rateTo/rateFrom);
     return result.toFixed(2); 
   };
@@ -48,14 +61,14 @@ function Exchange() {
       const converted = convert(leftAmount, leftCurrency, rightCurrency);
       setRightAmount(converted);
     }
-  }, [leftAmount, leftCurrency, rightCurrency]);
+  }, [leftAmount, leftCurrency, rightCurrency, currencyRates]);
 
   useEffect(() => {
     if (activeSide === "right") {
       const converted = convert(rightAmount, rightCurrency, leftCurrency);
       setLeftAmount(converted);
     }
-  }, [rightAmount, rightCurrency, leftCurrency]);
+  }, [rightAmount, rightCurrency, leftCurrency, currencyRates]);
 
   const handleLeftChange = (e) => {
     setActiveSide("left");

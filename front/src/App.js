@@ -5,21 +5,12 @@ import ReactCountryFlag from "react-country-flag";
 import tossCard from './assets/toss_card.png'; 
 import travelPayCard from './assets/travel_pay_card.png'; 
 import hana from './assets/hana.png';
-// import axios from 'axios';
+import axios from 'axios';
 
 import Exchange from './components/Exchange';
 import DropdownAdd from './components/DropdownAdd';
 import CountryDropdown from './components/CountryDropdown';
 import Popup from './components/Popup';
-/*
-const countries = [
-  "미국 달러", "아랍에미리트 디르함", "호주 달러", "바레인 디나르", "브루나이 달러",
-  "캐나다 달러", "스위스 프랑", "위안화", "덴마아크 크로네", "유로", "영국 파운드",
-  "홍콩 달러", "인도네시아 루피아", "일본 옌", "한국 원", "쿠웨이트 디나르",
-  "말레이지아 링기트", "노르웨이 크로네", "뉴질랜드 달러", "사우디 리 얄",
-  "스웨덴 크로나", "싱가포르 달러", "태국 바트"
-];
-*/
 
 const Banks = [
   "하나은행", "KDB산업은행", "전북은행", "한국씨티은행", "NH농협은행", "신한은행",
@@ -47,11 +38,16 @@ const currencySymbols = {
 const CurrencyCalculator = () => {
   const [selectedLocation, setSelectedLocation] = useState("일반영업점");
   const [selectedBank, setSelectedBank] = useState(null);
+  const [conditions, setConditions] = useState([]);
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [exchangeAmount, setExchangeAmount] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("US");
   const [popupContent, setPopupContent] = useState(null);
   const [isExpanded, setIsExpanded] = useState([false, false]);  
+
+  const [cards, setCards] = useState(null);
+  const [discountRate, setDiscountRate]=useState("");
+
 
 const openPopup = (card) => {
   setPopupContent(card.detailedBenefits);
@@ -63,370 +59,31 @@ const closePopup = () => {
   setIsExpanded([false, false]);
 };
 
-  const discountRate = 100;
 
-  const cards = [
-    {
-      image: tossCard,
-      name: "토스 카드",
-      company: "토스",
-      benefits: "• 토스 통장 개설 필수\n• 토스 통장 입금액만큼 사용 가능",
-      detailedBenefits: {
-        title: "트래블로그 체크 카드",
-        card: "하나 카드",
-        description: "• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n",
-        image: hana,
-        features1: [
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",       
-        ],
-        features2: [
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",      
-        ],
-        hasToggle: true, 
-      },
-    },
-    {
-      image: travelPayCard,
-      name: "트래블 페이 충전카드",
-      company: "트래블월렛",
-      benefits: "• 트래블 통장 개설 필수\n• 미국 미니스톱 이용 시 5% 청구 할인",
-      detailedBenefits: {
-        title: "트래블로그 체크 카드",
-        card: "하나 카드",
-        description: "• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n",
-        image: hana,
-        features1: [
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",       
-        ],
-        features2: [
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",      
-        ],
-        hasToggle: true,
-      },
-    },
-    {
-      image: tossCard,
-      name: "토스 카드",
-      company: "토스",
-      benefits: "• 토스 통장 개설 필수\n• 토스 통장 입금액만큼 사용 가능",
-      detailedBenefits: {
-        title: "트래블로그 체크 카드",
-        card: "하나 카드",
-        description: "• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n",
-        image: hana,
-        features1: [
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",       
-        ],
-        features2: [
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",      
-        ],
-        hasToggle: true, 
-      },
-    },
-    {
-      image: travelPayCard,
-      name: "트래블 페이 충전카드",
-      company: "트래블월렛",
-      benefits: "• 트래블 통장 개설 필수\n• 미국 미니스톱 이용 시 5% 청구 할인",
-      detailedBenefits: {
-        title: "트래블로그 체크 카드",
-        card: "하나 카드",
-        description: "• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n",
-        image: hana,
-        features1: [
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",       
-        ],
-        features2: [
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",      
-        ],
-        hasToggle: true,
-      },
-    },
-    {
-      image: tossCard,
-      name: "토스 카드",
-      company: "토스",
-      benefits: "• 토스 통장 개설 필수\n• 토스 통장 입금액만큼 사용 가능",
-      detailedBenefits: {
-        title: "트래블로그 체크 카드",
-        card: "하나 카드",
-        description: "• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n",
-        image: hana,
-        features1: [
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",       
-        ],
-        features2: [
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",      
-        ],
-        hasToggle: true, 
-      },
-    },
-    {
-      image: travelPayCard,
-      name: "트래블 페이 충전카드",
-      company: "트래블월렛",
-      benefits: "• 트래블 통장 개설 필수\n• 미국 미니스톱 이용 시 5% 청구 할인",
-      detailedBenefits: {
-        title: "트래블로그 체크 카드",
-        card: "하나 카드",
-        description: "• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n",
-        image: hana,
-        features1: [
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",       
-        ],
-        features2: [
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",      
-        ],
-        hasToggle: true,
-      },
-    },
-    {
-      image: tossCard,
-      name: "토스 카드",
-      company: "토스",
-      benefits: "• 토스 통장 개설 필수\n• 토스 통장 입금액만큼 사용 가능",
-      detailedBenefits: {
-        title: "트래블로그 체크 카드",
-        card: "하나 카드",
-        description: "• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n",
-        image: hana,
-        features1: [
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",       
-        ],
-        features2: [
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",      
-        ],
-        hasToggle: true, 
-      },
-    },
-    {
-      image: travelPayCard,
-      name: "트래블 페이 충전카드",
-      company: "트래블월렛",
-      benefits: "• 트래블 통장 개설 필수\n• 미국 미니스톱 이용 시 5% 청구 할인",
-      detailedBenefits: {
-        title: "트래블로그 체크 카드",
-        card: "하나 카드",
-        description: "• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n• 해외 가맹점 수수료 면제\n",
-        image: hana,
-        features1: [
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",
-          "해외 ATM 출금 수수료 면제",       
-        ],
-        features2: [
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",
-          "해외 편의점 이용 시 5% 청구 할인",      
-        ],
-        hasToggle: true,
-      },
-    },
-  ];
+useEffect(() => {
+  if (!selectedBank) return;
+  axios
+    .get(`https://~~~.com/conditions?bank=${selectedBank}`) //
+    .then((response) => {
+      setConditions(response.data);
+    })
+    .catch((error) => {
+      console.error("조건을 불러오는 중 오류 발생:", error);
+    });
+}, [selectedBank]);
+
+useEffect(() => {
+  const fetchCards = async () => {
+    try {
+      const response = await axios.get("https://~~~.com/cards"); //
+      setCards(response.data); 
+    } catch (error) {
+      console.error("카드 정보를 불러오는 중 오류 발생:", error);
+    }
+  };
+
+  fetchCards();
+}, []);
 
   const formatKRW = (amount) => {
     const number = parseInt(amount, 10);
@@ -533,7 +190,7 @@ const closePopup = () => {
           <table>
             <tbody>
               <tr>
-                <td className="under">{selectedLocation === "일반영업점" ? "은행" : "공항 은행"}</td>
+                <td className="under-t">{selectedLocation === "일반영업점" ? "은행" : "공항 은행"}</td>
                 <td style={{borderRight: "none"}}>
                   <select
                     value={selectedBank}
@@ -549,7 +206,7 @@ const closePopup = () => {
               </tr>
               
               <tr>
-                <td className="under">환전 화폐</td>
+                <td className="under-t">환전 화폐</td>
                 <td style={{borderRight: "none"}}>
                 <select 
                   value={selectedCurrency}
@@ -566,13 +223,13 @@ const closePopup = () => {
                 </td>
               </tr>
               <tr>
-                <td className="under">조건 선택</td>
+                <td className="under-t">조건 선택</td>
                 <td style={{borderRight: "none"}}>
-                  <DropdownAdd />
+                <DropdownAdd conditions={conditions} />
                 </td>
               </tr>
               <tr>
-              <td className="under">환전 금액</td>
+              <td className="under-t">환전 금액</td>
               <td style={{ borderRight: "none" }}>
               <div className="input-bank">
       <input
@@ -589,7 +246,7 @@ const closePopup = () => {
               </td>
             </tr>
             <tr>
-              <td className="under">최대 우대 적용 환율</td>
+              <td className="under-t">최대 우대 적용 환율</td>
               <td style={{ borderRight: "none" }}>
               <div
                   className="input-bankch"
