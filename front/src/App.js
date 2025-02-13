@@ -62,9 +62,9 @@ const closePopup = () => {
 useEffect(()=>{
   if (!selectedCurrency) return;
   axios
-    .get(`api/currency?currency_code=${selectedCurrency}`) //
+    .get(`api/currency/base-rate?currency_code=${selectedCurrency}`) 
     .then((response) => {
-      setConditions(response.data);
+      
     })
     .catch((error) => {
       console.error("조건을 불러오는 중 오류 발생:", error);
@@ -76,7 +76,8 @@ useEffect(() => {
   axios
     .get(`api/bank/bank-conditions?bankname=${selectedBank}&currency_code=${selectedCurrency}`) //
     .then((response) => {
-      setConditions(response.data);
+      console.log(conditions)
+      setConditions(response.data.conditions);
     })
     .catch((error) => {
       console.error("조건을 불러오는 중 오류 발생:", error);
@@ -95,6 +96,7 @@ useEffect(() => {
 
   fetchCards();
 }, [selectedLocation]);
+
 
   const formatKRW = (amount) => {
     const number = parseInt(amount, 10);

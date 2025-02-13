@@ -33,22 +33,51 @@ function Exchange() {
       if (!leftCurrency) return;
 
       try {
+        console.log(leftCurrency)
         const response = await axios.get(
-          `api/currency?currency_code=${leftCurrency}`
+          `api/currency/base-rate?currency_code=${leftCurrency}`
         );
 
         if (response.data && response.data.P_per_Won) {
-          setCurrencyRates(response.data.P_per_Won);
+          setCurrencyRates((prevRates) => ({
+            ...prevRates,  
+            [leftCurrency]: response.data.P_per_Won,  
+          }));
         } else {
           console.error("올바른 JSON 응답이 아닙니다:", response.data);
         }
       } catch (error) {
-        console.error("조건을 불러오는 중 오류 발생:", error);
+        console.error("화폐를 불러오는 중 오류 발생:", error);
       }
     };
 
     fetch_currency(); // 함수 실행 추가
   }, [leftCurrency]); 
+
+  useEffect(() => {
+    const fetch_currency = async () => {
+      if (!rightCurrency) return;
+
+      try {
+        const response = await axios.get(
+          `api/currency/base-rate?currency_code=${rightCurrency}`
+        );
+
+        if (response.data && response.data.P_per_Won) {
+          setCurrencyRates((prevRates) => ({
+            ...prevRates,  
+            [rightCurrency]: response.data.P_per_Won,  
+          }))
+        } else {
+          console.error("올바른 JSON 응답이 아닙니다:", response.data);
+        }
+      } catch (error) {
+        console.error("화폐를 불러오는 중 오류 발생:", error);
+      }
+    };
+
+    fetch_currency(); 
+  }, [rightCurrency]); 
 
 
   const convert = (amount, fromCurrency, toCurrency) => {
@@ -58,7 +87,7 @@ function Exchange() {
     const rateFrom = currencyRates[fromCurrency];
     const rateTo = currencyRates[toCurrency];
     if (!rateFrom || !rateTo) return "";
-    const result = amt * (rateTo/rateFrom);
+    const result = amt / (rateTo/rateFrom);
     return result.toFixed(2); 
   };
 
