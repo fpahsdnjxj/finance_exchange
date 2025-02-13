@@ -13,7 +13,7 @@ import CountryDropdown from './components/CountryDropdown';
 import Popup from './components/Popup';
 
 const Banks = [
-  "하나은행", "KDB산업은행", "전북은행", "한국씨티은행", "NH농협은행", "신한은행",
+  "하나은행", "KDB산업은행", "전북은행", "한국씨티은행", "NH 농협은행", "신한은행",
   "KB국민은행", "IBK기업은행", "BNK경남은행", "제주은행", "광주은행",
   "BNK부산은행", "iM뱅크", "SC제일은행", "우리은행", "Sh수협은행"
 ];
@@ -79,9 +79,8 @@ useEffect(() => {
   if(!selectedCurrency) return;
   const encodedBankname = encodeURIComponent(selectedBank);
   axios
-    .get(`api/bank/bank-conditions?bank_name=${encodedBankname}&currency_code=${selectedCurrency}`) //
+    .get(`api/bank/bank-conditions?bank_name=${encodedBankname}&currency_code=${selectedCurrency}`) 
     .then((response) => {
-      console.log(response.data.conditions)
       setConditions(response.data.conditions);
     })
     .catch((error) => {
@@ -98,6 +97,7 @@ useEffect(() =>{
     try {
       const response = await axios.get(`api/card/default-card-info?currency_code=${currency_code}`);
       setCards(response.data); 
+      console.log(cards.card_infos)
     } catch (error) {
       console.error("카드 정보를 불러오는 중 오류 발생:", error);
     }
@@ -125,10 +125,9 @@ useEffect(()=>{
   const encodedBankname = encodeURIComponent(selectedBank);
   const numericExchangeAmount=parseFloat(exchangeAmount);
   if(isNaN(numericExchangeAmount)||numericExchangeAmount<0){
-    console.log("이상한 숫자 들어옴")
     return;
   }
-  const fetchExchangefeerate = async () => {
+  const fetchExchangefeerate_nocondition = async () => {
     try {
       const response = await axios.get(`api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`); 
       console.log(response.data)
@@ -138,7 +137,20 @@ useEffect(()=>{
       console.error("은행 수수료 정보를 불러오는 중 오류 발생:", error);
     }
   };
-  fetchExchangefeerate();
+  const fetchExchangefeerate_with_condition = async () => {
+    const encoded_conditions=conditions.map(item=>(encodeURIComponent(item)))
+    try {
+      const response = await axios.get(`api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}&condition_type=${encoded_conditions}`); 
+      console.log(response.data)
+      setDiscountRate(response.data.final_fee_rate)
+      calculate_final_fee();
+    } catch (error) {
+      console.error("은행 수수료 정보를 불러오는 중 오류 발생:", error);
+    }
+  };
+  fetchExchangefeerate_nocondition();
+  //fetchExchangefeerate_with_condition();
+  
 }, [selectedBank, selectedCurrency, exchangeAmount])
 
 useEffect(() => {
@@ -390,17 +402,17 @@ useEffect(() => {
     </tr>
   </thead>
   <tbody>
-  {cards && cards.length > 0 &&cards.map((card, index) => (
+  {cards&&cards.card_infos&&cards.card_infos.length > 0 &&cards.card_infos.map((card, index) => (
             <tr key={index}>
               <td>
-                <img src={card.image} alt={card.name} className="card-image" />
+                <img src={card.image} alt={card.card_name} className="card-image" />
               </td>
 
               <td
                 className="benefits-cell"
-                onClick={() => openPopup(card)}>{card.name}
+                onClick={() => openPopup(card)}>{card.card_name}
                 <br />
-                <div style={{ fontSize: "11px" }}>({card.company})</div>
+                <div style={{ fontSize: "11px" }}></div>
               </td>
 
               <td style={{ textAlign: "left" }}>
@@ -415,7 +427,7 @@ useEffect(() => {
                     ? exchangeAmount.toString().substring(0, 10) + "..."
                     : exchangeAmount}
                 </span>{" "}
-                ₩ ({discountRate})
+                ₩ ({100-card.preferential_treatment}%)
               </td>
             </tr>
           ))}

@@ -14,6 +14,8 @@ async def get_get_bank_exchange_fee(
     currency_repo:CurrencyRepository=Depends(),
 ):
     bank_name=urllib.parse.unquote(bank_name)
+    if condition_type:
+        condition_type=[urllib.parse.unquote(item) for item in condition_type]
     bankinfo=bankinfo_repo.get_particular_bankinfo(currency_code=currency_code, bank_name=bank_name)
     usd_price=currency_repo.get_currency_by_currencycode(currency_code='USD')
     compare_price=exchange_amount/usd_price.P_per_Won
