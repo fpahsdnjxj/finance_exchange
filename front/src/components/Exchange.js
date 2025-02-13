@@ -29,16 +29,32 @@ function Exchange() {
   const [currencyRates, setCurrencyRates] = useState(null);
 
   useEffect(() => {
-    const fetchRates = async () => {
+    const fetch_currency = async () => {
+      if (!leftCurrency) return;
+
       try {
-        const response = await axios.get("https://~~~.com/exchange-rates"); //
-        setCurrencyRates(response.data.rates); 
+        console.log(leftCurrency)
+        const response = await axios.get(
+          `api/currency/base-rate?currency_code=${leftCurrency}`
+        );
+
+        if (response.data && response.data.P_per_Won) {
+          setCurrencyRates((prevRates) => ({
+            ...prevRates,  
+            [leftCurrency]: response.data.P_per_Won,  
+          }));
+        } else {
+          console.error("올바른 JSON 응답이 아닙니다:", response.data);
+        }
       } catch (error) {
-        console.error("환율 데이터를 불러오는 중 오류 발생:", error);
+        console.error("화폐를 불러오는 중 오류 발생:", error);
       }
     };
 
     fetchRates();
+    const interval = setInterval(fetchRates, 60000); //
+
+    return () => clearInterval(interval);
   }, []);
 
 
@@ -49,7 +65,7 @@ function Exchange() {
     const rateFrom = currencyRates[fromCurrency];
     const rateTo = currencyRates[toCurrency];
     if (!rateFrom || !rateTo) return "";
-    const result = amt * (rateTo/rateFrom);
+    const result = amt / (rateTo/rateFrom);
     return result.toFixed(2); 
   };
 
