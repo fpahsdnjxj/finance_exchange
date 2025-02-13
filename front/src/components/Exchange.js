@@ -119,7 +119,7 @@ function Exchange() {
           <ReactCountryFlag
             countryCode={option.flag}
             svg
-            style={{ width: "24px", height: "24px", marginRight: "8px" }}
+            style={{ width: "30px", height: "20px", marginRight: "8px" }}
             title={option.label}
           />
           <span>{option.label}</span>
@@ -130,7 +130,7 @@ function Exchange() {
         <ReactCountryFlag
           countryCode={option.flag}
           svg
-          style={{ width: "24px", height: "24px" }}
+          style={{ width: "30px", height: "20px" }}
           title={option.label}
         />
       );
