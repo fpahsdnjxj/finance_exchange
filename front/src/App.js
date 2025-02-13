@@ -45,7 +45,7 @@ const CurrencyCalculator = () => {
   const [popupContent, setPopupContent] = useState(null);
   const [isExpanded, setIsExpanded] = useState([false, false]);  
 
-  const [cards, setCards] = useState(null);
+  const [cards, setCards] = useState([]);
   const [discountRate, setDiscountRate]=useState("");
 
 
@@ -64,7 +64,7 @@ const closePopup = () => {
 useEffect(() => {
   if (!selectedBank) return;
   axios
-    .get(`/api/bank/bank-conditions?bankname=${selectedBank}&currency_code=${selectedLocation.value}`) //
+    .get(`/api/bank/bank-conditions?bankname=${selectedBank}&currency_code=${selectedCurrency}`) 
     .then((response) => {
       setConditions(response.data);
     })
@@ -76,7 +76,7 @@ useEffect(() => {
 useEffect(() => {
   const fetchCards = async () => {
     try {
-      const response = await axios.get(`/api/card/default-card-info?currency_code=${selectedLocation}`); 
+      const response = await axios.get(`/api/card/default-card-info?currency_code=${selectedCurrency}`); 
       setCards(response.data); 
     } catch (error) {
       console.error("카드 정보를 불러오는 중 오류 발생:", error);

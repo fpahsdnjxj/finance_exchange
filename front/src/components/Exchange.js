@@ -39,9 +39,6 @@ function Exchange() {
     };
 
     fetchRates();
-    const interval = setInterval(fetchRates, 60000); //
-
-    return () => clearInterval(interval);
   }, []);
 
 
