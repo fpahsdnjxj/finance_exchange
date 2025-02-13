@@ -45,3 +45,5 @@ async def get_bank_conditions(
     bankinfo=bankinfo_repo.get_particular_bankinfo(currency_code=currency_code, bank_name=bank_name)
     conditions=[bank.condition_type for bank in bankinfo.bank_condition] if bankinfo.bank_condition else[]
     return {"conditions": conditions}
+
+

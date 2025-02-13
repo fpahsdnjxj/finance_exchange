@@ -45,7 +45,7 @@ const CurrencyCalculator = () => {
   const [popupContent, setPopupContent] = useState(null);
   const [isExpanded, setIsExpanded] = useState([false, false]);  
 
-  const [cards, setCards] = useState(null);
+  const [cards, setCards] = useState();
   const [discountRate, setDiscountRate]=useState("");
 
 
@@ -64,19 +64,19 @@ const closePopup = () => {
 useEffect(() => {
   if (!selectedBank) return;
   axios
-    .get(`/api/bank/bank-conditions?bankname=${selectedBank}&currency_code=${selectedLocation.value}`) //
+    .get(`api/bank/bank-conditions?bankname=${selectedBank}&currency_code=${selectedCurrency}`) //
     .then((response) => {
       setConditions(response.data);
     })
     .catch((error) => {
       console.error("조건을 불러오는 중 오류 발생:", error);
     });
-}, [selectedBank, selectedLocation]);
+}, [selectedBank]);
 
 useEffect(() => {
   const fetchCards = async () => {
     try {
-      const response = await axios.get(`/api/card/default-card-info?currency_code=${selectedLocation}`); 
+      const response = await axios.get(`api/card/default-card-info?currency_code=${selectedLocation}`); 
       setCards(response.data); 
     } catch (error) {
       console.error("카드 정보를 불러오는 중 오류 발생:", error);
@@ -329,7 +329,7 @@ useEffect(() => {
     </tr>
   </thead>
   <tbody>
-          {cards.map((card, index) => (
+          {cards && cards.length > 0 &&cards.map((card, index) => (
             <tr key={index}>
               <td>
                 <img src={card.image} alt={card.name} className="card-image" />
