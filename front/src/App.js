@@ -45,6 +45,7 @@ const CurrencyCalculator = () => {
   const [popupContent, setPopupContent] = useState(null);
   const [isExpanded, setIsExpanded] = useState([false, false]); 
   const [exchangeRate, setExchangeRate]=useState(0);
+  const [finalFee, setfinalFee]=useState(0);
 
   const [cards, setCards] = useState({});
   const [discountRate, setDiscountRate]=useState("");
@@ -65,7 +66,8 @@ useEffect(()=>{
   axios
     .get(`api/currency/base-rate?currency_code=${selectedCurrency}`) 
     .then((response) => {
-      setExchangeRate(response.data.P_perWon)
+      setExchangeRate(response.data.P_per_Won)
+      console.log(response.data)
     })
     .catch((error) => {
       console.error("기본 환율을 불러오는 중 오류 발생:", error);
@@ -89,18 +91,60 @@ useEffect(() => {
 
 useEffect(() =>{
   if(!selectedLocation) return;
+  const currency = currencyOptions.find(option => option.flag === selectedCountry);
+  if(!currency) return;
+  const currency_code=currency.value;
   const fetchCards = async () => {
     try {
-      const response = await axios.get(`api/card/default-card-info?currency_code=${selectedCurrency}`);
+      const response = await axios.get(`api/card/default-card-info?currency_code=${currency_code}`);
       setCards(response.data); 
-      console.log(cards)
     } catch (error) {
       console.error("카드 정보를 불러오는 중 오류 발생:", error);
     }
   };
 
   fetchCards();
-}, [selectedCurrency]);
+}, [selectedCountry]);
+
+const calculate_final_fee=()=>{
+  const numericExchangeAmount=parseFloat(exchangeAmount)
+  const numericExchangefee=parseFloat(discountRate)
+  if(isNaN(numericExchangeAmount)||numericExchangeAmount<0){
+    return;
+  }
+  if(isNaN(numericExchangefee)||numericExchangefee<0){
+    return;
+  }
+  const final_fee=(numericExchangeAmount/exchangeRate) //+numericExchangeAmount/exchangeRate*numericExchangefee
+  setfinalFee(final_fee)
+}
+
+useEffect(()=>{
+  if (!selectedBank) return;
+  if(!selectedCurrency) return;
+  const encodedBankname = encodeURIComponent(selectedBank);
+  const numericExchangeAmount=parseFloat(exchangeAmount);
+  if(isNaN(numericExchangeAmount)||numericExchangeAmount<0){
+    console.log("이상한 숫자 들어옴")
+    return;
+  }
+  const fetchExchangefeerate = async () => {
+    try {
+      const response = await axios.get(`api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`); 
+      console.log(response.data)
+      setDiscountRate(response.data.final_fee_rate)
+      calculate_final_fee();
+    } catch (error) {
+      console.error("은행 수수료 정보를 불러오는 중 오류 발생:", error);
+    }
+  };
+  fetchExchangefeerate();
+}, [selectedBank, selectedCurrency, exchangeAmount])
+
+useEffect(() => {
+  console.log("최종 계산된 수수료:", finalFee);
+}, [finalFee]); 
+
 
 
   const formatKRW = (amount) => {
@@ -270,7 +314,7 @@ useEffect(() =>{
                   className="input-bankch"
                   data-currency-symbol={currencySymbols[selectedCurrency]}                 
                 >
-                  <input type="text" value={discountRate || 0} disabled style={{ width: "90%" }} />
+                  <input type="text" value={finalFee || 0} disabled style={{ width: "90%" }} />
                 </div>
               </td>
             </tr>
@@ -346,7 +390,7 @@ useEffect(() =>{
     </tr>
   </thead>
   <tbody>
-          {cards && cards.length > 0 &&cards.map((card, index) => (
+  {cards && cards.length > 0 &&cards.map((card, index) => (
             <tr key={index}>
               <td>
                 <img src={card.image} alt={card.name} className="card-image" />

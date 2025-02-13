@@ -51,7 +51,7 @@ function Exchange() {
       }
     };
 
-    fetch_currency(); // 함수 실행 추가
+    fetch_currency(); 
   }, [leftCurrency]); 
 
   useEffect(() => {
