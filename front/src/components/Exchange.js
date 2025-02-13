@@ -29,20 +29,26 @@ function Exchange() {
   const [currencyRates, setCurrencyRates] = useState(null);
 
   useEffect(() => {
-    const fetchRates = async () => {
+    const fetch_currency = async () => {
+      if (!leftCurrency) return;
+
       try {
-        const response = await axios.get("https://~~~.com/exchange-rates"); //
-        setCurrencyRates(response.data.rates); 
+        const response = await axios.get(
+          `api/currency?currency_code=${leftCurrency}`
+        );
+
+        if (response.data && response.data.P_per_Won) {
+          setCurrencyRates(response.data.P_per_Won);
+        } else {
+          console.error("올바른 JSON 응답이 아닙니다:", response.data);
+        }
       } catch (error) {
-        console.error("환율 데이터를 불러오는 중 오류 발생:", error);
+        console.error("조건을 불러오는 중 오류 발생:", error);
       }
     };
 
-    fetchRates();
-    const interval = setInterval(fetchRates, 60000); //
-
-    return () => clearInterval(interval);
-  }, []);
+    fetch_currency(); // 함수 실행 추가
+  }, [leftCurrency]); 
 
 
   const convert = (amount, fromCurrency, toCurrency) => {

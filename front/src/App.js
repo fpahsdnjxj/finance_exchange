@@ -59,7 +59,17 @@ const closePopup = () => {
   setIsExpanded([false, false]);
 };
 
-
+useEffect(()=>{
+  if (!selectedCurrency) return;
+  axios
+    .get(`api/currency?currency_code=${selectedCurrency}`) //
+    .then((response) => {
+      setConditions(response.data);
+    })
+    .catch((error) => {
+      console.error("조건을 불러오는 중 오류 발생:", error);
+    });
+})
 
 useEffect(() => {
   if (!selectedBank) return;
