@@ -43,9 +43,10 @@ const CurrencyCalculator = () => {
   const [exchangeAmount, setExchangeAmount] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("US");
   const [popupContent, setPopupContent] = useState(null);
-  const [isExpanded, setIsExpanded] = useState([false, false]);  
+  const [isExpanded, setIsExpanded] = useState([false, false]); 
+  const [exchangeRate, setExchangeRate]=useState(0);
 
-  const [cards, setCards] = useState();
+  const [cards, setCards] = useState({});
   const [discountRate, setDiscountRate]=useState("");
 
 
@@ -64,38 +65,42 @@ useEffect(()=>{
   axios
     .get(`api/currency/base-rate?currency_code=${selectedCurrency}`) 
     .then((response) => {
-      
+      setExchangeRate(response.data.P_perWon)
     })
     .catch((error) => {
-      console.error("조건을 불러오는 중 오류 발생:", error);
+      console.error("기본 환율을 불러오는 중 오류 발생:", error);
     });
-})
+}, [selectedCurrency])
 
 useEffect(() => {
   if (!selectedBank) return;
+  if(!selectedCurrency) return;
+  const encodedBankname = encodeURIComponent(selectedBank);
   axios
-    .get(`api/bank/bank-conditions?bankname=${selectedBank}&currency_code=${selectedCurrency}`) //
+    .get(`api/bank/bank-conditions?bank_name=${encodedBankname}&currency_code=${selectedCurrency}`) //
     .then((response) => {
-      console.log(conditions)
+      console.log(response.data.conditions)
       setConditions(response.data.conditions);
     })
     .catch((error) => {
       console.error("조건을 불러오는 중 오류 발생:", error);
     });
-}, [selectedBank]);
+}, [selectedBank, selectedCurrency]);
 
-useEffect(() => {
+useEffect(() =>{
+  if(!selectedLocation) return;
   const fetchCards = async () => {
     try {
-      const response = await axios.get(`api/card/default-card-info?currency_code=${selectedLocation}`); 
+      const response = await axios.get(`api/card/default-card-info?currency_code=${selectedCurrency}`);
       setCards(response.data); 
+      console.log(cards)
     } catch (error) {
       console.error("카드 정보를 불러오는 중 오류 발생:", error);
     }
   };
 
   fetchCards();
-}, [selectedLocation]);
+}, [selectedCurrency]);
 
 
   const formatKRW = (amount) => {

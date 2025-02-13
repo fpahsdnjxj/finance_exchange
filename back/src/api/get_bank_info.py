@@ -1,5 +1,7 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from db.repository import  BankInfoRepository, CurrencyRepository
+import urllib.parse
+
 router=APIRouter(prefix="/api/bank")
 
 @router.get("/bank-exchange-fee", status_code=200)
@@ -11,6 +13,7 @@ async def get_get_bank_exchange_fee(
     bankinfo_repo:BankInfoRepository=Depends(),
     currency_repo:CurrencyRepository=Depends(),
 ):
+    bank_name=urllib.parse.unquote(bank_name)
     bankinfo=bankinfo_repo.get_particular_bankinfo(currency_code=currency_code, bank_name=bank_name)
     usd_price=currency_repo.get_currency_by_currencycode(currency_code='USD')
     compare_price=exchange_amount/usd_price.P_per_Won
@@ -38,12 +41,20 @@ async def get_get_bank_exchange_fee(
 
 @router.get("/bank-conditions", status_code=200)
 async def get_bank_conditions(
-    bank_name:str=Query(...),
-    currency_code:str=Query(...),
-    bankinfo_repo:BankInfoRepository=Depends(),
+    bank_name: str = Query(..., description="Bank name is required"),
+    currency_code: str = Query(..., description="Currency code is required"),
+    bankinfo_repo: BankInfoRepository = Depends(),
 ):
-    bankinfo=bankinfo_repo.get_particular_bankinfo(currency_code=currency_code, bank_name=bank_name)
-    conditions=[bank.condition_type for bank in bankinfo.bank_condition] if bankinfo.bank_condition else[]
+    if not bank_name or not currency_code:
+        raise HTTPException(status_code=400, detail="Missing required parameters: bank_name and currency_code")
+    bank_name = urllib.parse.unquote(bank_name)
+    bankinfo = bankinfo_repo.get_particular_bankinfo(currency_code=currency_code, bank_name=bank_name)
+    
+    if bankinfo is None:
+        raise HTTPException(status_code=404, detail="Bank information not found")
+
+    conditions = [bank.condition_type for bank in bankinfo.bank_condition] if bankinfo.bank_condition else []
+    
     return {"conditions": conditions}
 
 
