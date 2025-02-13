@@ -60,22 +60,23 @@ const closePopup = () => {
 };
 
 
+
 useEffect(() => {
   if (!selectedBank) return;
   axios
-    .get(`https://~~~.com/conditions?bank=${selectedBank}`) //
+    .get(`/api/bank/bank-conditions?bankname=${selectedBank}&currency_code=${selectedLocation.value}`) //
     .then((response) => {
       setConditions(response.data);
     })
     .catch((error) => {
       console.error("조건을 불러오는 중 오류 발생:", error);
     });
-}, [selectedBank]);
+}, [selectedBank, selectedLocation]);
 
 useEffect(() => {
   const fetchCards = async () => {
     try {
-      const response = await axios.get("https://~~~.com/cards"); //
+      const response = await axios.get(`/api/card/default-card-info?currency_code=${selectedLocation}`); 
       setCards(response.data); 
     } catch (error) {
       console.error("카드 정보를 불러오는 중 오류 발생:", error);
@@ -83,7 +84,7 @@ useEffect(() => {
   };
 
   fetchCards();
-}, []);
+}, [selectedLocation]);
 
   const formatKRW = (amount) => {
     const number = parseInt(amount, 10);
