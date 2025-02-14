@@ -1,0 +1,62 @@
+ 
+services:
+  mysql-exchange:  
+    image: mysql:8.0
+    container_name: mysql-exchange  
+    restart: always  
+    environment: 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: currency_db
+    ports:  
+      - "3309:3306"  
+    volumes:  
+      - mysql_exchange_volume:/var/lib/mysql  
+    networks:
+      - my_network
+
+  backend:
+      build: 
+       context: ./back
+      container_name: backend
+      restart: always
+      depends_on:
+        - mysql-exchange
+      environment:
+        - DATABASE_URL=${DATABASE_URL}
+        - PYTHONPATH=/app
+      ports:
+        - "8000:8000"
+      networks:
+        - my_network  
+
+  frontend:
+      build: ./front
+      container_name: frontend
+      restart: always
+      depends_on:
+        - backend
+      ports:
+        - "3000:80"
+      networks:
+        - my_network  
+
+  nginx:
+      image: nginx:latest
+      container_name: nginx
+      restart: always
+      depends_on:
+        - frontend
+        - backend
+      volumes:
+        - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      ports:
+        - "80:80"
+      networks:
+        - my_network  
+
+volumes:
+  mysql_exchange_volume:
+    external: true
+
+networks:
+  my_network:  
