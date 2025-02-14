@@ -47,7 +47,7 @@ const CurrencyCalculator = () => {
   const [exchangeRate, setExchangeRate]=useState(0);
   const [finalFee, setfinalFee]=useState(0);
 
-  const [cards, setCards] = useState({});
+  const [cards, setCards] = useState(null);
   const [discountRate, setDiscountRate]=useState("");
 
 
@@ -79,7 +79,7 @@ useEffect(() => {
   if(!selectedCurrency) return;
   const encodedBankname = encodeURIComponent(selectedBank);
   axios
-    .get(`api/bank/bank-conditions?bank_name=${encodedBankname}&currency_code=${selectedCurrency}`) 
+    .get(`/api/bank/bank-conditions?bankname=${selectedBank}&currency_code=${selectedLocation.value}`) //
     .then((response) => {
       setConditions(response.data.conditions);
     })
@@ -95,7 +95,7 @@ useEffect(() =>{
   const currency_code=currency.value;
   const fetchCards = async () => {
     try {
-      const response = await axios.get(`api/card/default-card-info?currency_code=${currency_code}`);
+      const response = await axios.get(`/api/card/default-card-info?currency_code=${selectedLocation}`); 
       setCards(response.data); 
       console.log(cards.card_infos)
     } catch (error) {
