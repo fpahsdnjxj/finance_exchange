@@ -60,7 +60,6 @@ jest/
 
 # Docker 관련
 .dockerignore
-Dockerfile
 
 
 # 기타

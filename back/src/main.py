@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.get_currency_info import router as currency_router
 from api.get_bank_info import router as bank_router
 from api.get_card_info import router as card_router
+import uvicorn 
 
 app = FastAPI()
 
@@ -19,4 +20,6 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000) 
 

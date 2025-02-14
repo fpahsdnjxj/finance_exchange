@@ -1,7 +1,7 @@
  
 services:
   mysql-exchange:  
-    image: mysql:8.0
+    image: mysql:9.1.0
     container_name: mysql-exchange  
     restart: always  
     environment: 
