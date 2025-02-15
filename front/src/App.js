@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import ReactCountryFlag from "react-country-flag";
 
-import tossCard from './assets/toss_card.png'; 
-import travelPayCard from './assets/travel_pay_card.png'; 
-import hana from './assets/hana.png';
 import axios from 'axios';
 
 import Exchange from './components/Exchange';
