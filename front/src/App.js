@@ -92,7 +92,7 @@ useEffect(() =>{
   const currency_code=currency.value;
   const fetchCards = async () => {
     try {
-      const response = await axios.get(`/api/card/default-card-info?currency_code=${selectedLocation}`); 
+      const response = await axios.get(`/api/card/default-card-info?currency_code=${currency_code}`); 
       setCards(response.data); 
       console.log(cards.card_infos)
     } catch (error) {
