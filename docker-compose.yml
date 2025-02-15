@@ -41,7 +41,7 @@ services:
         - my_network  
 
   nginx:
-      image: nginx:latest
+      image: nginx:1.26.3
       container_name: nginx
       restart: always
       depends_on:
