@@ -61,7 +61,7 @@ const closePopup = () => {
 useEffect(()=>{
   if (!selectedCurrency) return;
   axios
-    .get(`api/currency/base-rate?currency_code=${selectedCurrency}`) 
+    .get(`/api/currency/base-rate?currency_code=${selectedCurrency}`) 
     .then((response) => {
       setExchangeRate(response.data.P_per_Won)
       console.log(response.data)
@@ -126,7 +126,7 @@ useEffect(()=>{
   }
   const fetchExchangefeerate_nocondition = async () => {
     try {
-      const response = await axios.get(`api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`); 
+      const response = await axios.get(`/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`); 
       console.log(response.data)
       setDiscountRate(response.data.final_fee_rate)
       calculate_final_fee();
