@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import ReactCountryFlag from "react-country-flag";
 
-import tossCard from './assets/toss_card.png'; 
-import travelPayCard from './assets/travel_pay_card.png'; 
-import hana from './assets/hana.png';
 import axios from 'axios';
 
 import Exchange from './components/Exchange';
@@ -95,7 +92,7 @@ useEffect(() =>{
   const currency_code=currency.value;
   const fetchCards = async () => {
     try {
-      const response = await axios.get(`/api/card/default-card-info?currency_code=${selectedLocation}`); 
+      const response = await axios.get(`/api/card/default-card-info?currency_code=${currency_code}`); 
       setCards(response.data); 
       console.log(cards.card_infos)
     } catch (error) {
@@ -448,5 +445,3 @@ useEffect(() => {
 };
 
 export default CurrencyCalculator;
-
-
