@@ -76,7 +76,7 @@ useEffect(() => {
   if(!selectedCurrency) return;
   const encodedBankname = encodeURIComponent(selectedBank);
   axios
-    .get(`/api/bank/bank-conditions?bankname=${selectedBank}&currency_code=${selectedLocation.value}`) //
+    .get(`/api/bank/bank-conditions?bank_name=${selectedBank}&currency_code=${selectedCurrency}`) //
     .then((response) => {
       setConditions(response.data.conditions);
     })
