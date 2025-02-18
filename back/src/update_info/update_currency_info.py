@@ -1,4 +1,5 @@
 import requests
+import certifi
 from dotenv import load_dotenv
 from db.orm import Currency
 from db.repository import CurrencyRepository
@@ -20,7 +21,7 @@ def get_currency_data():
         "searchdate": today_date,  
         "data": "AP01",  
     }
-    response = requests.get(url, params=params, timeout=10)
+    response = requests.get(url, params=params, timeout=10, verify=certifi.where())
 
     if response.status_code==200:
         data = response.json()  
