@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import ReactCountryFlag from "react-country-flag";
 
-import tossCard from './assets/toss_card.png'; 
-import travelPayCard from './assets/travel_pay_card.png'; 
-import hana from './assets/hana.png';
 import axios from 'axios';
 
 import Exchange from './components/Exchange';
@@ -64,7 +61,7 @@ const closePopup = () => {
 useEffect(()=>{
   if (!selectedCurrency) return;
   axios
-    .get(`api/currency/base-rate?currency_code=${selectedCurrency}`) 
+    .get(`/api/currency/base-rate?currency_code=${selectedCurrency}`) 
     .then((response) => {
       setExchangeRate(response.data.P_per_Won)
       console.log(response.data)
@@ -79,7 +76,7 @@ useEffect(() => {
   if(!selectedCurrency) return;
   const encodedBankname = encodeURIComponent(selectedBank);
   axios
-    .get(`/api/bank/bank-conditions?bankname=${selectedBank}&currency_code=${selectedLocation.value}`) //
+    .get(`/api/bank/bank-conditions?bank_name=${selectedBank}&currency_code=${selectedCurrency}`) //
     .then((response) => {
       setConditions(response.data.conditions);
     })
@@ -95,7 +92,7 @@ useEffect(() =>{
   const currency_code=currency.value;
   const fetchCards = async () => {
     try {
-      const response = await axios.get(`/api/card/default-card-info?currency_code=${selectedLocation}`); 
+      const response = await axios.get(`/api/card/default-card-info?currency_code=${currency_code}`); 
       setCards(response.data); 
       console.log(cards.card_infos)
     } catch (error) {
@@ -129,7 +126,7 @@ useEffect(()=>{
   }
   const fetchExchangefeerate_nocondition = async () => {
     try {
-      const response = await axios.get(`api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`); 
+      const response = await axios.get(`/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`); 
       console.log(response.data)
       setDiscountRate(response.data.final_fee_rate)
       calculate_final_fee();
@@ -448,5 +445,3 @@ useEffect(() => {
 };
 
 export default CurrencyCalculator;
-
-
