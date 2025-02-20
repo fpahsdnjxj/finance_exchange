@@ -32,7 +32,7 @@ async def get_card_info(
     for benefit in cardbenefit_list:
         if benefit.cardinfo_id not in cardbenefit_dict:
             cardbenefit_dict[benefit.cardinfo_id] = []
-        cardbenefit_dict[benefit.cardinfo_id].append(benefit.benefit_detail)
+        cardbenefit_dict[benefit.cardinfo_id].append(benefit.benefit_type)
 
     cardinfo_list=[CardInfoSchema(
                                 cardinfo_id=card.cardinfo_id,
@@ -68,7 +68,7 @@ async def get_benefit_card_list(
     for benefit in cardbenefit_list:
         if benefit.cardinfo_id not in cardbenefit_dict:
             cardbenefit_dict[benefit.cardinfo_id] = []
-        cardbenefit_dict[benefit.cardinfo_id].append(benefit.benefit_detail)
+        cardbenefit_dict[benefit.cardinfo_id].append(benefit.benefit_type)
 
     cardinfo_list=[CardInfoSchema( cardinfo_id=card.cardinfo_id,
                                 card_name=card.card_name, 

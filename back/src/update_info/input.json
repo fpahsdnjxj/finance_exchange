@@ -1,0 +1,71 @@
+[
+    {
+      "currency_code": "HKD",
+      "bank_name": "신한은행",
+      "min_amount": 0,
+      "max_amount": 2000,
+      "apply_preferential_rate": 0.0
+    },
+    {
+      "currency_code": "HKD",
+      "bank_name": "신한은행",
+      "min_amount": 2000,
+      "max_amount": 5000,
+      "apply_preferential_rate": 0.1
+    },
+    {
+      "currency_code": "HKD",
+      "bank_name": "신한은행",
+      "min_amount": 5000,
+      "max_amount": 10000,
+      "apply_preferential_rate": 0.2
+    },
+    {
+      "currency_code": "VND",
+      "bank_name": "신한은행",
+      "min_amount": 0,
+      "max_amount": 2000,
+      "apply_preferential_rate": 0.0
+    },
+    {
+      "currency_code": "VND",
+      "bank_name": "신한은행",
+      "min_amount": 2000,
+      "max_amount": 5000,
+      "apply_preferential_rate": 0.1
+    },
+    {
+      "currency_code": "VND",
+      "bank_name": "신한은행",
+      "min_amount": 5000,
+      "max_amount": 10000,
+      "apply_preferential_rate": 0.2
+    },
+    {
+      "currency_code": "PHP",
+      "bank_name": "신한은행",
+      "min_amount": 0,
+      "max_amount": 2000,
+      "apply_preferential_rate": 0.0
+    },
+    {
+      "currency_code": "PHP",
+      "bank_name": "신한은행",
+      "min_amount": 2000,
+      "max_amount": 5000,
+      "apply_preferential_rate": 0.1
+    },
+    {
+      "currency_code": "PHP",
+      "bank_name": "신한은행",
+      "min_amount": 5000,
+      "max_amount": 10000,
+      "apply_preferential_rate": 0.2
+    }
+  ]
+  
+  
+  
+  
+  
+  
