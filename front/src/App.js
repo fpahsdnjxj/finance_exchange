@@ -50,7 +50,7 @@ const CurrencyCalculator = () => {
 
 
 const openPopup = (card) => {
-  setPopupContent(card.detailedBenefits);
+  setPopupContent(card.cardinfo_id); // 배열 형태로 토글을 관리하고 있었어서 단순히 id만 보여주는 게 안 되네요ㅠㅠ
   setIsExpanded([false, false]);
 };
 
@@ -95,14 +95,14 @@ useEffect(() =>{
     try {
       const response = await axios.get(`/api/card/default-card-info?currency_code=${currency_code}`); 
       setCards(response.data); 
-      console.log(cards.card_infos)
+      console.log(response.data);
     } catch (error) {
       console.error("카드 정보를 불러오는 중 오류 발생:", error);
     }
   };
 
   fetchCards();
-}, [selectedCountry]);
+}, [selectedLocation, selectedCountry]);
 
 const calculate_final_fee = () => {
   const numericExchangeAmount = parseFloat(exchangeAmount);
