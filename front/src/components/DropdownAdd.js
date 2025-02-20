@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../App.css';
 
-const DropdownAdd = ({ conditions }) => {
+const DropdownAdd = ({ conditions, onConditionsChange }) => {
   const [selectedConditionsList, setSelectedConditionsList] = useState([""]);
 
   const handleDropdownChange = (index, value) => {
@@ -13,19 +13,21 @@ const DropdownAdd = ({ conditions }) => {
     const newSelectedConditions = [...selectedConditionsList];
     newSelectedConditions[index] = value;
     setSelectedConditionsList(newSelectedConditions);
+    onConditionsChange(newSelectedConditions);
   };
 
   const handleAddDropdown = () => {
     if (selectedConditionsList.includes("")) return;
-    setSelectedConditionsList([...selectedConditionsList, ""]);
+    const newList = [...selectedConditionsList, ""];
+    setSelectedConditionsList(newList);
+    onConditionsChange(newList);
   };
 
   const handleRemoveDropdown = (index) => {
     if (selectedConditionsList.length > 1) {
-      const newSelectedConditions = selectedConditionsList.filter(
-        (_, idx) => idx !== index
-      );
+      const newSelectedConditions = selectedConditionsList.filter((_, idx) => idx !== index);
       setSelectedConditionsList(newSelectedConditions);
+      onConditionsChange(newSelectedConditions);
     }
   };
 

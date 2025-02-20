@@ -42,6 +42,7 @@ const CurrencyCalculator = () => {
   const [popupContent, setPopupContent] = useState(null);
   const [isExpanded, setIsExpanded] = useState([false, false]); 
   const [exchangeRate, setExchangeRate]=useState(0);
+  const [selectedConditions, setSelectedConditions] = useState([]);
   const [finalFee, setfinalFee]=useState(0);
 
   const [cards, setCards] = useState(null);
@@ -49,7 +50,7 @@ const CurrencyCalculator = () => {
 
 
 const openPopup = (card) => {
-  setPopupContent(card.detailedBenefits);
+  setPopupContent(card.cardinfo_id); // 배열 형태로 토글을 관리하고 있었어서 단순히 id만 보여주는 게 안 되네요ㅠㅠ
   setIsExpanded([false, false]);
 };
 
@@ -61,7 +62,7 @@ const closePopup = () => {
 useEffect(()=>{
   if (!selectedCurrency) return;
   axios
-    .get(`api/currency/base-rate?currency_code=${selectedCurrency}`) 
+    .get(`/api/currency/base-rate?currency_code=${selectedCurrency}`) 
     .then((response) => {
       setExchangeRate(response.data.P_per_Won)
       console.log(response.data)
@@ -94,66 +95,88 @@ useEffect(() =>{
     try {
       const response = await axios.get(`/api/card/default-card-info?currency_code=${currency_code}`); 
       setCards(response.data); 
-      console.log(cards.card_infos)
+      console.log(response.data);
     } catch (error) {
       console.error("카드 정보를 불러오는 중 오류 발생:", error);
     }
   };
 
   fetchCards();
-}, [selectedCountry]);
+}, [selectedLocation, selectedCountry]);
 
-const calculate_final_fee=()=>{
-  const numericExchangeAmount=parseFloat(exchangeAmount)
-  const numericExchangefee=parseFloat(discountRate)
-  if(isNaN(numericExchangeAmount)||numericExchangeAmount<0){
+const calculate_final_fee = () => {
+  const numericExchangeAmount = parseFloat(exchangeAmount);
+  const numericExchangefee = parseFloat(discountRate);
+
+  if (isNaN(numericExchangeAmount) || numericExchangeAmount < 0) {
     return;
   }
-  if(isNaN(numericExchangefee)||numericExchangefee<0){
+  if (isNaN(numericExchangefee) || numericExchangefee < 0) {
     return;
   }
-  const final_fee=(numericExchangeAmount/exchangeRate) //+numericExchangeAmount/exchangeRate*numericExchangefee
-  setfinalFee(final_fee)
-}
 
-useEffect(()=>{
-  if (!selectedBank) return;
-  if(!selectedCurrency) return;
+  const final_fee = (numericExchangeAmount / exchangeRate);
+  setfinalFee(final_fee);
+};
+
+const handleConditionsChange = (newConditions) => {
+  setSelectedConditions(newConditions);
+};
+
+useEffect(() => {
+  if (!selectedBank || !selectedCurrency) return;
+
   const encodedBankname = encodeURIComponent(selectedBank);
-  const numericExchangeAmount=parseFloat(exchangeAmount);
-  if(isNaN(numericExchangeAmount)||numericExchangeAmount<0){
-    return;
-  }
-  const fetchExchangefeerate_nocondition = async () => {
+  const numericExchangeAmount = parseFloat(exchangeAmount);
+  if (isNaN(numericExchangeAmount) || numericExchangeAmount < 0) return;
+
+  const fetchExchangefeerate = async () => {
     try {
-      const response = await axios.get(`api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`); 
-      console.log(response.data)
-      setDiscountRate(response.data.final_fee_rate)
+      let url = `/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`;
+
+      if (selectedConditions.length > 0) {
+        const encodedConditions = selectedConditions.map(cond => encodeURIComponent(cond)).join(",");
+        url += `&condition_type=${encodedConditions}`;
+      }
+
+      const response = await axios.get(url);
+      console.log(response.data);
+      setDiscountRate(response.data.final_fee_rate);
       calculate_final_fee();
     } catch (error) {
       console.error("은행 수수료 정보를 불러오는 중 오류 발생:", error);
     }
   };
-  const fetchExchangefeerate_with_condition = async () => {
-    const encoded_conditions=conditions.map(item=>(encodeURIComponent(item)))
-    try {
-      const response = await axios.get(`api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}&condition_type=${encoded_conditions}`); 
-      console.log(response.data)
-      setDiscountRate(response.data.final_fee_rate)
-      calculate_final_fee();
-    } catch (error) {
-      console.error("은행 수수료 정보를 불러오는 중 오류 발생:", error);
-    }
-  };
-  fetchExchangefeerate_nocondition();
-  //fetchExchangefeerate_with_condition();
-  
-}, [selectedBank, selectedCurrency, exchangeAmount])
+
+  fetchExchangefeerate();
+}, [selectedBank, selectedCurrency, exchangeAmount, selectedConditions]);
+
 
 useEffect(() => {
   console.log("최종 계산된 수수료:", finalFee);
-}, [finalFee]); 
+}, [finalFee]);
 
+const getImagePath = (cardName) => { 
+  let card = "default";
+
+  if (cardName === "신한 SOL 트래블 카드") {
+    card = "sol";
+  }
+  else if (cardName === "NH 트래블 체크카드") {
+    card = "nh";
+  }
+  else if (cardName === "트래블로그 체크카드") {
+    card = "travelog";
+  }
+  else if (cardName === "토스뱅크 체크카드") {
+    card = "toss";
+  }
+  else if (cardName === "트레블제로카드") {
+    card = "zero";
+  }
+  
+  return `/assets/${card}.png`;
+};
 
 
   const formatKRW = (amount) => {
@@ -296,7 +319,7 @@ useEffect(() => {
               <tr>
                 <td className="under-t">조건 선택</td>
                 <td style={{borderRight: "none"}}>
-                <DropdownAdd conditions={conditions} />
+                <DropdownAdd conditions={conditions} onConditionsChange={handleConditionsChange} />
                 </td>
               </tr>
               <tr>
@@ -399,10 +422,10 @@ useEffect(() => {
     </tr>
   </thead>
   <tbody>
-  {cards&&cards.card_infos&&cards.card_infos.length > 0 &&cards.card_infos.map((card, index) => (
+  {cards && cards.card_infos && cards.card_infos.length > 0 && cards.card_infos.map((card, index) => (
             <tr key={index}>
               <td>
-                <img src={card.image} alt={card.card_name} className="card-image" />
+                <img src={getImagePath(card.card_name)} alt={card.card_name} className="card-image"/>
               </td>
 
               <td
@@ -445,5 +468,3 @@ useEffect(() => {
 };
 
 export default CurrencyCalculator;
-
-
