@@ -89,8 +89,8 @@ useEffect(()=>{
 
 const handleBankChange = (e) => {
     setSelectedBank(e.target.value);
-    setSelectedConditions([]);  // 조건 초기화
-    setConditions([]);  // 조건 리스트도 초기화
+    setSelectedConditions([]);
+    setConditions([]);
   };
 
 useEffect(() =>{
@@ -447,7 +447,6 @@ const getImagePath = (cardName) => {
       : ""}
   </div>
 </td>
-
               <td>
                 <span>
                   {(!exchangeAmount || exchangeAmount === "")

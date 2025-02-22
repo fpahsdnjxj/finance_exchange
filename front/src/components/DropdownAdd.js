@@ -32,7 +32,7 @@ const DropdownAdd = ({ conditions, onConditionsChange }) => {
   };
 
   useEffect(() => {
-    setSelectedConditionsList([]);  // 부모에서 조건 초기화가 되면, 컴포넌트에서도 초기화
+    setSelectedConditionsList([]); 
   }, [conditions]);
 
   return (
