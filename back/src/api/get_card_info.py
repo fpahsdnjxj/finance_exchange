@@ -29,10 +29,14 @@ async def get_card_info(
     cardbenefit_list=cardbenefit_repo.get_cardbenefits_by_cardids(cardinfo_ids=cardids)
     
     cardbenefit_dict={}
+    cardbenefit_detail_dict={}
     for benefit in cardbenefit_list:
         if benefit.cardinfo_id not in cardbenefit_dict:
             cardbenefit_dict[benefit.cardinfo_id] = []
+            cardbenefit_detail_dict[benefit.cardinfo_id]=[]
         cardbenefit_dict[benefit.cardinfo_id].append(benefit.benefit_type)
+        cardbenefit_detail_dict[benefit.cardinfo_id].append(benefit.benefit_detail)
+        
 
     cardinfo_list=[CardInfoSchema(
                                 cardinfo_id=card.cardinfo_id,
@@ -40,7 +44,8 @@ async def get_card_info(
                                 condition=card.basic_conditions, 
                                 preferential_treatment=card.exchange_discount_rate, 
                                 re_preferential_treatment=card.re_exchange_discount_rate,
-                                benefits=cardbenefit_dict.get(card.cardinfo_id, [])
+                                benefits=cardbenefit_dict.get(card.cardinfo_id, []),
+                                benefit_detail=cardbenefit_detail_dict.get(card.cardinfo_id, [])
                                 ) for card in cardinfo_list]
     return ListCardInfoSchema(card_infos=cardinfo_list)
 
@@ -68,7 +73,7 @@ async def get_benefit_card_list(
     for benefit in cardbenefit_list:
         if benefit.cardinfo_id not in cardbenefit_dict:
             cardbenefit_dict[benefit.cardinfo_id] = []
-        cardbenefit_dict[benefit.cardinfo_id].append(benefit.benefit_type)
+        cardbenefit_dict[benefit.cardinfo_id].append(benefit.benefit_detail)
 
     cardinfo_list=[CardInfoSchema( cardinfo_id=card.cardinfo_id,
                                 card_name=card.card_name, 

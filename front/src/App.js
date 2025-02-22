@@ -65,7 +65,6 @@ useEffect(()=>{
     .get(`/api/currency/base-rate?currency_code=${selectedCurrency}`) 
     .then((response) => {
       setExchangeRate(response.data.P_per_Won)
-      console.log(response.data)
     })
     .catch((error) => {
       console.error("기본 환율을 불러오는 중 오류 발생:", error);
@@ -95,7 +94,6 @@ const handleBankChange = (e) => {
   };
 
 useEffect(() =>{
-  if(!selectedLocation) return;
   const currency = currencyOptions.find(option => option.flag === selectedCountry);
   if(!currency) return;
   const currency_code=currency.value;
@@ -103,14 +101,13 @@ useEffect(() =>{
     try {
       const response = await axios.get(`/api/card/default-card-info?currency_code=${currency_code}`); 
       setCards(response.data); 
-      console.log(response.data);
     } catch (error) {
       console.error("카드 정보를 불러오는 중 오류 발생:", error);
     }
   };
 
   fetchCards();
-}, [selectedLocation, selectedCountry]);
+}, [selectedCountry]);
 
 const calculate_final_fee = () => {
   const numericExchangeAmount = parseFloat(exchangeAmount);
@@ -142,23 +139,21 @@ useEffect(() => {
         const encodedConditions = selectedConditions.map(cond => encodeURIComponent(cond)).join(",");
         url += `&condition_type=${encodedConditions}`;
       }
-
       const response = await axios.get(url);
-      console.log(response.data);
       setDiscountRate(response.data.final_fee_rate);
-      calculate_final_fee();
     } catch (error) {
       console.error("은행 수수료 정보를 불러오는 중 오류 발생:", error);
     }
   };
-
   fetchExchangefeerate();
 }, [selectedBank, selectedCurrency, exchangeAmount, selectedConditions]);
 
 
 useEffect(() => {
-  console.log("최종 계산된 수수료:", finalFee);
-}, [finalFee]);
+  if (!isNaN(parseFloat(exchangeAmount)) && discountRate !== null) {
+    calculate_final_fee();
+  }
+}, [discountRate]);
 
 const getImagePath = (cardName) => { 
   let card = "default";

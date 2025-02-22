@@ -23,6 +23,7 @@ class CardInfoSchema(BaseModel):
     preferential_treatment: float
     re_preferential_treatment: float
     benefits:List[str]
+    benefit_detail:List[str]
 
 class ListCardInfoSchema(BaseModel):
     card_infos:List[CardInfoSchema]
