@@ -1,6 +1,28 @@
 import React, { useRef } from 'react';
 import '../App.css';
 
+const getImagePath = (cardName) => { 
+  let card = "default";
+
+  if (cardName === "신한 SOL 트래블 카드") {
+    card = "sol";
+  }
+  else if (cardName === "NH 트래블 체크카드") {
+    card = "nh";
+  }
+  else if (cardName === "트래블로그 체크카드") {
+    card = "travelog";
+  }
+  else if (cardName === "토스뱅크 체크카드") {
+    card = "toss";
+  }
+  else if (cardName === "트래블제로카드") {
+    card = "zero";
+  }
+  
+  return `/assets/${card}.png`;
+};
+
 const Popup = ({ popupContent, closePopup, isExpanded, setIsExpanded }) => {
   const popupRef = useRef(null);
   
@@ -27,25 +49,26 @@ const Popup = ({ popupContent, closePopup, isExpanded, setIsExpanded }) => {
     >
 
       <div style={{ display: "flex", alignItems: "center", marginBottom: "10px", textAlign: "left" }}>
-        {popupContent.image && (
+        {popupContent.card_name && (
           <img
-            src={popupContent.image}
+            src={getImagePath(popupContent.card_name)}
             alt="카드 이미지"
-            style={{ width: "30%", borderRadius: "5px", marginRight: "15px" }}
+            style={{ width: "25%", borderRadius: "5px", marginRight: "15px" }}
           />
         )}
 
         <div style={{ flex: 1 }}>
-          <p style={{ fontSize: "12px", margin: 0.5 }}>{popupContent.card}</p>
-          <h3 style={{ margin: "0 0 5px 0", fontSize: "18px" }}>{popupContent.title}</h3>
-          <p style={{ fontSize: "14px", color: "#333", margin: 1, whiteSpace: "pre-wrap" }}>
-            {popupContent.description}
-          </p>
+          <strong style={{ fontSize: "15px", margin: 0.5 }}>{popupContent.card_name}</strong>
+          <p style={{ fontSize: "13px", color: "#333", margin: 1, marginTop: "10px", whiteSpace: "pre-wrap" }}>
+  {popupContent.condition.split("\n").map((line, index) => (
+    <span key={index}>• {line}<br /></span>
+  ))}
+</p>
         </div>
       </div>
 
       <div
-        onClick={() => setIsExpanded([!isExpanded[0], isExpanded[1]])}
+        onClick={() => setIsExpanded(!isExpanded)}
         style={{
           cursor: "pointer",
           fontSize: "13px",
@@ -53,10 +76,11 @@ const Popup = ({ popupContent, closePopup, isExpanded, setIsExpanded }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-start",
+          marginTop: "20px",
           marginBottom: "10px",
         }}
       >
-        {isExpanded[0] ? "▼" : "▶"} 해외 이용
+        {isExpanded ? "▼" : "▶"} <p style={{ fontSize: "13px", color: "#333", margin: 0.6, whiteSpace: "pre-wrap" }}>  해외 이용 혜택</p>
       </div>
       <div
         style={{
@@ -68,7 +92,7 @@ const Popup = ({ popupContent, closePopup, isExpanded, setIsExpanded }) => {
         }}
       ></div>
 
-      {isExpanded[0] && (
+      {isExpanded && (
         <ul
           style={{
             textAlign: "left",
@@ -79,53 +103,10 @@ const Popup = ({ popupContent, closePopup, isExpanded, setIsExpanded }) => {
             marginBottom: "10px",
           }}
         >
-          {popupContent.features1.map((feature, index) => (
+          {popupContent.benefits.map((benefit, index) => (
             <li key={index} style={{ marginBottom: "5px" }}>
-              {feature}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div
-        onClick={() => setIsExpanded([isExpanded[0], !isExpanded[1]])}
-        style={{
-          cursor: "pointer",
-          fontSize: "13px",
-          color: "black",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          marginBottom: "10px",
-        }}
-      >
-        {isExpanded[1] ? "▼" : "▶"} 해외 편의점
-      </div>
-
-      <div
-        style={{
-          width: "100%",
-          textAlign: "center",
-          borderBottom: "1px solid #aaa",
-          lineHeight: "0.1em",
-          margin: "10px 0 20px",
-        }}
-      ></div>
-
-      {isExpanded[1] && (
-        <ul
-          style={{
-            textAlign: "left",
-            fontSize: "12px",
-            padding: "10px 10px 10px 20px",
-            background: "#f9f9f9",
-            borderRadius: "5px",
-            marginBottom: "10px",
-          }}
-        >
-          {popupContent.features2.map((feature, index) => (
-            <li key={index} style={{ marginBottom: "5px" }}>
-              {feature}
+              <strong>{benefit}</strong>
+              <p style={{ fontSize: "12px", marginTop: "3px" }}>{popupContent.benefit_detail[index]}</p>
             </li>
           ))}
         </ul>

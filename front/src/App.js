@@ -40,23 +40,23 @@ const CurrencyCalculator = () => {
   const [exchangeAmount, setExchangeAmount] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("US");
   const [popupContent, setPopupContent] = useState(null);
-  const [isExpanded, setIsExpanded] = useState([false, false]); 
+  const [isExpanded, setIsExpanded] = useState(false); 
   const [exchangeRate, setExchangeRate]=useState(0);
   const [selectedConditions, setSelectedConditions] = useState([]);
-  const [finalFee, setfinalFee]=useState(0);
+  const [finalFee, setFinalFee]=useState(0);
 
   const [cards, setCards] = useState(null);
   const [discountRate, setDiscountRate]=useState("");
 
 
 const openPopup = (card) => {
-  setPopupContent(card.cardinfo_id); // 배열 형태로 토글을 관리하고 있었어서 단순히 id만 보여주는 게 안 되네요ㅠㅠ
-  setIsExpanded([false, false]);
+  setPopupContent(card);
+  setIsExpanded(false);
 };
 
 const closePopup = () => {
   setPopupContent(null);
-  setIsExpanded([false, false]);
+  setIsExpanded(false);
 };
 
 useEffect(()=>{
@@ -72,19 +72,27 @@ useEffect(()=>{
     });
 }, [selectedCurrency])
 
-useEffect(() => {
-  if (!selectedBank) return;
-  if(!selectedCurrency) return;
-  const encodedBankname = encodeURIComponent(selectedBank);
-  axios
-    .get(`/api/bank/bank-conditions?bank_name=${selectedBank}&currency_code=${selectedCurrency}`) //
-    .then((response) => {
-      setConditions(response.data.conditions);
-    })
-    .catch((error) => {
-      console.error("조건을 불러오는 중 오류 발생:", error);
-    });
-}, [selectedBank, selectedCurrency]);
+  useEffect(() => {
+    if (!selectedBank || !selectedCurrency) return;
+    axios
+      .get(`/api/bank/bank-conditions?bank_name=${selectedBank}&currency_code=${selectedCurrency}`)
+      .then((response) => {
+        setConditions(response.data.conditions);
+      })
+      .catch((error) => {
+        console.error("조건을 불러오는 중 오류 발생:", error);
+      });
+  }, [selectedBank, selectedCurrency]);
+
+  const handleConditionsChange = (newConditions) => {
+    setSelectedConditions(newConditions);
+  };
+
+const handleBankChange = (e) => {
+    setSelectedBank(e.target.value);
+    setSelectedConditions([]);  // 조건 초기화
+    setConditions([]);  // 조건 리스트도 초기화
+  };
 
 useEffect(() =>{
   if(!selectedLocation) return;
@@ -116,11 +124,7 @@ const calculate_final_fee = () => {
   }
 
   const final_fee = (numericExchangeAmount / exchangeRate);
-  setfinalFee(final_fee);
-};
-
-const handleConditionsChange = (newConditions) => {
-  setSelectedConditions(newConditions);
+  setFinalFee(final_fee);
 };
 
 useEffect(() => {
@@ -171,7 +175,7 @@ const getImagePath = (cardName) => {
   else if (cardName === "토스뱅크 체크카드") {
     card = "toss";
   }
-  else if (cardName === "트레블제로카드") {
+  else if (cardName === "트래블제로카드") {
     card = "zero";
   }
   
@@ -282,22 +286,23 @@ const getImagePath = (cardName) => {
           </div>
 
           <table>
-            <tbody>
-              <tr>
-                <td className="under-t">{selectedLocation === "일반영업점" ? "은행" : "공항 은행"}</td>
-                <td style={{borderRight: "none"}}>
-                  <select
-                    value={selectedBank}
-                    onChange={(e) => setSelectedBank(e.target.value)}
-                    style={{ fontSize: 12 }}
-                  >
-                    <option value="" disabled>{selectedLocation === "일반영업점" ? "은행" : "공항 은행"}</option>
-                    {(selectedLocation === "일반영업점" ? Banks : airportBanks).map((bank, index) => (
-                      <option key={index} value={bank}>{bank}</option>
-                    ))}
-                  </select>
-                </td>
-              </tr>
+            <tbody><tr>
+            <td className="under-t">{selectedLocation === "일반영업점" ? "은행" : "공항 은행"}</td>               
+          <td style={{borderRight: "none"}}>
+            <select
+              value={selectedBank}
+              onChange={handleBankChange}
+              style={{ fontSize: 12 }}
+            >
+              <option value="" disabled>
+                {selectedLocation === "일반영업점" ? "은행" : "공항 은행"}
+              </option>
+              {(selectedLocation === "일반영업점" ? Banks : airportBanks).map((bank, index) => (
+                <option key={index} value={bank}>{bank}</option>
+              ))}
+            </select>
+          </td>
+        </tr>
               
               <tr>
                 <td className="under-t">환전 화폐</td>
@@ -319,8 +324,11 @@ const getImagePath = (cardName) => {
               <tr>
                 <td className="under-t">조건 선택</td>
                 <td style={{borderRight: "none"}}>
-                <DropdownAdd conditions={conditions} onConditionsChange={handleConditionsChange} />
-                </td>
+            <DropdownAdd 
+              conditions={conditions} 
+              onConditionsChange={handleConditionsChange} 
+            />
+            </td>
               </tr>
               <tr>
               <td className="under-t">환전 금액</td>
@@ -436,8 +444,14 @@ const getImagePath = (cardName) => {
               </td>
 
               <td style={{ textAlign: "left" }}>
-                <div style={{ whiteSpace: "pre-wrap" }}>{card.benefits}</div>
-              </td>
+  <div style={{ whiteSpace: "pre-wrap" }}>
+    {Array.isArray(card.benefits)
+      ? card.benefits.map((benefit, index) => (
+          <div key={index}>• {benefit}</div>
+        ))
+      : ""}
+  </div>
+</td>
 
               <td>
                 <span>

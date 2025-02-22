@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../App.css';
 
 const DropdownAdd = ({ conditions, onConditionsChange }) => {
-  const [selectedConditionsList, setSelectedConditionsList] = useState([""]);
+  const [selectedConditionsList, setSelectedConditionsList] = useState([]);
 
   const handleDropdownChange = (index, value) => {
     if (selectedConditionsList.includes(value)) {
@@ -30,6 +30,10 @@ const DropdownAdd = ({ conditions, onConditionsChange }) => {
       onConditionsChange(newSelectedConditions);
     }
   };
+
+  useEffect(() => {
+    setSelectedConditionsList([]);  // 부모에서 조건 초기화가 되면, 컴포넌트에서도 초기화
+  }, [conditions]);
 
   return (
     <div>
@@ -98,5 +102,6 @@ const DropdownAdd = ({ conditions, onConditionsChange }) => {
     </div>
   );
 };
+
 
 export default DropdownAdd;
