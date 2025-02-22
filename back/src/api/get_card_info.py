@@ -33,7 +33,7 @@ async def get_card_info(
     for benefit in cardbenefit_list:
         if benefit.cardinfo_id not in cardbenefit_dict:
             cardbenefit_dict[benefit.cardinfo_id] = []
-            cardbenefit_detail_dict=[benefit.cardinfo_id]=[]
+            cardbenefit_detail_dict[benefit.cardinfo_id]=[]
         cardbenefit_dict[benefit.cardinfo_id].append(benefit.benefit_type)
         cardbenefit_detail_dict[benefit.cardinfo_id].append(benefit.benefit_detail)
         
