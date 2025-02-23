@@ -168,7 +168,8 @@ function Exchange() {
   const selectStyles = {
     container: (provided) => ({
       ...provided,
-      width: "20%",
+      width: "50%",
+      maxWidth: "120px",
     }),
     control: (provided) => ({
       ...provided,

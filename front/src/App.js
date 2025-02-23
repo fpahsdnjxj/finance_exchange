@@ -294,8 +294,8 @@ const getImagePath = (cardName) => {
               onChange={handleBankChange}
               style={{ fontSize: 12 }}
             >
-              <option value="" disabled>
-                {selectedLocation === "일반영업점" ? "은행" : "공항 은행"}
+              <option value="" disabled selected>
+                {selectedLocation === "일반영업점" ? "은행 선택" : "공항 은행 선택"}
               </option>
               {(selectedLocation === "일반영업점" ? Banks : airportBanks).map((bank, index) => (
                 <option key={index} value={bank}>{bank}</option>
