@@ -237,6 +237,16 @@ select {
 } 
 
 
+.fixed {
+  padding: 12px;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid #ccc;
+  vertical-align: middle;
+  font-size: 0.9rem;
+  width: 100px;
+}
+
 
 .footer {
   text-align: center;

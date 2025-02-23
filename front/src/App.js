@@ -452,7 +452,7 @@ const getImagePath = (cardName) => {
       : ""}
   </div>
 </td>
-              <td>
+              <td className='fixed'>
                 <span>
                   {(!exchangeAmount || exchangeAmount === "")
                     ? "0"
