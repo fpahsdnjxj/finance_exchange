@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../App.css';
 
 const DropdownAdd = ({ conditions, onConditionsChange }) => {
-  const [selectedConditionsList, setSelectedConditionsList] = useState([""]);
+  const [selectedConditionsList, setSelectedConditionsList] = useState([]);
 
   const handleDropdownChange = (index, value) => {
     if (selectedConditionsList.includes(value)) {
@@ -30,6 +30,10 @@ const DropdownAdd = ({ conditions, onConditionsChange }) => {
       onConditionsChange(newSelectedConditions);
     }
   };
+
+  useEffect(() => {
+    setSelectedConditionsList([]); 
+  }, [conditions]);
 
   return (
     <div>
@@ -98,5 +102,6 @@ const DropdownAdd = ({ conditions, onConditionsChange }) => {
     </div>
   );
 };
+
 
 export default DropdownAdd;
