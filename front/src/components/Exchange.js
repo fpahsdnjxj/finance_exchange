@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useMediaQuery } from "react-responsive";
 import '../App.css';
 import Select from "react-select";
 import ReactCountryFlag from "react-country-flag";
@@ -27,6 +28,8 @@ function Exchange() {
   const [rightCurrency, setRightCurrency] = useState("KRW");
   const [activeSide, setActiveSide] = useState("left");
   const [currencyRates, setCurrencyRates] = useState(null);
+
+  const isVeryNarrow = useMediaQuery({ query: "(max-width: 500px)" });
 
   useEffect(() => {
     const fetch_currency = async () => {
@@ -168,12 +171,12 @@ function Exchange() {
   const selectStyles = {
     container: (provided) => ({
       ...provided,
-      width: "50%",
-      maxWidth: "120px",
+      width: isVeryNarrow ? "95%" : "80%",
+      maxWidth: isVeryNarrow ? "130px" : "150px",
     }),
     control: (provided) => ({
       ...provided,
-      minHeight: "40px",
+      minHeight: isVeryNarrow ? "40px" : "40px",
       border: "none",
       boxShadow: "none",
     }),
@@ -211,6 +214,7 @@ function Exchange() {
                   options={currencyOptions}
                   formatOptionLabel={formatOptionLabel}
                   styles={selectStyles}
+                  components={isVeryNarrow ? { DropdownIndicator: () => null } : {}}
                   isSearchable={false}
                   menuPortalTarget={document.body}
                 />
@@ -284,6 +288,7 @@ function Exchange() {
                   options={currencyOptions}
                   formatOptionLabel={formatOptionLabel}
                   styles={selectStyles}
+                  components={isVeryNarrow ? { DropdownIndicator: () => null } : {}}
                   isSearchable={false}
                   menuPortalTarget={document.body}
                 />
