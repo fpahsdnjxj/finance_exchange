@@ -8,6 +8,8 @@ import Exchange from './components/Exchange';
 import DropdownAdd from './components/DropdownAdd';
 import CountryDropdown from './components/CountryDropdown';
 import Popup from './components/Popup';
+import TermsModal from './components/TermsModal';
+import PrivacyModal from './components/PrivacyModal';
 
 const Banks = [
   "하나은행", "KDB산업은행", "전북은행", "한국씨티은행", "NH 농협은행", "신한은행",
@@ -47,6 +49,9 @@ const CurrencyCalculator = () => {
 
   const [cards, setCards] = useState(null);
   const [discountRate, setDiscountRate]=useState("");
+
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
 
 
 const openPopup = (card) => {
@@ -471,7 +476,28 @@ const getImagePath = (cardName) => {
       />
       )}
         </div>
-      </div></div>
+      </div>
+      
+      
+      <footer className='footer'>
+      <span onClick={() => setIsTermsOpen(true)} className='footer-link'>
+        이용약관
+      </span>
+
+      <span className='footer-divider'>|</span>
+
+      <strong onClick={() => setIsPrivacyOpen(true)} className='footer-link'>
+        개인정보처리방침
+      </strong>
+
+      <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
+      <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
+    </footer>
+      
+      
+      
+      
+      </div>
   );
 };
 
