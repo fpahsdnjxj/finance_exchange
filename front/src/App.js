@@ -23,7 +23,6 @@ const currencyOptions = [
   { value: "USD", label: "미국", flag: "US" },
   { value: "EUR", label: "유럽", flag: "EU" },
   { value: "JPY", label: "일본", flag: "JP"},
-  { value: "KRW", label: "한국", flag: "KR" },  
   
 ];
 
@@ -114,7 +113,8 @@ useEffect(() =>{
   fetchCards();
 }, [selectedCountry]);
 
-const calculate_final_fee = () => {
+const calculate_final_fee = () => { // 이 부분 계산이 제대로 안 되고 있는 것 같음
+
   const numericExchangeAmount = parseFloat(exchangeAmount);
   const numericExchangefee = parseFloat(discountRate);
 
@@ -127,7 +127,8 @@ const calculate_final_fee = () => {
 
   const final_fee = (numericExchangeAmount / exchangeRate);
   setFinalFee(final_fee);
-};
+}; // final_fee 값이 이상함. 그리고 사용자가 금액이나 조건을 바꿀 때마다 금액이 바뀌어야 하는데 그 부분이 안 되고 있음. 조건에 따라서 중복이 안 되는 경우도 있음.
+// 돈만 바꿨을 때. 조건만 바꿨을 때. 둘 다 final_fee가 바뀌도록 해야 함.
 
 useEffect(() => {
   if (!selectedBank || !selectedCurrency) return;
@@ -136,13 +137,13 @@ useEffect(() => {
   const numericExchangeAmount = parseFloat(exchangeAmount);
   if (isNaN(numericExchangeAmount) || numericExchangeAmount < 0) return;
 
-  const fetchExchangefeerate = async () => {
+  const fetchExchangefeerate = async () => { // **이 부분이 문제**
     try {
       let url = `/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`;
 
       if (selectedConditions.length > 0) {
         const encodedConditions = selectedConditions.map(cond => encodeURIComponent(cond)).join(",");
-        url += `&condition_type=${encodedConditions}`;
+        url += `&condition_type=${encodedConditions}`; // 이 부분에서 문제 생김김
       }
       const response = await axios.get(url);
       setDiscountRate(response.data.final_fee_rate);
@@ -227,7 +228,7 @@ const getImagePath = (cardName) => {
     };
   
     return (
-      <div style={{ fontSize: "11px", fontWeight: "100", textAlign: "left", paddingLeft: "40px", color: "#444" }}>
+      <div style={{ fontSize: "11px", fontWeight: "100", textAlign: "left", paddingLeft: "80px", color: "#444" }}>
         {formatTime(time)}
       </div>
     );
@@ -346,7 +347,7 @@ const getImagePath = (cardName) => {
       </div>
     </div>
               </td>
-            </tr>
+            </tr> 
             <tr>
               <td className="under-t">최대 우대 적용 환율</td>
               <td style={{ borderRight: "none" }}>
@@ -354,7 +355,7 @@ const getImagePath = (cardName) => {
                   className="input-bankch"
                   data-currency-symbol={currencySymbols[selectedCurrency]}                 
                 >
-                  <input type="text" value={finalFee || 0} disabled style={{ width: "90%" }} />
+                  <input type="text" value={finalFee || 0} disabled style={{ width: "90%" }} /> 
                 </div>
               </td>
             </tr>
@@ -444,7 +445,7 @@ const getImagePath = (cardName) => {
               </td>
 
               <td style={{ textAlign: "left" }}>
-  <div style={{ whiteSpace: "pre-wrap" }}>
+  <div style={{ whiteSpace: "pre-wrap", fontSize: 12 }}>
     {Array.isArray(card.benefits)
       ? card.benefits.map((benefit, index) => (
           <div key={index}>• {benefit}</div>
@@ -460,7 +461,7 @@ const getImagePath = (cardName) => {
                     ? exchangeAmount.toString().substring(0, 10) + "..."
                     : exchangeAmount}
                 </span>{" "}
-                ₩ ({100-card.preferential_treatment}%)
+                ₩
               </td>
             </tr>
           ))}

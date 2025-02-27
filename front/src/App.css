@@ -6,8 +6,7 @@ body {
 }
 
 .container {
-  width: 100%;
-  max-width: 1400px; 
+  width: 1400px;
   margin: 0 auto;  
   padding: 20px;
   box-sizing: border-box;
@@ -185,14 +184,6 @@ select {
 
 .amount-buttons button:hover {
   background: #c4c4c4;
-}
-
-@media (max-width: 768px) {
-  .amount-buttons {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-  }
 }
 
 .card-table {

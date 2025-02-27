@@ -5,7 +5,7 @@ const currencyOptions = [
   { value: "USD", label: "미국", flag: "US" },
   { value: "EUR", label: "유럽", flag: "EU" },
   { value: "JPY", label: "일본", flag: "JP"},
-  { value: "KRW", label: "한국", flag: "KR" },  
+  
   
 
 ];
