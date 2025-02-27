@@ -20,7 +20,6 @@ const currencySymbols = {
 };
 
 function Exchange() {
-  // 왼쪽 currency는 항상 "KRW"로 고정
   const [leftAmount, setLeftAmount] = useState("");     
   const [rightAmount, setRightAmount] = useState("");  
   const [leftCurrency] = useState("KRW");
@@ -223,7 +222,6 @@ function Exchange() {
                   height: "40px",
                 }}
               >
-                {/* 왼쪽은 한국으로 고정 */}
                 <div style={{ display: "flex", alignItems: "center", padding: "0 10px", borderRight: "1px solid #ccc" }}>
                   <ReactCountryFlag
                     countryCode="KR"
