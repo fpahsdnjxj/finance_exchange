@@ -113,22 +113,26 @@ useEffect(() =>{
   fetchCards();
 }, [selectedCountry]);
 
-const calculate_final_fee = () => { // 이 부분 계산이 제대로 안 되고 있는 것 같음
-
+const calculate_final_fee = () => {
   const numericExchangeAmount = parseFloat(exchangeAmount);
-  const numericExchangefee = parseFloat(discountRate);
+  const numericExchangeRate = parseFloat(exchangeRate);
+  const numericDiscountRate = parseFloat(discountRate);
 
-  if (isNaN(numericExchangeAmount) || numericExchangeAmount < 0) {
-    return;
-  }
-  if (isNaN(numericExchangefee) || numericExchangefee < 0) {
-    return;
-  }
+  if (isNaN(numericExchangeAmount) || numericExchangeAmount <= 0) return;
+  if (isNaN(numericExchangeRate) || numericExchangeRate <= 0) return;
+  if (isNaN(numericDiscountRate) || numericDiscountRate < 0) return;
 
-  const final_fee = (numericExchangeAmount / exchangeRate);
-  setFinalFee(final_fee);
-}; // final_fee 값이 이상함. 그리고 사용자가 금액이나 조건을 바꿀 때마다 금액이 바뀌어야 하는데 그 부분이 안 되고 있음. 조건에 따라서 중복이 안 되는 경우도 있음.
-// 돈만 바꿨을 때. 조건만 바꿨을 때. 둘 다 final_fee가 바뀌도록 해야 함.
+  const discountedRate = numericExchangeRate * ((100 - numericDiscountRate) / 100);
+  const final_fee = numericExchangeAmount / discountedRate;
+
+  setFinalFee(final_fee.toFixed(2));
+};
+
+useEffect(() => {
+  if (!isNaN(parseFloat(exchangeAmount)) && discountRate !== null && exchangeRate !== 0) {
+    calculate_final_fee();
+  }
+}, [exchangeAmount, discountRate, exchangeRate]);
 
 useEffect(() => {
   if (!selectedBank || !selectedCurrency) return;
@@ -137,13 +141,13 @@ useEffect(() => {
   const numericExchangeAmount = parseFloat(exchangeAmount);
   if (isNaN(numericExchangeAmount) || numericExchangeAmount < 0) return;
 
-  const fetchExchangefeerate = async () => { // **이 부분이 문제**
+  const fetchExchangefeerate = async () => { 
     try {
       let url = `/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`;
 
       if (selectedConditions.length > 0) {
         const encodedConditions = selectedConditions.map(cond => encodeURIComponent(cond)).join(",");
-        url += `&condition_type=${encodedConditions}`; // 이 부분에서 문제 생김김
+        url += `&condition_type=${encodedConditions}`; // 
       }
       const response = await axios.get(url);
       setDiscountRate(response.data.final_fee_rate);
@@ -342,7 +346,7 @@ const getImagePath = (cardName) => {
         style={{ width: "90%" }}
         placeholder="환전할 원화를 입력하세요"
       />
-      <div style={{ fontSize: "0.8rem", color: "#666", marginTop: "5px", marginRight: "25px",  textAlign: 'right' }}>
+      <div style={{ fontSize: "0.8rem", color: "#666", marginTop: "5px", marginRight: "45px",  textAlign: 'right' }}>
         {formatKRW(exchangeAmount)}원
       </div>
     </div>

@@ -71,7 +71,7 @@ body {
 .input-with-currency::before {
   content: attr(data-currency-symbol);
   position: absolute;
-  left: 10px;
+  left: 15px;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
