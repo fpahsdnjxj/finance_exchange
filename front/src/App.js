@@ -444,8 +444,6 @@ const getImagePath = (cardName) => {
               <td
                 className="benefits-cell"
                 onClick={() => openPopup(card)}>{card.card_name}
-                <br />
-                <div style={{ fontSize: "11px" }}></div>
               </td>
 
               <td style={{ textAlign: "left" }}>
@@ -458,14 +456,13 @@ const getImagePath = (cardName) => {
   </div>
 </td>
               <td className='fixed'>
-                <span>
-                  {(!exchangeAmount || exchangeAmount === "")
+                <span style={{fontSize: 12}}>
+                  {(!(formatKRW(exchangeAmount)) || (formatKRW(exchangeAmount)) === "")
                     ? "0"
-                    : exchangeAmount.toString().length > 10
-                    ? exchangeAmount.toString().substring(0, 10) + "..."
-                    : exchangeAmount}
-                </span>{" "}
-                ₩
+                    : (formatKRW(exchangeAmount)).length > 10
+                    ? (formatKRW(exchangeAmount)).substring(0, 10) + "..."
+                    : (formatKRW(exchangeAmount))}
+                원</span>{" "}
               </td>
             </tr>
           ))}
@@ -498,8 +495,9 @@ const getImagePath = (cardName) => {
       <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
       <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
     </footer>
-      
-      
+    <strong className="top-bar">
+  🌐 환전 고수
+    </strong>     
       
       
       </div>
