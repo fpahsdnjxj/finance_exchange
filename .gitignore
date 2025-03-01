@@ -61,6 +61,7 @@ jest/
 # Docker 관련
 .dockerignore
 Dockerfile
+backup/
 
 
 # 기타
