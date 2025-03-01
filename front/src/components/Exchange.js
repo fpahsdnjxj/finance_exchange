@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useMediaQuery } from "react-responsive";
 import '../App.css';
-import Select from "react-select";
+import Select from 'react-select';
+
 import ReactCountryFlag from "react-country-flag";
 import axios from 'axios';
 
-const currencyOptions = [
+const currencyOptions = [ 
     { value: "USD", label: "미국", flag: "US" },
     { value: "EUR", label: "유럽", flag: "EU" },
-    { value: "JPY", label: "일본", flag: "JP"},
-    { value: "KRW", label: "한국", flag: "KR" },  
-    
+    { value: "JPY", label: "일본", flag: "JP" },
 ];
-  
   
 const currencySymbols = {
     USD: "$",
@@ -24,12 +22,12 @@ const currencySymbols = {
 function Exchange() {
   const [leftAmount, setLeftAmount] = useState("");     
   const [rightAmount, setRightAmount] = useState("");  
-  const [leftCurrency, setLeftCurrency] = useState("KRW");
-  const [rightCurrency, setRightCurrency] = useState("KRW");
+  const [leftCurrency] = useState("KRW");
+  const [rightCurrency, setRightCurrency] = useState("USD");
   const [activeSide, setActiveSide] = useState("left");
   const [currencyRates, setCurrencyRates] = useState(null);
 
-  const isVeryNarrow = useMediaQuery({ query: "(max-width: 500px)" });
+  const veryNarrow = useMediaQuery({ query: "(max-width: 500px)" });
 
   useEffect(() => {
     const fetch_currency = async () => {
@@ -42,7 +40,7 @@ function Exchange() {
           setCurrencyRates((prevRates) => ({
             ...prevRates,  
             [leftCurrency]: response.data.P_per_Won,  
-          }))
+          }));
         } else {
           console.error("올바른 JSON 응답이 아닙니다:", response.data);
         }
@@ -64,7 +62,7 @@ function Exchange() {
           setCurrencyRates((prevRates) => ({
             ...prevRates,  
             [rightCurrency]: response.data.P_per_Won,  
-          }))
+          }));
         } else {
           console.error("올바른 JSON 응답이 아닙니다:", response.data);
         }
@@ -75,7 +73,6 @@ function Exchange() {
     fetch_currency(); 
   }, [rightCurrency]); 
 
-
   const convert = (amount, fromCurrency, toCurrency) => {
     if (!amount || !currencyRates) return "";
     const amt = parseFloat(amount);
@@ -83,7 +80,7 @@ function Exchange() {
     const rateFrom = currencyRates[fromCurrency];
     const rateTo = currencyRates[toCurrency];
     if (!rateFrom || !rateTo) return "";
-    const result = amt / (rateTo/rateFrom);
+    const result = amt / (rateTo / rateFrom);
     return result.toFixed(2); 
   };
 
@@ -109,10 +106,6 @@ function Exchange() {
   const handleRightChange = (e) => {
     setActiveSide("right");
     setRightAmount(e.target.value.replace(/^0+/, ""));
-  };
-
-  const handleLeftSelectChange = (selectedOption) => {
-    setLeftCurrency(selectedOption.value);
   };
 
   const handleRightSelectChange = (selectedOption) => {
@@ -171,31 +164,54 @@ function Exchange() {
   const selectStyles = {
     container: (provided) => ({
       ...provided,
-      width: isVeryNarrow ? "95%" : "80%",
-      maxWidth: isVeryNarrow ? "130px" : "150px",
+      width: "90px",
     }),
     control: (provided) => ({
       ...provided,
-      minHeight: isVeryNarrow ? "40px" : "40px",
+      width: "90px",
+      height: "40px",
+      minHeight: "40px",
       border: "none",
       boxShadow: "none",
     }),
+    valueContainer: (provided) => ({
+      ...provided,
+      height: "40px",
+      padding: "0 6px",
+    }),
     indicatorsContainer: (provided) => ({
       ...provided,
+      height: "40px",
+    }),
+    input: (provided) => ({
+      ...provided,
+      margin: 0,
       padding: 0,
     }),
+    dropdownIndicator: (provided) => ({
+      ...provided,
+      padding: "0 8px",
+    }),
+    indicatorSeparator: () => null,
     menu: (provided) => ({
       ...provided,
+      width: "100px",
       zIndex: 9999,
     }),
+    menuList: (provided) => ({
+      ...provided,
+      maxHeight: '200px',
+      overflowY: 'auto',
+    }),
   };
+  
 
   return (
     <div style={{ padding: "20px" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <table style={{ width: "1200px", borderCollapse: "collapse", margin: "0 auto"}}>
         <tbody>
           <tr>        
-            <td style={{ width: "48%", verticalAlign: "top", border: "none" }}>
+            <td style={{ width: "140px", verticalAlign: "top", border: "none" }}>
               <div
                 style={{
                   display: "flex",
@@ -206,22 +222,19 @@ function Exchange() {
                   height: "40px",
                 }}
               >
-                <Select
-                  value={currencyOptions.find(
-                    (opt) => opt.value === leftCurrency
-                  )}
-                  onChange={handleLeftSelectChange}
-                  options={currencyOptions}
-                  formatOptionLabel={formatOptionLabel}
-                  styles={selectStyles}
-                  components={isVeryNarrow ? { DropdownIndicator: () => null } : {}}
-                  isSearchable={false}
-                  menuPortalTarget={document.body}
-                />
+                <div style={{ display: "flex", alignItems: "center", padding: "0 10px", borderRight: "1px solid #ccc" }}>
+                  <ReactCountryFlag
+                    countryCode="KR"
+                    svg                    
+                    style={{ width: "60px", height: "25px", margin: "10px" }}
+                    title="한국"
+                  />
+
+                </div>
                 <div
                   className="input-with-currency"
                   data-currency-symbol={currencySymbols[leftCurrency]}
-                  style={{ flex: 1 }}                 
+                  style={{ flex: 1 }}
                 >
                   <input
                     type="number"
@@ -263,13 +276,11 @@ function Exchange() {
               </div>
             </td>
 
-            <td
-              style={{ width: "4%", textAlign: "center", border: "none" }}
-            >
+            <td style={{ width: "10px", textAlign: "center", border: "none" }}>
               <div style={{ fontSize: 35 }}>=</div>
             </td>
 
-            <td style={{ width: "48%", verticalAlign: "top", border: "none" }}>
+            <td style={{ width: "140px", verticalAlign: "top", border: "none" }}>
               <div
                 style={{
                   display: "flex",
@@ -280,6 +291,7 @@ function Exchange() {
                   height: "40px",
                 }}
               >
+                <div style={{ display: "flex", alignItems: "center", padding: "0 10px", borderRight: "1px solid #ccc" }}>
                 <Select
                   value={currencyOptions.find(
                     (opt) => opt.value === rightCurrency
@@ -288,14 +300,13 @@ function Exchange() {
                   options={currencyOptions}
                   formatOptionLabel={formatOptionLabel}
                   styles={selectStyles}
-                  components={isVeryNarrow ? { DropdownIndicator: () => null } : {}}
                   isSearchable={false}
                   menuPortalTarget={document.body}
-                />
-                 <div
+                /></div>
+                <div
                   className="input-with-currency"
                   data-currency-symbol={currencySymbols[rightCurrency]}
-                  style={{ flex: 1 }}                 
+                  style={{ flex: 1 }}
                 >
                   <input
                     type="number"

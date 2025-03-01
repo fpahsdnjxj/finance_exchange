@@ -23,7 +23,6 @@ const currencyOptions = [
   { value: "USD", label: "미국", flag: "US" },
   { value: "EUR", label: "유럽", flag: "EU" },
   { value: "JPY", label: "일본", flag: "JP"},
-  { value: "KRW", label: "한국", flag: "KR" },  
   
 ];
 
@@ -116,18 +115,24 @@ useEffect(() =>{
 
 const calculate_final_fee = () => {
   const numericExchangeAmount = parseFloat(exchangeAmount);
-  const numericExchangefee = parseFloat(discountRate);
+  const numericExchangeRate = parseFloat(exchangeRate);
+  const numericDiscountRate = parseFloat(discountRate);
 
-  if (isNaN(numericExchangeAmount) || numericExchangeAmount < 0) {
-    return;
-  }
-  if (isNaN(numericExchangefee) || numericExchangefee < 0) {
-    return;
-  }
+  if (isNaN(numericExchangeAmount) || numericExchangeAmount <= 0) return;
+  if (isNaN(numericExchangeRate) || numericExchangeRate <= 0) return;
+  if (isNaN(numericDiscountRate) || numericDiscountRate < 0) return;
 
-  const final_fee = (numericExchangeAmount / exchangeRate);
-  setFinalFee(final_fee);
+  const discountedRate = numericExchangeRate * ((100 - numericDiscountRate) / 100);
+  const final_fee = numericExchangeAmount / discountedRate;
+
+  setFinalFee(final_fee.toFixed(2));
 };
+
+useEffect(() => {
+  if (!isNaN(parseFloat(exchangeAmount)) && discountRate !== null && exchangeRate !== 0) {
+    calculate_final_fee();
+  }
+}, [exchangeAmount, discountRate, exchangeRate]);
 
 useEffect(() => {
   if (!selectedBank || !selectedCurrency) return;
@@ -136,13 +141,13 @@ useEffect(() => {
   const numericExchangeAmount = parseFloat(exchangeAmount);
   if (isNaN(numericExchangeAmount) || numericExchangeAmount < 0) return;
 
-  const fetchExchangefeerate = async () => {
+  const fetchExchangefeerate = async () => { 
     try {
       let url = `/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`;
 
       if (selectedConditions.length > 0) {
         const encodedConditions = selectedConditions.map(cond => encodeURIComponent(cond)).join(",");
-        url += `&condition_type=${encodedConditions}`;
+        url += `&condition_type=${encodedConditions}`; // 
       }
       const response = await axios.get(url);
       setDiscountRate(response.data.final_fee_rate);
@@ -227,7 +232,7 @@ const getImagePath = (cardName) => {
     };
   
     return (
-      <div style={{ fontSize: "11px", fontWeight: "100", textAlign: "left", paddingLeft: "40px", color: "#444" }}>
+      <div style={{ fontSize: "11px", fontWeight: "100", textAlign: "left", paddingLeft: "80px", color: "#444" }}>
         {formatTime(time)}
       </div>
     );
@@ -341,12 +346,12 @@ const getImagePath = (cardName) => {
         style={{ width: "90%" }}
         placeholder="환전할 원화를 입력하세요"
       />
-      <div style={{ fontSize: "0.8rem", color: "#666", marginTop: "5px", marginRight: "25px",  textAlign: 'right' }}>
+      <div style={{ fontSize: "0.8rem", color: "#666", marginTop: "5px", marginRight: "45px",  textAlign: 'right' }}>
         {formatKRW(exchangeAmount)}원
       </div>
     </div>
               </td>
-            </tr>
+            </tr> 
             <tr>
               <td className="under-t">최대 우대 적용 환율</td>
               <td style={{ borderRight: "none" }}>
@@ -354,7 +359,7 @@ const getImagePath = (cardName) => {
                   className="input-bankch"
                   data-currency-symbol={currencySymbols[selectedCurrency]}                 
                 >
-                  <input type="text" value={finalFee || 0} disabled style={{ width: "90%" }} />
+                  <input type="text" value={finalFee || 0} disabled style={{ width: "90%" }} /> 
                 </div>
               </td>
             </tr>
@@ -439,12 +444,10 @@ const getImagePath = (cardName) => {
               <td
                 className="benefits-cell"
                 onClick={() => openPopup(card)}>{card.card_name}
-                <br />
-                <div style={{ fontSize: "11px" }}></div>
               </td>
 
               <td style={{ textAlign: "left" }}>
-  <div style={{ whiteSpace: "pre-wrap" }}>
+  <div style={{ whiteSpace: "pre-wrap", fontSize: 12 }}>
     {Array.isArray(card.benefits)
       ? card.benefits.map((benefit, index) => (
           <div key={index}>• {benefit}</div>
@@ -453,14 +456,13 @@ const getImagePath = (cardName) => {
   </div>
 </td>
               <td className='fixed'>
-                <span>
-                  {(!exchangeAmount || exchangeAmount === "")
+                <span style={{fontSize: 12}}>
+                  {(!(formatKRW(exchangeAmount)) || (formatKRW(exchangeAmount)) === "")
                     ? "0"
-                    : exchangeAmount.toString().length > 10
-                    ? exchangeAmount.toString().substring(0, 10) + "..."
-                    : exchangeAmount}
-                </span>{" "}
-                ₩ ({100-card.preferential_treatment}%)
+                    : (formatKRW(exchangeAmount)).length > 10
+                    ? (formatKRW(exchangeAmount)).substring(0, 10) + "..."
+                    : (formatKRW(exchangeAmount))}
+                원</span>{" "}
               </td>
             </tr>
           ))}
@@ -493,8 +495,9 @@ const getImagePath = (cardName) => {
       <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
       <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
     </footer>
-      
-      
+    <strong className="top-bar">
+  🌐 환전 고수
+    </strong>     
       
       
       </div>

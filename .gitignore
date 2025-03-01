@@ -60,7 +60,7 @@ jest/
 
 # Docker 관련
 .dockerignore
-
+/backup
 
 # 기타
 *.bak
