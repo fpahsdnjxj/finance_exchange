@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 
 class CurrencySchema(BaseModel):
@@ -6,8 +6,18 @@ class CurrencySchema(BaseModel):
     class Config:
         from_attributes=True
 
-class BankDetailSchema(BaseModel):
+class BankBasicConditionSchema(BaseModel):
     conditions: List[str]
+    class Config:
+        from_attributes=True
+
+class BankDetailCondtionSchema(BaseModel):
+    amountconditions: Optional[List[str]]=[]
+    timeconditions: Optional[List[str]]=[]
+    otherconditions: Optional[List[str]]=[]
+    class Config:
+        from_attributes=True
+
 
 class BankExchangeSchema(BaseModel):
     preferential_treatment: float

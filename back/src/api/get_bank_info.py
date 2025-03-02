@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, Query, HTTPException
-from db.repository import  BankInfoRepository, CurrencyRepository
+from db.repository import  BankInfoRepository, CurrencyRepository, BankConditionRepository
+from schema.response import BankBasicConditionSchema, BankDetailCondtionSchema
 import urllib.parse
 
 router=APIRouter(prefix="/api/bank")
@@ -57,6 +58,42 @@ async def get_bank_conditions(
 
     conditions = [bank.condition_type for bank in bankinfo.bank_condition] if bankinfo.bank_condition else []
     
-    return {"conditions": conditions}
+    return BankBasicConditionSchema(conditions=conditions)
+
+@router.get("/additional-conditions", status_code=200)
+async def get_additional_conditions(
+    default_condition:str=Query(..., description="default condition is required"),
+    bankcondition_repo: BankConditionRepository =Depends(),
+):
+    default_condition=urllib.parse.unquote(default_condition)
+    condition_list=bankcondition_repo.get_bankcondition_by_conditiontype(condition_type=default_condition)
+
+    amountconditions=[]
+    timeconditions=[]
+    otherconditions=[]
+    amount_set, time_set, other_set=set(), set(), set()
+    
+    for item in condition_list:
+        if item.additional_conditions:
+            if item.addtional_conditions and item.additional_conditions[0] and item.additional_conditions[0]  not in amount_set:
+                amountconditions.append(item.addtional_conditions[0])
+                amount_set.add(item.addtional_conditions[0])
+            if len(item.additional_conditions)>1 and item.additional_conditions[1] and item.additional_conditions[1]  not in time_set: 
+                timeconditions.append(item.additional_conditions[1])
+                time_set.add(item.addtional_conditions[1])
+            if len(item.addtional_conditions)>2 and item.additional_conditions[2] and item.additional_conditions[2]  not in other_set:
+                otherconditions.append(item.addtional_conditions[2])
+                other_set.add(item.addtional_conditions[2])
+    
+    schema=BankDetailCondtionSchema(
+        amountconditions=amountconditions,
+        timeconditions=timeconditions,
+        otherconditions=otherconditions
+    )
+
+    return schema
+                
+
+
 
 
