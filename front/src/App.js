@@ -8,6 +8,8 @@ import Exchange from './components/Exchange';
 import DropdownAdd from './components/DropdownAdd';
 import CountryDropdown from './components/CountryDropdown';
 import Popup from './components/Popup';
+import AdditionalConditions from './components/AdditionalConditions';
+
 import TermsModal from './components/TermsModal';
 import PrivacyModal from './components/PrivacyModal';
 
@@ -34,17 +36,26 @@ const currencySymbols = {
 };
 
 const CurrencyCalculator = () => {
+  const [selectedCountry, setSelectedCountry] = useState("US");
+
   const [selectedLocation, setSelectedLocation] = useState("일반영업점");
   const [selectedBank, setSelectedBank] = useState(null);
-  const [conditions, setConditions] = useState([]);
+  
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [exchangeAmount, setExchangeAmount] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("US");
+  const [exchangeRate, setExchangeRate]=useState(0); 
+  const [finalFee, setFinalFee]=useState(0);
+
   const [popupContent, setPopupContent] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false); 
-  const [exchangeRate, setExchangeRate]=useState(0);
+
+  const [conditions, setConditions] = useState([]);
   const [selectedConditions, setSelectedConditions] = useState([]);
-  const [finalFee, setFinalFee]=useState(0);
+  const [detailConditions, setDetailConditions] = useState({
+    amountconditions: [],
+    timeconditions: [],
+    otherconditions: []
+  });
 
   const [cards, setCards] = useState(null);
   const [discountRate, setDiscountRate]=useState("");
@@ -96,6 +107,46 @@ const handleBankChange = (e) => {
     setSelectedConditions([]);
     setConditions([]);
   };
+
+    // 기본 조건을 바탕으로 세부 조건 백엔드에 요청하는 useEffect 부분입니다!
+  useEffect(() => {
+    if (selectedConditions.length > 0) {
+      axios.post(`/api/bank/detail-condition`, { default_condition: selectedConditions[0] })
+        .then((response) => {
+          setDetailConditions(response.data);
+        })
+        .catch((error) => {
+          console.error("세부 조건을 불러오는 중 오류 발생:", error);
+          setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
+        });
+    } else {
+      setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
+    }
+  }, [selectedConditions]);  
+
+  useEffect(() => { // 더미 데이터입니다. 확인해보시고 지우시면 됩니다!
+    if (selectedConditions.length > 0) {
+      const dummyDetailConditions = {
+        amountconditions: ["10만원 이상", "50만원 이상 우대"],
+        timeconditions: ["영업시간 내 방문", "주말 제외"],
+        otherconditions: ["VIP 고객 전용", "모바일 환전 우대"]
+      };
+  
+      const timer = setTimeout(() => {
+        setDetailConditions(dummyDetailConditions);
+      }, 1000);
+  
+      return () => clearTimeout(timer);
+    } else {
+      setDetailConditions({
+        amountconditions: [],
+        timeconditions: [],
+        otherconditions: []
+      });
+    }
+  }, [selectedConditions]);
+  
+
 
 useEffect(() =>{
   const currency = currencyOptions.find(option => option.flag === selectedCountry);
@@ -335,6 +386,15 @@ const getImagePath = (cardName) => {
             />
             </td>
               </tr>
+
+              {selectedConditions.length > 0 &&
+                (detailConditions.amountconditions.length > 0 ||
+                 detailConditions.timeconditions.length > 0 ||
+                 detailConditions.otherconditions.length > 0) && (
+                  <AdditionalConditions selectedCondition={detailConditions} />
+                )
+              }
+
               <tr>
               <td className="under-t">환전 금액</td>
               <td style={{ borderRight: "none" }}>
