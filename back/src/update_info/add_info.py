@@ -48,7 +48,8 @@ def add_bankcondition(data):
             bankinfo_id=bankinfo.bankinfo_id,
             condition_type=item["condition_type"], 
             condition_detail=item["condition_detail"], 
-            apply_preferential_rate=item["apply_preferential_rate"]
+            apply_preferential_rate=item["apply_preferential_rate"],
+            additional_conditions=item["additional_conditions"]
         )
         bankcondition_repo.save_bankcondition(bankcondition)
         print(f"Added BankCondition: {bankcondition}")

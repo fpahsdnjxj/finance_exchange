@@ -321,3 +321,18 @@ select {
   font-size: 18px;
   z-index: 1000; 
 }
+
+.drop-button {
+  transition: background-color 0.3s ease;
+  background-color: #d5d5d5;
+  width: 100%; 
+  padding: 5px; 
+  color: rgb(87, 87, 87); 
+  border: none; 
+  cursor: pointer;
+  border-radius: 5px; 
+}
+
+.drop-button:hover {
+  background-color: #d4d4d4;
+}

@@ -15,4 +15,6 @@ add_info_from_json()
 
 #update_info_from_json()
 
+#get_currency_data()
+
 

@@ -1,4 +1,6 @@
-from sqlalchemy import Column, CHAR, VARCHAR, DateTime, Double, Text, ForeignKey, func
+import json
+from typing import List
+from sqlalchemy import Column, CHAR, VARCHAR, DateTime, Double, Text, ForeignKey, func, JSON
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime, timezone
 import uuid
@@ -69,12 +71,14 @@ class BankCondition(Base): #환전 금액당 우대율 제외 저장할 table
     condition_detail=Column(Text)
     apply_preferential_rate=Column(Double, nullable=False)
     update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
+    additional_conditions=Column(JSON, nullable=True)
 
     def __repr__(self):
         return(f"BankCondition("
         f"condition_id={self.condition_id}, "
         f"bankinfo_id={self.bankinfo_id}, "
         f"condition_type={self.condition_type}, "
+        f"additional_conditions={self.additional_conditions}, "
         f"condition_detail={self.condition_detail}, "
         f"apply_preferential_rate={self.apply_preferential_rate}, "
         f"update_date={self.update_date}) "
@@ -84,10 +88,12 @@ class BankCondition(Base): #환전 금액당 우대율 제외 저장할 table
     def create(cls,bankinfo_id:str, 
                condition_type:str,
                condition_detail:str,
+               additional_conditions: List[str],
                apply_preferential_rate:float):
         return cls(
             bankinfo_id=bankinfo_id,
             condition_type=condition_type,
+            additional_conditions=additional_conditions,
             condition_detail=condition_detail,
             apply_preferential_rate=apply_preferential_rate
         )
