@@ -5,9 +5,11 @@ import ReactCountryFlag from "react-country-flag";
 import axios from 'axios';
 
 import Exchange from './components/Exchange';
-import DropdownAdd from './components/DropdownAdd';
+import AdditionalConditions from './components/AdditionalConditions';
 import CountryDropdown from './components/CountryDropdown';
 import Popup from './components/Popup';
+
+
 import TermsModal from './components/TermsModal';
 import PrivacyModal from './components/PrivacyModal';
 
@@ -34,17 +36,31 @@ const currencySymbols = {
 };
 
 const CurrencyCalculator = () => {
+  const [selectedCountry, setSelectedCountry] = useState("US");
+
   const [selectedLocation, setSelectedLocation] = useState("일반영업점");
   const [selectedBank, setSelectedBank] = useState(null);
-  const [conditions, setConditions] = useState([]);
+  
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [exchangeAmount, setExchangeAmount] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("US");
+  const [exchangeRate, setExchangeRate]=useState(0); 
+  const [finalFee, setFinalFee]=useState(0);
+
   const [popupContent, setPopupContent] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false); 
-  const [exchangeRate, setExchangeRate]=useState(0);
-  const [selectedConditions, setSelectedConditions] = useState([]);
-  const [finalFee, setFinalFee]=useState(0);
+
+  const [conditions, setConditions] = useState([]);
+  const [selectedBasicCondition, setSelectedBasicCondition] = useState("");
+  const [detailConditions, setDetailConditions] = useState({
+    amountconditions: [],
+    timeconditions: [],
+    otherconditions: []
+  });
+  const [additionalConditionsSelections, setAdditionalConditionsSelections] = useState({
+    amount: [],
+    time: [],
+    other: []
+  });
 
   const [cards, setCards] = useState(null);
   const [discountRate, setDiscountRate]=useState("");
@@ -87,15 +103,50 @@ useEffect(()=>{
       });
   }, [selectedBank, selectedCurrency]);
 
-  const handleConditionsChange = (newConditions) => {
-    setSelectedConditions(newConditions);
-  };
 
 const handleBankChange = (e) => {
     setSelectedBank(e.target.value);
-    setSelectedConditions([]);
     setConditions([]);
+    setSelectedBasicCondition("");
   };
+
+    // 기본 조건을 바탕으로 세부 조건 백엔드에 요청하는 useEffect 부분입니다!
+  useEffect(() => {
+    if (selectedBasicCondition.length > 0) {
+      axios.post(`/api/bank/detail-condition`, { default_condition: selectedBasicCondition[0] })
+        .then((response) => {
+          setDetailConditions(response.data);
+        })
+        .catch((error) => {
+          console.error("세부 조건을 불러오는 중 오류 발생:", error);
+          setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
+        });
+    } else {
+      setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
+    }
+  }, [selectedBasicCondition]);  
+
+  useEffect(() => { // 더미 데이터입니다!
+    if (selectedBasicCondition !== "") {
+      const dummyDetailConditions = {
+        amountconditions: ["10만원 이상", "50만원 이상 우대"],
+        timeconditions: ["영업시간 내 방문", "주말 제외"],
+        otherconditions: ["VIP 고객 전용", "모바일 환전 우대"]
+      };
+      const timer = setTimeout(() => {
+        setDetailConditions(dummyDetailConditions);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setDetailConditions({
+        amountconditions: [],
+        timeconditions: [],
+        otherconditions: []
+      });
+    }
+  }, [selectedBasicCondition]);
+  
+
 
 useEffect(() =>{
   const currency = currencyOptions.find(option => option.flag === selectedCountry);
@@ -134,6 +185,8 @@ useEffect(() => {
   }
 }, [exchangeAmount, discountRate, exchangeRate]);
 
+
+// 선택된 값들 back으로 보내는 부분입니다!
 useEffect(() => {
   if (!selectedBank || !selectedCurrency) return;
 
@@ -145,9 +198,19 @@ useEffect(() => {
     try {
       let url = `/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`;
 
-      if (selectedConditions.length > 0) {
-        const encodedConditions = selectedConditions.map(cond => encodeURIComponent(cond)).join(",");
-        url += `&condition_type=${encodedConditions}`; // 
+      if (selectedBasicCondition !== "") {
+        url += `&condition_type=${encodeURIComponent(selectedBasicCondition)}`;
+      }
+
+      const flatAdditional = [
+        ...additionalConditionsSelections.amount,
+        ...additionalConditionsSelections.time,
+        ...additionalConditionsSelections.other,
+      ];
+      if (flatAdditional.length > 0) {
+        url += `&additional_conditions=${encodeURIComponent(flatAdditional.join(","))}`;
+      } else {
+        url += `&additional_conditions=none`;
       }
       const response = await axios.get(url);
       setDiscountRate(response.data.final_fee_rate);
@@ -156,14 +219,8 @@ useEffect(() => {
     }
   };
   fetchExchangefeerate();
-}, [selectedBank, selectedCurrency, exchangeAmount, selectedConditions]);
+}, [selectedBank, selectedCurrency, exchangeAmount, selectedBasicCondition, additionalConditionsSelections]);
 
-
-useEffect(() => {
-  if (!isNaN(parseFloat(exchangeAmount)) && discountRate !== null) {
-    calculate_final_fee();
-  }
-}, [discountRate]);
 
 const getImagePath = (cardName) => { 
   let card = "default";
@@ -238,6 +295,13 @@ const getImagePath = (cardName) => {
     );
   };  
 
+  const handleAdditionalConditionsChange = (type, selected) => {
+    setAdditionalConditionsSelections((prev) => ({
+      ...prev,
+      [type]: selected
+    }));
+  };
+
   return (
     <div className='container'>
       <div className='top-container exchange-rate-calculator'>
@@ -290,79 +354,99 @@ const getImagePath = (cardName) => {
             ))}
           </div>
 
-          <table>
-            <tbody><tr>
-            <td className="under-t">{selectedLocation === "일반영업점" ? "은행" : "공항 은행"}</td>               
-          <td style={{borderRight: "none"}}>
-            <select
-              value={selectedBank}
-              onChange={handleBankChange}
-              style={{ fontSize: 12 }}
-            >
-              <option value="" disabled selected>
-                {selectedLocation === "일반영업점" ? "은행 선택" : "공항 은행 선택"}
-              </option>
-              {(selectedLocation === "일반영업점" ? Banks : airportBanks).map((bank, index) => (
-                <option key={index} value={bank}>{bank}</option>
-              ))}
-            </select>
-          </td>
-        </tr>
-              
+          <table style={{ borderCollapse: 'collapse' }}>
+            <tbody>
+              <tr>
+                <td className="under-t">{selectedLocation === "일반영업점" ? "은행" : "공항 은행"}</td>
+                <td style={{ borderRight: "none" }}>
+                  <select
+                    value={selectedBank}
+                    onChange={handleBankChange}
+                    style={{ fontSize: 12 }}
+                  >
+                    <option value="" disabled selected>
+                      {selectedLocation === "일반영업점" ? "은행 선택" : "공항 은행 선택"}
+                    </option>
+                    {(selectedLocation === "일반영업점" ? Banks : airportBanks).map((bank, index) => (
+                      <option key={index} value={bank}>{bank}</option>
+                    ))}
+                  </select>
+                </td>
+              </tr>
               <tr>
                 <td className="under-t">환전 화폐</td>
-                <td style={{borderRight: "none"}}>
-                <select 
-                  value={selectedCurrency}
-                  onChange={(e) => setSelectedCurrency(e.target.value)}
-                  style={{ fontSize: 12 }}
-                >
-                <option value="" disabled>화폐 선택</option>
-                {currencyOptions.map((currency, index) => (
-                <option key={index} value={currency.value}>
-                  {currency.label} ({currency.value})
-                </option>
-                ))}
-                </select>
+                <td style={{ borderRight: "none" }}>
+                  <select 
+                    value={selectedCurrency}
+                    onChange={(e) => setSelectedCurrency(e.target.value)}
+                    style={{ fontSize: 12 }}
+                  >
+                    <option value="" disabled>화폐 선택</option>
+                    {currencyOptions.map((currency, index) => (
+                      <option key={index} value={currency.value}>
+                        {currency.label} ({currency.value})
+                      </option>
+                    ))}
+                  </select>
                 </td>
               </tr>
               <tr>
                 <td className="under-t">조건 선택</td>
-                <td style={{borderRight: "none"}}>
-            <DropdownAdd 
-              conditions={conditions} 
-              onConditionsChange={handleConditionsChange} 
-            />
-            </td>
+                <td style={{ borderRight: "none" }}>
+                  <select
+                    value={selectedBasicCondition}
+                    onChange={(e) => setSelectedBasicCondition(e.target.value)}
+                    style={{ fontSize: 12 }}
+                  >
+                    <option value="" disabled>
+                      조건 선택
+                    </option>
+                    {conditions.map((cond, index) => (
+                      <option key={index} value={cond}>
+                        {cond}
+                      </option>
+                    ))}
+                  </select>
+                </td>
               </tr>
+              {selectedBasicCondition !== "" &&
+                (detailConditions.amountconditions.length > 0 ||
+                  detailConditions.timeconditions.length > 0 ||
+                  detailConditions.otherconditions.length > 0) && (
+                  <AdditionalConditions
+                    selectedCondition={detailConditions}
+                    onAdditionalConditionsChange={handleAdditionalConditionsChange}
+                  />
+                )
+              }
               <tr>
-              <td className="under-t">환전 금액</td>
-              <td style={{ borderRight: "none" }}>
-              <div className="input-bank">
-      <input
-        type="text"
-        value={exchangeAmount}
-        onChange={(e) => setExchangeAmount(e.target.value)}
-        style={{ width: "90%" }}
-        placeholder="환전할 원화를 입력하세요"
-      />
-      <div style={{ fontSize: "0.8rem", color: "#666", marginTop: "5px", marginRight: "45px",  textAlign: 'right' }}>
-        {formatKRW(exchangeAmount)}원
-      </div>
-    </div>
-              </td>
-            </tr> 
-            <tr>
-              <td className="under-t">최대 우대 적용 환율</td>
-              <td style={{ borderRight: "none" }}>
-              <div
-                  className="input-bankch"
-                  data-currency-symbol={currencySymbols[selectedCurrency]}                 
-                >
-                  <input type="text" value={finalFee || 0} disabled style={{ width: "90%" }} /> 
-                </div>
-              </td>
-            </tr>
+                <td className="under-t">환전 금액</td>
+                <td style={{ borderRight: "none" }}>
+                  <div className="input-bank">
+                    <input
+                      type="text"
+                      value={exchangeAmount}
+                      onChange={(e) => setExchangeAmount(e.target.value)}
+                      style={{ width: "90%" }}
+                      placeholder="환전할 원화를 입력하세요"
+                    />
+                    <div style={{ fontSize: "0.8rem", color: "#666", marginTop: "5px", marginRight: "45px", textAlign: 'right' }}>
+                      {formatKRW(exchangeAmount)}원
+                    </div>
+                  </div>
+                </td>
+              </tr> 
+              <tr>
+                <td className="under-t">최대 우대 적용 환율</td>
+                <td style={{ borderRight: "none" }}>
+                  <div
+                    className="input-bankch"
+                    data-currency-symbol={currencySymbols[selectedCurrency]}                 
+                  >
+                    <input type="text" value={finalFee || 0} disabled style={{ width: "90%" }} /> 
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>

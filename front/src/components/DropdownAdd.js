@@ -87,17 +87,9 @@ const DropdownAdd = ({ conditions, onConditionsChange }) => {
 
       <button
         onClick={handleAddDropdown}
-        style={{
-          width: "100%",
-          padding: "5px",
-          backgroundColor: "#4d4d4d",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          borderRadius: "5px",
-        }}
+        className='drop-button'
       >
-        ＋
+        +
       </button>
     </div>
   );

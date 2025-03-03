@@ -77,10 +77,14 @@ class BankConditionRepository:
 
     def get_particular_bankcondition(self, bankinfo_id:str,condition_type:str, additional_condition:Optional[List[str]] )->BankCondition|None:
        query= select(BankCondition).where(and_(BankCondition.bankinfo_id==bankinfo_id, BankCondition.condition_type==condition_type))
-       if additional_condition:
-        json_condition=text("JSON_CONTAINS(additional_conditions, :additional_condition)")
-        query = query.where(json_condition).params(additional_condition=json.dumps(additional_condition))
-        return self.session.scalar(query)
+       if additional_condition and len(additional_condition) > 0:
+            json_condition=text("JSON_CONTAINS(additional_conditions, :additional_condition)")
+            query = query.where(json_condition).params(additional_condition=json.dumps(additional_condition))
+            return self.session.scalar(query)
+       else:
+            query = query.where(BankCondition.additional_conditions.is_(None))
+            return self.session.scalar(query)
+        
     
     def get_bankcondition_by_conditiontype(self, condition_type:str)->Optional[List[BankCondition]]:
         return self.session.scalars(select(BankCondition).where(BankCondition.condition_type==condition_type))

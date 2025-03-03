@@ -1,0 +1,12 @@
+on: 
+    push:
+        branches: [ "docker" ]
+
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout_code
+              uses: actions/checkout@v3
