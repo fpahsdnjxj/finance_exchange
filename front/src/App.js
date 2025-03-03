@@ -111,40 +111,21 @@ const handleBankChange = (e) => {
   };
 
     // 기본 조건을 바탕으로 세부 조건 백엔드에 요청하는 useEffect 부분입니다!
-  useEffect(() => {
-    if (selectedBasicCondition.length > 0) {
-      axios.post(`/api/bank/detail-condition`, { default_condition: selectedBasicCondition[0] })
+useEffect(() => {
+  if (selectedBasicCondition.length > 0) {
+    axios.get(`/api/bank/additional-conditions?default_condition=${selectedBasicCondition}`)
         .then((response) => {
           setDetailConditions(response.data);
         })
         .catch((error) => {
           console.error("세부 조건을 불러오는 중 오류 발생:", error);
           setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
-        });
-    } else {
-      setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
-    }
-  }, [selectedBasicCondition]);  
+    });
+  } else {
+    setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
+  }
+}, [selectedBasicCondition]);    
 
-  useEffect(() => { // 더미 데이터입니다!
-    if (selectedBasicCondition !== "") {
-      const dummyDetailConditions = {
-        amountconditions: ["10만원 이상", "50만원 이상 우대"],
-        timeconditions: ["영업시간 내 방문", "주말 제외"],
-        otherconditions: ["VIP 고객 전용", "모바일 환전 우대"]
-      };
-      const timer = setTimeout(() => {
-        setDetailConditions(dummyDetailConditions);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else {
-      setDetailConditions({
-        amountconditions: [],
-        timeconditions: [],
-        otherconditions: []
-      });
-    }
-  }, [selectedBasicCondition]);
   
 
 
@@ -191,12 +172,10 @@ useEffect(() => {
   if (!selectedBank || !selectedCurrency) return;
 
   const encodedBankname = encodeURIComponent(selectedBank);
-  const numericExchangeAmount = parseFloat(exchangeAmount);
-  if (isNaN(numericExchangeAmount) || numericExchangeAmount < 0) return;
 
   const fetchExchangefeerate = async () => { 
     try {
-      let url = `/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}&exchange_amount=${numericExchangeAmount}`;
+      let url = `/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}`;
 
       if (selectedBasicCondition !== "") {
         url += `&condition_type=${encodeURIComponent(selectedBasicCondition)}`;
@@ -209,9 +188,7 @@ useEffect(() => {
       ];
       if (flatAdditional.length > 0) {
         url += `&additional_conditions=${encodeURIComponent(flatAdditional.join(","))}`;
-      } else {
-        url += `&additional_conditions=none`;
-      }
+      } 
       const response = await axios.get(url);
       setDiscountRate(response.data.final_fee_rate);
     } catch (error) {
@@ -219,7 +196,7 @@ useEffect(() => {
     }
   };
   fetchExchangefeerate();
-}, [selectedBank, selectedCurrency, exchangeAmount, selectedBasicCondition, additionalConditionsSelections]);
+}, [selectedBank, selectedCurrency, selectedBasicCondition, additionalConditionsSelections]);
 
 
 const getImagePath = (cardName) => { 

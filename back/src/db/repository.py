@@ -1,8 +1,7 @@
 import json
-from pydoc import text
 from typing import List, Optional
 from fastapi import Depends
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, text
 from sqlalchemy.orm import Session
 from db.connection import get_db
 from db.orm import BankCondition, BankExchangeAmountDiscount, BankInfo, CardBenefit, CardInfo, Currency
