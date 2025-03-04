@@ -1,7 +1,7 @@
 import React from "react";
 import DropdownAdd from "./DropdownAdd";
 
-const AdditionalConditions = ({ selectedCondition }) => {
+const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange }) => {
   if (!selectedCondition) return null;
 
   const {
@@ -15,18 +15,21 @@ const AdditionalConditions = ({ selectedCondition }) => {
   if (amountconditions.length > 0) {
     conditionBlocks.push({
       label: "조건 적용 기준 금액",
+      type: "amount",
       data: amountconditions
     });
   }
   if (timeconditions.length > 0) {
     conditionBlocks.push({
       label: "시간에 따른 조건",
+      type: "time",
       data: timeconditions
     });
   }
   if (otherconditions.length > 0) {
     conditionBlocks.push({
       label: "기타 추가 조건",
+      type: "other",
       data: otherconditions
     });
   }
@@ -70,9 +73,10 @@ const AdditionalConditions = ({ selectedCondition }) => {
 
             <DropdownAdd
               conditions={block.data}
-              onConditionsChange={(selected) =>
-                console.log(`${block.label}:`, selected)
+              onConditionsChange={(selected) =>{
+                onAdditionalConditionsChange(block.type, selected)
               }
+            }
             />
           </td>
         </tr>
