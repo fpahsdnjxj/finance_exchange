@@ -277,7 +277,6 @@ const getImagePath = (cardName) => {
       ...prev,
       [type]: selected
     }));
-    console.log(additionalConditionsSelections)
   };
 
   return (
