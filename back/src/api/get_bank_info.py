@@ -11,7 +11,7 @@ async def get_get_bank_exchange_fee(
     bank_name:str=Query(...),
     currency_code:str=Query(...),
     condition_type: str=Query(None),
-    additional_conditions:list[str]=Query(None, separator=","),
+    additional_conditions:str=Query(None),
     bankinfo_repo:BankInfoRepository=Depends(),
     bankcondition_repo:BankConditionRepository=Depends(),
 ):
@@ -23,8 +23,12 @@ async def get_get_bank_exchange_fee(
     if condition_type:
         condition_type=urllib.parse.unquote(condition_type)
         if additional_conditions:
-            additional_conditions=[urllib.parse.unquote(item) for item in additional_conditions]
-            additional_conditions=json.dumps(additional_conditions)
+            additional_conditions=urllib.parse.unquote(additional_conditions)
+            additional_conditions=additional_conditions.split(",")
+            additional_conditions=json.dumps(additional_conditions, ensure_ascii=False)
+            print(bankinfo.bankinfo_id)
+            print(condition_type)
+            print(additional_conditions)
         bankcondition=bankcondition_repo.get_particular_bankcondition(condition_type=condition_type, additional_condition=additional_conditions, bankinfo_id=bankinfo.bankinfo_id)
         if bankcondition:
             final_preferential_rate=bankcondition.apply_preferential_rate
@@ -32,6 +36,7 @@ async def get_get_bank_exchange_fee(
             raise HTTPException(status_code= 404, detail="no bank condition")
 
     final_fee_rate=bankinfo.exchange_fee_rate*(1-final_preferential_rate)
+    print(final_fee_rate)
     return  {"final_fee_rate": final_fee_rate}
 
 @router.get("/bank-conditions", status_code=200)
@@ -67,15 +72,15 @@ async def get_additional_conditions(
     
     for item in condition_list:
         if item.additional_conditions:
-            if item.addtional_conditions and item.additional_conditions[0] and item.additional_conditions[0]  not in amount_set:
-                amountconditions.append(item.addtional_conditions[0])
-                amount_set.add(item.addtional_conditions[0])
+            if item.additional_conditions and item.additional_conditions[0] and item.additional_conditions[0]  not in amount_set:
+                amountconditions.append(item.additional_conditions[0])
+                amount_set.add(item.additional_conditions[0])
             if len(item.additional_conditions)>1 and item.additional_conditions[1] and item.additional_conditions[1]  not in time_set: 
                 timeconditions.append(item.additional_conditions[1])
-                time_set.add(item.addtional_conditions[1])
-            if len(item.addtional_conditions)>2 and item.additional_conditions[2] and item.additional_conditions[2]  not in other_set:
-                otherconditions.append(item.addtional_conditions[2])
-                other_set.add(item.addtional_conditions[2])
+                time_set.add(item.additional_conditions[1])
+            if len(item.additional_conditions)>2 and item.additional_conditions[2] and item.additional_conditions[2]  not in other_set:
+                otherconditions.append(item.additional_conditions[2])
+                other_set.add(item.additional_conditions[2])
     
     schema=BankDetailCondtionSchema(
         amountconditions=amountconditions,

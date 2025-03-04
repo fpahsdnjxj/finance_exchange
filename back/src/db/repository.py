@@ -1,7 +1,7 @@
 import json
 from typing import List, Optional
 from fastapi import Depends
-from sqlalchemy import select, and_, text
+from sqlalchemy import select, and_, cast, String
 from sqlalchemy.orm import Session
 from db.connection import get_db
 from db.orm import BankCondition, BankExchangeAmountDiscount, BankInfo, CardBenefit, CardInfo, Currency
@@ -77,8 +77,7 @@ class BankConditionRepository:
     def get_particular_bankcondition(self, bankinfo_id:str,condition_type:str, additional_condition:Optional[List[str]] )->BankCondition|None:
        query= select(BankCondition).where(and_(BankCondition.bankinfo_id==bankinfo_id, BankCondition.condition_type==condition_type))
        if additional_condition and len(additional_condition) > 0:
-            json_condition=text("JSON_CONTAINS(additional_conditions, :additional_condition)")
-            query = query.where(json_condition).params(additional_condition=json.dumps(additional_condition))
+            query = query.where(cast(BankCondition.additional_conditions, String) == cast(additional_condition, String))
             return self.session.scalar(query)
        else:
             query = query.where(BankCondition.additional_conditions.is_(None))
@@ -95,12 +94,12 @@ class BankConditionRepository:
         return bankcondition
 
     def update_bankcondition(self, bankcondition:BankCondition):
-        existing_bankcondition=self.get_particular_bankcondition(bankinfo_id=bankcondition.bankinfo_id, condition_type=bankcondition.condition_type, additional_condition=bankcondition.addtional_conditions)
+        existing_bankcondition=self.get_particular_bankcondition(bankinfo_id=bankcondition.bankinfo_id, condition_type=bankcondition.condition_type, additional_condition=bankcondition.additional_conditions)
         if not existing_bankcondition:
             raise ValueError("No information for that bank condition. please save first")
         
         for field, value in vars(bankcondition).items():
-            if field in ["condition_type", "condition_detail", "apply_preferential_rate", "addtional_conditions"] and value is not None:
+            if field in ["condition_type", "condition_detail", "apply_preferential_rate", "additional_conditions"] and value is not None:
                 setattr(existing_bankcondition, field, value)
         
         self.session.commit()
