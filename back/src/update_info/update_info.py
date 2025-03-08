@@ -25,8 +25,7 @@ def update_bankinfo(data):
             bank_name=item["bank_name"], 
             currency_code=item["currency_code"], 
             exchange_fee_rate=item["exchange_fee_rate"], 
-            basic_preferential_rate=item["basic_preferential_rate"], 
-            max_preferential_rate=item["max_preferential_rate"]
+            basic_preferential_rate=item["basic_preferential_rate"]
         )
         bankinfo_repo.update_bankinfo(bankinfo=bank_info)
         print(f"Updated BankInfo: {bank_info}")
@@ -84,8 +83,6 @@ def update_cardinfo(data):
         card_info = CardInfo.create(
             card_name=item["card_name"], 
             currency_code=item["currency_code"], 
-            exchange_discount_rate=item["exchange_discount_rate"], 
-            re_exchange_discount_rate=item["re_exchange_discount_rate"], 
             basic_conditions=item["basic_conditions"]
         )
         cardinfo_repo.update_cardinfo(card_info)
