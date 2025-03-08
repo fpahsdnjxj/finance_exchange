@@ -42,8 +42,6 @@ async def get_card_info(
                                 cardinfo_id=card.cardinfo_id,
                                 card_name=card.card_name, 
                                 condition=card.basic_conditions, 
-                                preferential_treatment=card.exchange_discount_rate, 
-                                re_preferential_treatment=card.re_exchange_discount_rate,
                                 benefits=cardbenefit_dict.get(card.cardinfo_id, []),
                                 benefit_detail=cardbenefit_detail_dict.get(card.cardinfo_id, [])
                                 ) for card in cardinfo_list]
@@ -78,8 +76,6 @@ async def get_benefit_card_list(
     cardinfo_list=[CardInfoSchema( cardinfo_id=card.cardinfo_id,
                                 card_name=card.card_name, 
                                   condition=card.basic_conditions, 
-                                  preferential_treatment=card.exchange_discount_rate, 
-                                  re_preferential_treatment=card.re_exchange_discount_rate,
                                 benefits=cardbenefit_dict.get(card.cardinfo_id, [])
                                   ) for card in cardinfo_list]
     return ListCardInfoSchema(card_infos=cardinfo_list)

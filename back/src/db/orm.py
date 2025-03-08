@@ -130,8 +130,6 @@ class CardInfo(Base):
     cardinfo_id=Column(CHAR(36), primary_key=True, index=True, default=lambda:(uuid.uuid4()))
     card_name=Column(VARCHAR(200), nullable=False)
     currency_code=Column(CHAR(3), nullable=False)
-    exchange_discount_rate=Column(Double, nullable=False)
-    re_exchange_discount_rate=Column(Double)
     basic_conditions=Column(Text)
     update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
@@ -142,22 +140,16 @@ class CardInfo(Base):
         f"cardinfo_id={self.cardinfo_id}, "
         f"card_name={self.card_name}, "
         f"currency_code={self.currency_code}, "
-        f"exchange_discount_rate={self.exchange_discount_rate}, "
-        f"re_exchange_discount_rate={self.re_exchange_discount_rate}, "
         f"basic_conditions={self.basic_conditions}, "
         f"update_date={self.update_date})")
     
     @classmethod
     def create(cls, card_name:str, 
                currency_code:str, 
-               exchange_discount_rate:float, 
-               re_exchange_discount_rate:float, 
                basic_conditions:str):
         return cls(
             card_name=card_name,
             currency_code=currency_code,
-            exchange_discount_rate=exchange_discount_rate,
-            re_exchange_discount_rate=re_exchange_discount_rate,
             basic_conditions=basic_conditions
         )
 

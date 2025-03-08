@@ -164,7 +164,7 @@ class CardInfoRepository:
         
 
         for field, value in vars(cardinfo).items():
-            if field in ["exchange_discount_rate", "re_exchange_discount_rate", "basic_conditions"] and value is not None:
+            if field in [ "basic_conditions"] and value is not None:
                 setattr(existing_cardinfo, field, value)
         
         self.session.commit()
