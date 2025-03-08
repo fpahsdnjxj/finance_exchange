@@ -33,7 +33,6 @@ class BankInfo(Base):
     currency_code=Column(CHAR(3), nullable=False)
     exchange_fee_rate=Column(Double, nullable=False)
     basic_preferential_rate=Column(Double, nullable=False)
-    max_preferential_rate=Column(Double, nullable=False)
     update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
     bank_condition=relationship("BankCondition", backref="bank")
@@ -45,7 +44,6 @@ class BankInfo(Base):
         f"bank_name={self.bank_name}, " 
         f"currency_code={self.currency_code}, "
         f"basic_preferential_rate={self.basic_preferential_rate}, "
-        f"max_preferential_rate={self.max_preferential_rate}, "
         f"update_date={self.update_date})"
         )
     
@@ -53,14 +51,12 @@ class BankInfo(Base):
     def create(cls, bank_name:str,
                 currency_code:str, 
                 exchange_fee_rate:float,
-                basic_preferential_rate: float, 
-                max_preferential_rate:float):
+                basic_preferential_rate: float):
         return cls(
             bank_name=bank_name,
             currency_code=currency_code,
             exchange_fee_rate=exchange_fee_rate,
-            basic_preferential_rate=basic_preferential_rate,
-            max_preferential_rate=max_preferential_rate
+            basic_preferential_rate=basic_preferential_rate
         )
 
 class BankCondition(Base): #환전 금액당 우대율 제외 저장할 table 

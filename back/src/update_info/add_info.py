@@ -26,7 +26,6 @@ def add_bankinfo(data):
             currency_code=item["currency_code"], 
             exchange_fee_rate=item["exchange_fee_rate"], 
             basic_preferential_rate=item["basic_preferential_rate"], 
-            max_preferential_rate=item["max_preferential_rate"]
         )
         bankinfo_repo.save_bankinfo(bank_info)
         print(f"Added BankInfo: {bank_info}")
