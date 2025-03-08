@@ -83,8 +83,6 @@ def add_cardinfo(data):
         card_info = CardInfo.create(
             card_name=item["card_name"], 
             currency_code=item["currency_code"], 
-            exchange_discount_rate=item["exchange_discount_rate"], 
-            re_exchange_discount_rate=item["re_exchange_discount_rate"], 
             basic_conditions=item["basic_conditions"]
         )
         cardinfo_repo.save_cardinfo(card_info)
