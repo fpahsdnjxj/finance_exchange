@@ -180,7 +180,15 @@ useEffect(() => {
       if (selectedBasicCondition !== "") {
         url += `&condition_type=${encodeURIComponent(selectedBasicCondition)}`;
       }
-
+      if(additionalConditionsSelections.amount.length===0){
+        additionalConditionsSelections.amount.push("default")
+      }
+      if(additionalConditionsSelections.time.length===0){
+        additionalConditionsSelections.time.push("default")
+      }
+      if(additionalConditionsSelections.other.length===0){
+        additionalConditionsSelections.other.push("default")
+      }
       const flatAdditional = [
         ...additionalConditionsSelections.amount,
         ...additionalConditionsSelections.time,

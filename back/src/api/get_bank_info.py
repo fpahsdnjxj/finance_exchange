@@ -26,9 +26,6 @@ async def get_get_bank_exchange_fee(
             additional_conditions=urllib.parse.unquote(additional_conditions)
             additional_conditions=additional_conditions.split(",")
             additional_conditions=json.dumps(additional_conditions, ensure_ascii=False)
-            print(bankinfo.bankinfo_id)
-            print(condition_type)
-            print(additional_conditions)
         bankcondition=bankcondition_repo.get_particular_bankcondition(condition_type=condition_type, additional_condition=additional_conditions, bankinfo_id=bankinfo.bankinfo_id)
         if bankcondition:
             final_preferential_rate=bankcondition.apply_preferential_rate
@@ -36,7 +33,6 @@ async def get_get_bank_exchange_fee(
             raise HTTPException(status_code= 404, detail="no bank condition")
 
     final_fee_rate=bankinfo.exchange_fee_rate*(1-final_preferential_rate)
-    print(final_fee_rate)
     return  {"final_fee_rate": final_fee_rate}
 
 @router.get("/bank-conditions", status_code=200)
@@ -72,13 +68,13 @@ async def get_additional_conditions(
     
     for item in condition_list:
         if item.additional_conditions:
-            if item.additional_conditions and item.additional_conditions[0] and item.additional_conditions[0]  not in amount_set:
+            if item.additional_conditions and item.additional_conditions[0] and item.additional_conditions[0]  not in amount_set and item.additional_conditions[0]!="default":
                 amountconditions.append(item.additional_conditions[0])
                 amount_set.add(item.additional_conditions[0])
-            if len(item.additional_conditions)>1 and item.additional_conditions[1] and item.additional_conditions[1]  not in time_set: 
+            if len(item.additional_conditions)>1 and item.additional_conditions[1] and item.additional_conditions[1]  not in time_set and item.additional_conditions[1]!="default": 
                 timeconditions.append(item.additional_conditions[1])
                 time_set.add(item.additional_conditions[1])
-            if len(item.additional_conditions)>2 and item.additional_conditions[2] and item.additional_conditions[2]  not in other_set:
+            if len(item.additional_conditions)>2 and item.additional_conditions[2] and item.additional_conditions[2]  not in other_set and item.additional_conditions[2]!="default":
                 otherconditions.append(item.additional_conditions[2])
                 other_set.add(item.additional_conditions[2])
     
