@@ -30,7 +30,7 @@ async def get_get_bank_exchange_fee(
         if bankcondition:
             final_preferential_rate=bankcondition.apply_preferential_rate
         else:
-            raise HTTPException(status_code= 404, detail="no bank condition")
+             return  {"final_fee_rate": -1}
 
     final_fee_rate=bankinfo.exchange_fee_rate*(1-final_preferential_rate)
     return  {"final_fee_rate": final_fee_rate}
