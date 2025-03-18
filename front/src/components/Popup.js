@@ -38,7 +38,7 @@ const Popup = ({ popupContent, closePopup, isExpanded, setIsExpanded }) => {
         background: "white",
         padding: "20px",
         border: "15px solid #d7d8d9",
-        zIndex: 1000,
+        zIndex: 9999,
         borderRadius: "0px",
         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
         width: "400px",
