@@ -21,7 +21,10 @@ def get_currency_data():
         "searchdate": today_date,  
         "data": "AP01",  
     }
-    response = requests.get(url, params=params, timeout=10, verify=certifi.where())
+    headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
+    response = requests.get(url, params=params, headers=headers, timeout=30, verify=certifi.where())
 
     if response.status_code==200:
         data = response.json()  

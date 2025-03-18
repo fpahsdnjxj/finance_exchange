@@ -33,7 +33,6 @@ class BankInfo(Base):
     currency_code=Column(CHAR(3), nullable=False)
     exchange_fee_rate=Column(Double, nullable=False)
     basic_preferential_rate=Column(Double, nullable=False)
-    max_preferential_rate=Column(Double, nullable=False)
     update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
     bank_condition=relationship("BankCondition", backref="bank")
@@ -45,7 +44,6 @@ class BankInfo(Base):
         f"bank_name={self.bank_name}, " 
         f"currency_code={self.currency_code}, "
         f"basic_preferential_rate={self.basic_preferential_rate}, "
-        f"max_preferential_rate={self.max_preferential_rate}, "
         f"update_date={self.update_date})"
         )
     
@@ -53,14 +51,12 @@ class BankInfo(Base):
     def create(cls, bank_name:str,
                 currency_code:str, 
                 exchange_fee_rate:float,
-                basic_preferential_rate: float, 
-                max_preferential_rate:float):
+                basic_preferential_rate: float):
         return cls(
             bank_name=bank_name,
             currency_code=currency_code,
             exchange_fee_rate=exchange_fee_rate,
-            basic_preferential_rate=basic_preferential_rate,
-            max_preferential_rate=max_preferential_rate
+            basic_preferential_rate=basic_preferential_rate
         )
 
 class BankCondition(Base): #환전 금액당 우대율 제외 저장할 table 
@@ -134,8 +130,6 @@ class CardInfo(Base):
     cardinfo_id=Column(CHAR(36), primary_key=True, index=True, default=lambda:(uuid.uuid4()))
     card_name=Column(VARCHAR(200), nullable=False)
     currency_code=Column(CHAR(3), nullable=False)
-    exchange_discount_rate=Column(Double, nullable=False)
-    re_exchange_discount_rate=Column(Double)
     basic_conditions=Column(Text)
     update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
@@ -146,22 +140,16 @@ class CardInfo(Base):
         f"cardinfo_id={self.cardinfo_id}, "
         f"card_name={self.card_name}, "
         f"currency_code={self.currency_code}, "
-        f"exchange_discount_rate={self.exchange_discount_rate}, "
-        f"re_exchange_discount_rate={self.re_exchange_discount_rate}, "
         f"basic_conditions={self.basic_conditions}, "
         f"update_date={self.update_date})")
     
     @classmethod
     def create(cls, card_name:str, 
                currency_code:str, 
-               exchange_discount_rate:float, 
-               re_exchange_discount_rate:float, 
                basic_conditions:str):
         return cls(
             card_name=card_name,
             currency_code=currency_code,
-            exchange_discount_rate=exchange_discount_rate,
-            re_exchange_discount_rate=re_exchange_discount_rate,
             basic_conditions=basic_conditions
         )
 

@@ -60,7 +60,7 @@ class BankInfoRepository:
         
 
         for field, value in vars(bankinfo).items():
-            if field in ["basic_preferential_rate", "max_preferential_rate"] and value is not None:
+            if field in ["basic_preferential_rate", "exchange_fee_rate"] and value is not None:
                 setattr(existing_bankinfo, field, value)
         
         self.session.commit()
@@ -164,7 +164,7 @@ class CardInfoRepository:
         
 
         for field, value in vars(cardinfo).items():
-            if field in ["exchange_discount_rate", "re_exchange_discount_rate", "basic_conditions"] and value is not None:
+            if field in [ "basic_conditions"] and value is not None:
                 setattr(existing_cardinfo, field, value)
         
         self.session.commit()
