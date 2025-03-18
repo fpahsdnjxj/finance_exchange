@@ -49,7 +49,7 @@ async def get_bank_conditions(
     if bankinfo is None:
         raise HTTPException(status_code=404, detail="Bank information not found")
 
-    conditions = [bank.condition_type for bank in bankinfo.bank_condition] if bankinfo.bank_condition else []
+    conditions = list({bank.condition_type for bank in bankinfo.bank_condition}) if bankinfo.bank_condition else []
     
     return BankBasicConditionSchema(conditions=conditions)
 
