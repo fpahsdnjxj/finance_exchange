@@ -14,9 +14,8 @@ import TermsModal from './components/TermsModal';
 import PrivacyModal from './components/PrivacyModal';
 
 const Banks = [
-  "하나은행", "KDB산업은행", "전북은행", "한국씨티은행", "NH 농협은행", "신한은행",
-  "KB국민은행", "IBK기업은행", "BNK경남은행", "제주은행", "광주은행",
-  "BNK부산은행", "iM뱅크", "SC제일은행", "우리은행", "Sh수협은행"
+  "하나은행", "NH 농협은행", "신한은행",
+  "KB국민은행", "우리은행",
 ];
 
 const airportBanks = ["하나은행", "국민은행", "우리은행", "신한은행"];
@@ -45,6 +44,7 @@ const CurrencyCalculator = () => {
   const [exchangeAmount, setExchangeAmount] = useState("");
   const [exchangeRate, setExchangeRate]=useState(0); 
   const [finalFee, setFinalFee]=useState(0);
+  const [rate, setRate]=useState(0);
 
   const [popupContent, setPopupContent] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false); 
@@ -113,14 +113,14 @@ const handleBankChange = (e) => {
     // 기본 조건을 바탕으로 세부 조건 백엔드에 요청하는 useEffect 부분입니다!
 useEffect(() => {
   if (selectedBasicCondition.length > 0) {
-    axios.get(`/api/bank/additional-conditions?default_condition=${selectedBasicCondition}`)
+    axios.get(`/api/bank/additional-conditions?default_condition=${encodeURIComponent(selectedBasicCondition)}`)
         .then((response) => {
           setDetailConditions(response.data);
         })
         .catch((error) => {
           console.error("세부 조건을 불러오는 중 오류 발생:", error);
           setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
-    });
+    })
   } else {
     setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
   }
@@ -158,6 +158,7 @@ const calculate_final_fee = () => {
   const final_fee = numericExchangeAmount / discountedRate;
 
   setFinalFee(final_fee.toFixed(2));
+  setRate(discountedRate.toFixed(2));
 };
 
 useEffect(() => {
@@ -165,6 +166,7 @@ useEffect(() => {
     calculate_final_fee();
   }
 }, [exchangeAmount, discountRate, exchangeRate]);
+
 
 
 // 선택된 값들 back으로 보내는 부분입니다!
@@ -287,6 +289,14 @@ const getImagePath = (cardName) => {
     }));
     console.log(additionalConditionsSelections)
   };
+
+  // 추가 데이터
+  const noticeData = [
+    "여행자 보험의 경우\n미화기준 300$ 상당액 이상 환전시 가입 가능합니다.",
+    "여행자 보험의 경우\n미화기준 300$ 상당액 이상 환전시 가입 가능합니다.",
+    "여행자 보험의 경우\n미화기준 300$ 상당액 이상 환전시 가입 가능합니다.",
+    "여행자 보험의 경우\n미화기준 300$ 상당액 이상 환전시 가입 가능합니다.",
+  ];
 
   return (
     <div className='container'>
@@ -423,7 +433,7 @@ const getImagePath = (cardName) => {
                 </td>
               </tr> 
               <tr>
-                <td className="under-t">최대 우대 적용 환율</td>
+                <td className="under-t">최대 우대 적용 금액</td>
                 <td style={{ borderRight: "none" }}>
                   <div
                     className="input-bankch"
@@ -433,8 +443,38 @@ const getImagePath = (cardName) => {
                   </div>
                 </td>
               </tr>
+              <tr>
+                <td className="under-t">최대 우대율</td>
+                <td style={{ borderRight: "none" }}>
+                  <div
+                  className='input-rate'>
+                    <input type="text" value={rate || 0} disabled style={{ width: "90%" }} /> 
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
+
+          <div className="box">
+
+      <div className="notice-box">
+        <h2 className="notice-title">
+          Notice for <span>{selectedBank}</span>
+        </h2>
+
+        {noticeData.map((notice, index) => (
+          <div key={index} className="notice-item">
+            {notice.split("\n").map((line, idx) => (
+              <span key={idx}>
+                {line}
+                <br />
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+
         </div>
 
         <div className='right-box exchange-rate-calculator'>
@@ -565,9 +605,14 @@ const getImagePath = (cardName) => {
       <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
       <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
     </footer>
-    <strong className="top-bar">
-  🌐 환전 고수
-    </strong>     
+    <div className="top-bar">
+    <img
+            src={`/assets/topicon.png`}
+            alt="아이콘"
+            style={{ width: "6%", borderRadius: "5px", marginRight: "15px" }}
+          />
+    </div>     
+
       
       
       </div>
