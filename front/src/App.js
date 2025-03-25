@@ -609,7 +609,7 @@ const getImagePath = (cardName) => {
     <img
             src={`/assets/topicon.png`}
             alt="아이콘"
-            style={{ width: "6%", borderRadius: "5px", marginRight: "15px" }}
+            style={{ width: "100px", borderRadius: "5px", marginRight: "15px" }}
           />
     </div>     
 
