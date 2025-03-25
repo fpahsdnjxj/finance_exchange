@@ -477,7 +477,7 @@ const getImagePath = (cardName) => {
 
           <div className="box">
 
-      <div className="notice-box">
+      <div className="notice-box"> 
         <h2 className="notice-title">
           Notice for <span>{selectedBank}</span>
         </h2>
