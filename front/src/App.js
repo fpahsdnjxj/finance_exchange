@@ -113,14 +113,14 @@ const handleBankChange = (e) => {
     // 기본 조건을 바탕으로 세부 조건 백엔드에 요청하는 useEffect 부분입니다!
 useEffect(() => {
   if (selectedBasicCondition.length > 0) {
-    axios.get(`/api/bank/additional-conditions?default_condition=${selectedBasicCondition}`)
+    axios.get(`/api/bank/additional-conditions?default_condition=${encodeURIComponent(selectedBasicCondition)}`)
         .then((response) => {
           setDetailConditions(response.data);
         })
         .catch((error) => {
           console.error("세부 조건을 불러오는 중 오류 발생:", error);
           setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
-    });
+    })
   } else {
     setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
   }
@@ -167,26 +167,6 @@ useEffect(() => {
   }
 }, [exchangeAmount, discountRate, exchangeRate]);
 
-
-useEffect(() => {
-  if (selectedBasicCondition !== "") {
-    const dummyDetailConditions = {
-      amountconditions: ["10만원 이상", "50만원 이상 우대"],
-      timeconditions: ["영업시간 내 방문", "주말 제외"],
-      otherconditions: ["VIP 고객 전용", "모바일 환전 우대"]
-    };
-    const timer = setTimeout(() => {
-      setDetailConditions(dummyDetailConditions);
-    }, 1000);
-    return () => clearTimeout(timer);
-  } else {
-    setDetailConditions({
-      amountconditions: [],
-      timeconditions: [],
-      otherconditions: []
-    });
-  }
-}, [selectedBasicCondition]);
 
 
 // 선택된 값들 back으로 보내는 부분입니다!
