@@ -1,7 +1,8 @@
-import React from "react";
-import DropdownAdd from "./DropdownAdd";
+import React, { useState } from 'react';
 
 const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange }) => {
+  const [selectedValues, setSelectedValues] = useState({});
+
   if (!selectedCondition) return null;
 
   const {
@@ -35,6 +36,25 @@ const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange 
   }
 
   if (conditionBlocks.length === 0) return null;
+
+  const handleCheckboxChange = (category, conditionItem, event) => {
+    const isChecked = event.target.checked;
+    setSelectedValues(prev => {
+      const newSelected = { ...prev };
+
+      if (isChecked) {
+        newSelected[category] = conditionItem;
+        onAdditionalConditionsChange(category, conditionItem, true);
+      } else {
+        if (newSelected[category] === conditionItem) {
+          delete newSelected[category];
+          onAdditionalConditionsChange(category, conditionItem, false);
+        }
+      }
+
+      return newSelected;
+    });
+  };
 
   return (
     <>
@@ -70,14 +90,23 @@ const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange 
                 }}
               />
             </div>
-
-            <DropdownAdd
-              conditions={block.data}
-              onConditionsChange={(selected) =>{
-                onAdditionalConditionsChange(block.type, selected)
-              }
-            }
-            />
+            {block.data.map((conditionItem, idx) => (
+              <div key={idx} style={{ marginBottom: "4px" }}>
+                <input
+                  type="checkbox"
+                  className="custom-checkbox"
+                  id={`${block.type}-${idx}`}
+                  checked={selectedValues[block.type] === conditionItem}
+                  onChange={(e) => handleCheckboxChange(block.type, conditionItem, e)}
+                />
+                <label
+                  htmlFor={`${block.type}-${idx}`}
+                  style={{ marginLeft: "4px", fontSize: "12px", verticalAlign: "middle" }}
+                >
+                  {conditionItem}
+                </label>
+              </div>
+            ))}
           </td>
         </tr>
       ))}

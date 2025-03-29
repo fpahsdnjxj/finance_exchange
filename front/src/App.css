@@ -372,7 +372,7 @@ select {
   width: 550px;
   padding: 15px;
   border: 2px solid #ddd;
-  border-radius: 8px;  
+  border-radius: 20px;  
   background-color: #fff;
 }
 
@@ -391,4 +391,26 @@ select {
   border-radius: 5px;
   white-space: pre-wrap; 
   font-size: 13px;
+}
+
+.custom-checkbox {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  border: 1px solid #616161;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.custom-checkbox:checked::after {
+  content: "v";
+  position: absolute;
+  bottom: -1px;
+  left: 2.5px;
+  font-size: 14px;
+  color: #616161;
 }

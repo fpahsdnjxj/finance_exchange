@@ -374,7 +374,13 @@ const getImagePath = (cardName) => {
                 <td style={{ borderRight: "none" }}>
                   <select 
                     value={selectedCurrency}
-                    onChange={(e) => setSelectedCurrency(e.target.value)}
+                    onChange={(e) => {
+                      if (!selectedBank) {
+                        alert("은행을 먼저 선택해주세요.");
+                        return;
+                      }
+                      setSelectedCurrency(e.target.value)
+                    }}
                     style={{ fontSize: 12 }}
                   >
                     <option value="" disabled>화폐 선택</option>
@@ -433,7 +439,7 @@ const getImagePath = (cardName) => {
                 </td>
               </tr> 
               <tr>
-                <td className="under-t">최대 우대 적용 금액</td>
+                <td className="under-t">우대 적용 금액</td>
                 <td style={{ borderRight: "none" }}>
                   <div
                     className="input-bankch"
@@ -444,7 +450,7 @@ const getImagePath = (cardName) => {
                 </td>
               </tr>
               <tr>
-                <td className="under-t">최대 우대율</td>
+                <td className="under-t">적용 우대율</td>
                 <td style={{ borderRight: "none" }}>
                   <div
                   className='input-rate'>
@@ -457,7 +463,7 @@ const getImagePath = (cardName) => {
 
           <div className="box">
 
-      <div className="notice-box">
+      <div className="notice-box"> 
         <h2 className="notice-title">
           Notice for <span>{selectedBank}</span>
         </h2>
@@ -609,7 +615,7 @@ const getImagePath = (cardName) => {
     <img
             src={`/assets/topicon.png`}
             alt="아이콘"
-            style={{ width: "6%", borderRadius: "5px", marginRight: "15px" }}
+            style={{ width: "100px", borderRadius: "5px", marginRight: "15px" }}
           />
     </div>     
 

@@ -1,7 +1,7 @@
 import json
 from fastapi import APIRouter, Depends, Query, HTTPException
-from db.repository import  BankInfoRepository, CurrencyRepository, BankConditionRepository
-from schema.response import BankBasicConditionSchema, BankDetailCondtionSchema
+from db.repository import  BankInfoRepository, BankConditionRepository
+from schema.response import BankBasicConditionSchema, BankDetailCondtionSchema, FinalExchangeFeeSchema
 import urllib.parse
 
 router=APIRouter(prefix="/api/bank")
@@ -30,10 +30,10 @@ async def get_get_bank_exchange_fee(
         if bankcondition:
             final_preferential_rate=bankcondition.apply_preferential_rate
         else:
-             return  {"final_fee_rate": -1}
+             return FinalExchangeFeeSchema(final_fee_rate=-1, apply_preferential_rate=0, exchange_fee_rate=0)
 
     final_fee_rate=bankinfo.exchange_fee_rate*(1-final_preferential_rate)
-    return  {"final_fee_rate": final_fee_rate}
+    return   FinalExchangeFeeSchema(final_fee_rate=final_fee_rate, apply_preferential_rate=bankcondition.apply_preferential_rate, exchange_fee_rate=bankinfo.exchange_fee_rate)
 
 @router.get("/bank-conditions", status_code=200)
 async def get_bank_conditions(
@@ -51,7 +51,7 @@ async def get_bank_conditions(
 
     conditions = list({bank.condition_type for bank in bankinfo.bank_condition}) if bankinfo.bank_condition else []
     
-    return BankBasicConditionSchema(conditions=conditions)
+    return BankBasicConditionSchema(conditions=conditions, bank_detail=[])
 
 @router.get("/additional-conditions", status_code=200)
 async def get_additional_conditions(
@@ -60,6 +60,7 @@ async def get_additional_conditions(
 ):
     default_condition=urllib.parse.unquote(default_condition)
     condition_list=bankcondition_repo.get_bankcondition_by_conditiontype(condition_type=default_condition)
+    condition_list=list(condition_list)
 
     amountconditions=[]
     timeconditions=[]
@@ -78,10 +79,18 @@ async def get_additional_conditions(
                 otherconditions.append(item.additional_conditions[2])
                 other_set.add(item.additional_conditions[2])
     
+    if len(condition_list)>0:
+        is_time_required=condition_list[0].is_time_required
+        is_amount_required=condition_list[0].is_amount_required
+        is_additional_required=condition_list[0].is_additional_required
+
     schema=BankDetailCondtionSchema(
         amountconditions=amountconditions,
         timeconditions=timeconditions,
-        otherconditions=otherconditions
+        otherconditions=otherconditions,
+        is_time_required=is_time_required,
+        is_amount_required=is_amount_required,
+        is_additional_required=is_additional_required
     )
 
     return schema
