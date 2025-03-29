@@ -94,7 +94,7 @@ const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange 
                 display: "inline-block",
                 paddingBottom: "4px",
                 fontWeight: "bolder",
-                color: "#636363",
+                color: "#787777",
               }}
             >
               {block.label}
