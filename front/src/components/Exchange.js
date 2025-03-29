@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useMediaQuery } from "react-responsive";
 import '../App.css';
 import Select from 'react-select';
 
@@ -26,8 +25,6 @@ function Exchange() {
   const [rightCurrency, setRightCurrency] = useState("USD");
   const [activeSide, setActiveSide] = useState("left");
   const [currencyRates, setCurrencyRates] = useState(null);
-
-  const veryNarrow = useMediaQuery({ query: "(max-width: 500px)" });
 
   useEffect(() => {
     const fetch_currency = async () => {

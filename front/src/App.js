@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import ReactCountryFlag from "react-country-flag";
@@ -36,15 +37,13 @@ const currencySymbols = {
 
 const CurrencyCalculator = () => {
   const [selectedCountry, setSelectedCountry] = useState("US");
-
   const [selectedLocation, setSelectedLocation] = useState("일반영업점");
   const [selectedBank, setSelectedBank] = useState(null);
   
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [exchangeAmount, setExchangeAmount] = useState("");
-  const [exchangeRate, setExchangeRate]=useState(0); 
   const [finalFee, setFinalFee]=useState(0);
-  const [rate, setRate]=useState(0);
+  const [discountRate, setDiscountRate]=useState("");
 
   const [popupContent, setPopupContent] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false); 
@@ -61,9 +60,9 @@ const CurrencyCalculator = () => {
     time: [],
     other: []
   });
+  const [bankDetail, setBankDetail] = useState([]); // 하단 박스에 넣을 내용과 관련된 useState
 
   const [cards, setCards] = useState(null);
-  const [discountRate, setDiscountRate]=useState("");
 
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
@@ -79,55 +78,51 @@ const closePopup = () => {
   setIsExpanded(false);
 };
 
-useEffect(()=>{
-  if (!selectedCurrency) return;
+useEffect(() => {
+  if (!selectedBank || !selectedCurrency) return;
   axios
-    .get(`/api/currency/base-rate?currency_code=${selectedCurrency}`) 
+    .get(`/api/bank/bank-conditions?bank_name=${selectedBank}&currency_code=${selectedCurrency}`)
     .then((response) => {
-      setExchangeRate(response.data.P_per_Won)
+      setConditions(response.data.conditions);
+      setBankDetail(response.data.bank_detail);
     })
     .catch((error) => {
-      console.error("기본 환율을 불러오는 중 오류 발생:", error);
+      console.error("조건을 불러오는 중 오류 발생:", error);
     });
-}, [selectedCurrency])
-
-  useEffect(() => {
-    if (!selectedBank || !selectedCurrency) return;
-    axios
-      .get(`/api/bank/bank-conditions?bank_name=${selectedBank}&currency_code=${selectedCurrency}`)
-      .then((response) => {
-        setConditions(response.data.conditions);
-      })
-      .catch((error) => {
-        console.error("조건을 불러오는 중 오류 발생:", error);
-      });
-  }, [selectedBank, selectedCurrency]);
-
+}, [selectedBank, selectedCurrency]);
 
 const handleBankChange = (e) => {
     setSelectedBank(e.target.value);
     setConditions([]);
     setSelectedBasicCondition("");
-  };
-
-    // 기본 조건을 바탕으로 세부 조건 백엔드에 요청하는 useEffect 부분입니다!
-useEffect(() => {
+};
+  
+useEffect(() => { // 세부 조건을 불러올 때 boolean 값도 추가적으로 받아오도록 수정
   if (selectedBasicCondition.length > 0) {
     axios.get(`/api/bank/additional-conditions?default_condition=${encodeURIComponent(selectedBasicCondition)}`)
-        .then((response) => {
-          setDetailConditions(response.data);
-        })
-        .catch((error) => {
-          console.error("세부 조건을 불러오는 중 오류 발생:", error);
-          setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
-    })
-  } else {
-    setDetailConditions({ amountconditions: [], timeconditions: [], otherconditions: [] });
-  }
-}, [selectedBasicCondition]);    
-
-  
-
+    .then((response) => { setDetailConditions(response.data); })
+    .catch((error) => {
+      console.error("세부 조건을 불러오는 중 오류 발생:", error);
+      setDetailConditions({
+        amountconditions: [],
+        timeconditions: [],
+        otherconditions: [],
+        is_amount_required: false,
+        is_time_required: false,
+        is_additional_required: false,
+      });
+    });
+} else {
+  setDetailConditions({
+    amountconditions: [],
+    timeconditions: [],
+    otherconditions: [],
+    is_amount_required: false,
+    is_time_required: false,
+    is_additional_required: false,
+  });
+}
+}, [selectedBasicCondition]);
 
 useEffect(() =>{
   const currency = currencyOptions.find(option => option.flag === selectedCountry);
@@ -145,71 +140,62 @@ useEffect(() =>{
   fetchCards();
 }, [selectedCountry]);
 
-const calculate_final_fee = () => {
+const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
   const numericExchangeAmount = parseFloat(exchangeAmount);
-  const numericExchangeRate = parseFloat(exchangeRate);
-  const numericDiscountRate = parseFloat(discountRate);
+  const numericFinalFeeRate = parseFloat(discountRate);
 
   if (isNaN(numericExchangeAmount) || numericExchangeAmount <= 0) return;
-  if (isNaN(numericExchangeRate) || numericExchangeRate <= 0) return;
-  if (isNaN(numericDiscountRate) || numericDiscountRate < 0) return;
-
-  const discountedRate = numericExchangeRate * ((100 - numericDiscountRate) / 100);
-  const final_fee = numericExchangeAmount / discountedRate;
-
-  setFinalFee(final_fee.toFixed(2));
-  setRate(discountedRate.toFixed(2));
-};
-
-useEffect(() => {
-  if (!isNaN(parseFloat(exchangeAmount)) && discountRate !== null && exchangeRate !== 0) {
-    calculate_final_fee();
-  }
-}, [exchangeAmount, discountRate, exchangeRate]);
-
-
-
-// 선택된 값들 back으로 보내는 부분입니다!
-useEffect(() => {
-  if (!selectedBank || !selectedCurrency) return;
-
-  const encodedBankname = encodeURIComponent(selectedBank);
-
-  const fetchExchangefeerate = async () => { 
-    try {
-      let url = `/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}`;
-
-      if (selectedBasicCondition !== "") {
-        url += `&condition_type=${encodeURIComponent(selectedBasicCondition)}`;
-      }
-      if(additionalConditionsSelections.amount.length===0){
-        additionalConditionsSelections.amount.push("default")
-      }
-      if(additionalConditionsSelections.time.length===0){
-        additionalConditionsSelections.time.push("default")
-      }
-      if(additionalConditionsSelections.other.length===0){
-        additionalConditionsSelections.other.push("default")
-      }
-      const flatAdditional = [
-        ...additionalConditionsSelections.amount,
-        ...additionalConditionsSelections.time,
-        ...additionalConditionsSelections.other,
-      ];
-      if (flatAdditional.length > 0) {
-        url += `&additional_conditions=${encodeURIComponent(flatAdditional.join(","))}`;
-      } 
-      const response = await axios.get(url);
-      setDiscountRate(response.data.final_fee_rate);
-    } catch (error) {
-      console.error("은행 수수료 정보를 불러오는 중 오류 발생:", error);
-    }
+    if (isNaN(numericFinalFeeRate)) return;
+    const final_fee = (1 + numericFinalFeeRate) * numericExchangeAmount;
+    setFinalFee(final_fee.toFixed(2));
   };
-  fetchExchangefeerate();
-}, [selectedBank, selectedCurrency, selectedBasicCondition, additionalConditionsSelections]);
+
+  useEffect(() => {
+    if (exchangeAmount && discountRate !== "") {
+      calculate_final_fee();
+    }
+  }, [exchangeAmount, discountRate]);
 
 
-const getImagePath = (cardName) => { 
+
+useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오는 부분
+    if (!selectedBank || !selectedCurrency) return;
+
+    const encodedBankname = encodeURIComponent(selectedBank);
+
+    const fetchExchangefeerate = async () => { 
+      try {
+        let url = `/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}`;
+        if (selectedBasicCondition !== "") {
+          url += `&condition_type=${encodeURIComponent(selectedBasicCondition)}`;
+        }
+        if (additionalConditionsSelections.amount.length === 0) {
+          additionalConditionsSelections.amount.push("none");
+        }
+        if (additionalConditionsSelections.time.length === 0) {
+          additionalConditionsSelections.time.push("none");
+        }
+        if (additionalConditionsSelections.other.length === 0) {
+          additionalConditionsSelections.other.push("none");
+        }
+        const flatAdditional = [
+          ...additionalConditionsSelections.amount,
+          ...additionalConditionsSelections.time,
+          ...additionalConditionsSelections.other,
+        ];
+        if (flatAdditional.length > 0) {
+          url += `&additional_conditions=${encodeURIComponent(flatAdditional.join(","))}`;
+        } 
+        const response = await axios.get(url);
+        setDiscountRate(response.data.final_fee_rate);
+      } catch (error) {
+        console.error("은행 수수료 정보를 불러오는 중 오류 발생:", error);
+      }
+    };
+    fetchExchangefeerate();
+  }, [selectedBank, selectedCurrency, selectedBasicCondition, additionalConditionsSelections]);
+
+  const getImagePath = (cardName) => { 
   let card = "default";
 
   if (cardName === "신한 SOL 트래블 카드") {
@@ -289,14 +275,6 @@ const getImagePath = (cardName) => {
     }));
     console.log(additionalConditionsSelections)
   };
-
-  // 추가 데이터
-  const noticeData = [
-    "여행자 보험의 경우\n미화기준 300$ 상당액 이상 환전시 가입 가능합니다.",
-    "여행자 보험의 경우\n미화기준 300$ 상당액 이상 환전시 가입 가능합니다.",
-    "여행자 보험의 경우\n미화기준 300$ 상당액 이상 환전시 가입 가능합니다.",
-    "여행자 보험의 경우\n미화기준 300$ 상당액 이상 환전시 가입 가능합니다.",
-  ];
 
   return (
     <div className='container'>
@@ -454,34 +432,33 @@ const getImagePath = (cardName) => {
                 <td style={{ borderRight: "none" }}>
                   <div
                   className='input-rate'>
-                    <input type="text" value={rate || 0} disabled style={{ width: "90%" }} /> 
+                    <input type="text" value={discountRate || 0} disabled style={{ width: "90%" }} /> 
                   </div>
                 </td>
               </tr>
             </tbody>
           </table>
-
           <div className="box">
 
-      <div className="notice-box"> 
-        <h2 className="notice-title">
-          Notice for <span>{selectedBank}</span>
-        </h2>
+<div className="notice-box"> 
+  <h2 className="notice-title">
+    Notice for <span>{selectedBank}</span>
+  </h2>
 
-        {noticeData.map((notice, index) => (
-          <div key={index} className="notice-item">
-            {notice.split("\n").map((line, idx) => (
-              <span key={idx}>
-                {line}
-                <br />
-              </span>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
+  {bankDetail && bankDetail.map((notice, index) => ( // list 형태의 bank detail이 잘 뜨도록
+  <div key={index} className="notice-item">
+    {notice.split("\n").map((line, idx) => (
+      <span key={idx}>
+        {line}
+        <br />
+      </span>
+    ))}
+  </div>
+))}
+</div>
+</div>
 
-        </div>
+        </div>       
 
         <div className='right-box exchange-rate-calculator'>
           <h2>카드별 환율 계산기</h2>
@@ -617,10 +594,7 @@ const getImagePath = (cardName) => {
             alt="아이콘"
             style={{ width: "100px", borderRadius: "5px", marginRight: "15px" }}
           />
-    </div>     
-
-      
-      
+      </div>
       </div>
   );
 };

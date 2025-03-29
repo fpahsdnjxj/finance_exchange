@@ -3,35 +3,54 @@ import React, { useState } from 'react';
 const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange }) => {
   const [selectedValues, setSelectedValues] = useState({});
 
-  if (!selectedCondition) return null;
-
   const {
     amountconditions = [],
     timeconditions = [],
-    otherconditions = []
+    otherconditions = [],
+    is_amount_required,
+    is_time_required,
+    is_additional_required,
   } = selectedCondition;
 
   const conditionBlocks = [];
 
-  if (amountconditions.length > 0) {
+  if (amountconditions.length > 0) { // true가 오면 필수 문구 띄우도록록
     conditionBlocks.push({
-      label: "조건 적용 기준 금액",
+      label: (
+        <>
+          조건 적용 기준 금액{" "}
+          {is_amount_required && <span style={{ color: "red", marginLeft: "4px" }}>* 필수 선택</span>}
+        </>
+      ),
       type: "amount",
-      data: amountconditions
+      data: amountconditions,
+      required: is_amount_required
     });
   }
   if (timeconditions.length > 0) {
     conditionBlocks.push({
-      label: "시간에 따른 조건",
+      label: (
+        <>
+          시간에 따른 조건{" "}
+          {is_time_required && <span style={{ color: "red", marginLeft: "4px" }}>* 필수 선택</span>}
+        </>
+      ),
       type: "time",
-      data: timeconditions
+      data: timeconditions,
+      required: is_time_required
     });
   }
   if (otherconditions.length > 0) {
     conditionBlocks.push({
-      label: "기타 추가 조건",
+      label: (
+        <>
+          기타 추가 조건{" "}
+          {is_additional_required && <span style={{ color: "red", marginLeft: "4px" }}>* 필수 선택</span>}
+        </>
+      ),
       type: "other",
-      data: otherconditions
+      data: otherconditions,
+      required: is_additional_required
     });
   }
 
@@ -79,16 +98,7 @@ const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange 
               }}
             >
               {block.label}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  width: "100%",
-                  borderBottom: "3px solid rgba(9, 9, 9, 0.31)",
-                  transform: "translateY(-1px)"
-                }}
-              />
+              <div/>
             </div>
             {block.data.map((conditionItem, idx) => (
               <div key={idx} style={{ marginBottom: "4px" }}>
