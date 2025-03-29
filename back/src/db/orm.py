@@ -33,6 +33,7 @@ class BankInfo(Base):
     currency_code=Column(CHAR(3), nullable=False)
     exchange_fee_rate=Column(Double, nullable=False)
     basic_preferential_rate=Column(Double, nullable=False)
+    bank_detail_info=Column(JSON, nullable=True, default=list)
     update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
     bank_condition=relationship("BankCondition", backref="bank")

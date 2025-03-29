@@ -51,7 +51,7 @@ async def get_bank_conditions(
 
     conditions = list({bank.condition_type for bank in bankinfo.bank_condition}) if bankinfo.bank_condition else []
     
-    return BankBasicConditionSchema(conditions=conditions, bank_detail=[])
+    return BankBasicConditionSchema(conditions=conditions, bank_detail=bankinfo.bank_detail_info)
 
 @router.get("/additional-conditions", status_code=200)
 async def get_additional_conditions(
