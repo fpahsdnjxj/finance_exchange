@@ -1,6 +1,6 @@
 import json
 from fastapi import APIRouter, Depends, Query, HTTPException
-from db.repository import  BankInfoRepository, BankConditionRepository
+from db.repository import  BankInfoRepository, BankConditionRepository, CurrencyRepository
 from schema.response import BankBasicConditionSchema, BankDetailCondtionSchema, FinalExchangeFeeSchema
 import urllib.parse
 
@@ -14,11 +14,15 @@ async def get_get_bank_exchange_fee(
     additional_conditions:str=Query(None),
     bankinfo_repo:BankInfoRepository=Depends(),
     bankcondition_repo:BankConditionRepository=Depends(),
+    currency_repo:CurrencyRepository=Depends()
 ):
     bank_name=urllib.parse.unquote(bank_name)
     bankinfo=bankinfo_repo.get_particular_bankinfo(currency_code=currency_code, bank_name=bank_name)
+    currency=currency_repo.get_currency_by_currencycode(currency_code=currency_code)
     if not bankinfo:
          raise HTTPException(status_code= 404, detail="wrong bank and currency")
+    if not currency:
+        raise HTTPException(status_code= 404, detail="wrong currency")
     final_preferential_rate=bankinfo.basic_preferential_rate
     if condition_type:
         condition_type=urllib.parse.unquote(condition_type)
@@ -34,7 +38,9 @@ async def get_get_bank_exchange_fee(
     else:
         return FinalExchangeFeeSchema(final_fee_rate=-1, apply_preferential_rate=0, exchange_fee_rate=0)
     final_fee_rate=bankinfo.exchange_fee_rate*(1-final_preferential_rate)
-    return   FinalExchangeFeeSchema(final_fee_rate=final_fee_rate, apply_preferential_rate=bankcondition.apply_preferential_rate, exchange_fee_rate=bankinfo.exchange_fee_rate)
+    applied_exchange_rate=currency.P_per_Won*(1+final_fee_rate)
+    
+    return   FinalExchangeFeeSchema(final_fee_rate=applied_exchange_rate, apply_preferential_rate=bankcondition.apply_preferential_rate, exchange_fee_rate=bankinfo.exchange_fee_rate)
 
 @router.get("/bank-conditions", status_code=200)
 async def get_bank_conditions(
