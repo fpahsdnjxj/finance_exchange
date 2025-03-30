@@ -1,7 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange }) => {
+const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange, onValidityChange }) => {
   const [selectedValues, setSelectedValues] = useState({});
+
+  useEffect(() => { // 필수인데 사용자가 값을 선택하지 않으면 부모 컴포넌트 쪽으로 flag 전달
+    let isValid = true;
+    conditionBlocks.forEach(block => {
+      if (block.required && !selectedValues[block.type]) {
+        isValid = false;
+      }
+    });
+    if (onValidityChange) {
+      onValidityChange(isValid ? 1 : 0);
+    }
+  }, [selectedValues, selectedCondition]);
 
   const {
     amountconditions = [],
@@ -14,7 +26,7 @@ const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange 
 
   const conditionBlocks = [];
 
-  if (amountconditions.length > 0) { // true가 오면 필수 문구 띄우도록록
+  if (amountconditions.length > 0) { // true가 오면 필수 문구 띄우도록 하는 부분
     conditionBlocks.push({
       label: (
         <>
@@ -89,12 +101,12 @@ const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange 
             <div
               style={{
                 fontSize: 12,
-                marginBottom: "13px",
+                marginBottom: "7px",
                 position: "relative",
                 display: "inline-block",
                 paddingBottom: "4px",
                 fontWeight: "bolder",
-                color: "#787777",
+                color: "#3d3d3d",
               }}
             >
               {block.label}

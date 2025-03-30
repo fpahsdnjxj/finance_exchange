@@ -60,6 +60,9 @@ const CurrencyCalculator = () => {
     time: [],
     other: []
   });
+
+  const [additionalConditionsValid, setAdditionalConditionsValid] = useState(1); // 환전 금액 막는 용 valid flag
+
   const [bankDetail, setBankDetail] = useState([]); // 하단 박스에 넣을 내용과 관련된 useState
 
   const [cards, setCards] = useState(null);
@@ -396,6 +399,7 @@ useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오�
                   <AdditionalConditions
                     selectedCondition={detailConditions}
                     onAdditionalConditionsChange={handleAdditionalConditionsChange}
+                    onValidityChange={setAdditionalConditionsValid}
                   />
                 )
               }
@@ -406,7 +410,13 @@ useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오�
                     <input
                       type="text"
                       value={exchangeAmount}
-                      onChange={(e) => setExchangeAmount(e.target.value)}
+                      onChange={(e) => { // 조건이 충분이 선택되지 않으면 경고 + 막기
+                        if (additionalConditionsValid === 0) {
+                          alert("필수 세부 조건을 모두 선택해 주세요.");
+                          return;
+                        }
+                        setExchangeAmount(e.target.value);
+                      }}
                       style={{ width: "90%" }}
                       placeholder="환전할 원화를 입력하세요"
                     />
