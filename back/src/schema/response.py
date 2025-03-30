@@ -8,6 +8,7 @@ class CurrencySchema(BaseModel):
 
 class BankBasicConditionSchema(BaseModel):
     conditions: List[str]
+    bank_detail: List[str]
     class Config:
         from_attributes=True
 
@@ -15,6 +16,9 @@ class BankDetailCondtionSchema(BaseModel):
     amountconditions: Optional[List[str]]=[]
     timeconditions: Optional[List[str]]=[]
     otherconditions: Optional[List[str]]=[]
+    is_amount_required: bool
+    is_time_required: bool
+    is_additional_required: bool
     class Config:
         from_attributes=True
 
@@ -35,3 +39,11 @@ class CardInfoSchema(BaseModel):
 
 class ListCardInfoSchema(BaseModel):
     card_infos:List[CardInfoSchema]
+
+class FinalExchangeFeeSchema(BaseModel):
+    final_fee_rate: float
+    apply_preferential_rate: float
+    exchange_fee_rate: float
+
+    class Config:
+        from_attributes=True

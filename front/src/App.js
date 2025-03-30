@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import ReactCountryFlag from "react-country-flag";
@@ -53,7 +52,10 @@ const CurrencyCalculator = () => {
   const [detailConditions, setDetailConditions] = useState({
     amountconditions: [],
     timeconditions: [],
-    otherconditions: []
+    otherconditions: [],
+    is_amount_required: false,
+    is_time_required: false,
+    is_additional_required: false,
   });
   const [additionalConditionsSelections, setAdditionalConditionsSelections] = useState({
     amount: [],
@@ -173,13 +175,13 @@ useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오�
           url += `&condition_type=${encodeURIComponent(selectedBasicCondition)}`;
         }
         if (additionalConditionsSelections.amount.length === 0) {
-          additionalConditionsSelections.amount.push("none");
+          additionalConditionsSelections.amount.push("default");
         }
         if (additionalConditionsSelections.time.length === 0) {
-          additionalConditionsSelections.time.push("none");
+          additionalConditionsSelections.time.push("default");
         }
         if (additionalConditionsSelections.other.length === 0) {
-          additionalConditionsSelections.other.push("none");
+          additionalConditionsSelections.other.push("default");
         }
         const flatAdditional = [
           ...additionalConditionsSelections.amount,
@@ -187,7 +189,7 @@ useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오�
           ...additionalConditionsSelections.other,
         ];
         if (flatAdditional.length > 0) {
-          url += `&additional_conditions=${encodeURIComponent(flatAdditional.join(","))}`;
+          url += `&additional_conditions=${encodeURIComponent(flatAdditional.join("|"))}`;
         } 
         const response = await axios.get(url);
         setDiscountRate(response.data.final_fee_rate);
@@ -274,9 +276,8 @@ useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오�
   const handleAdditionalConditionsChange = (type, selected) => {
     setAdditionalConditionsSelections((prev) => ({
       ...prev,
-      [type]: selected
+      [type]: [selected]
     }));
-    console.log(additionalConditionsSelections)
   };
 
   return (
@@ -397,7 +398,14 @@ useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오�
                   detailConditions.timeconditions.length > 0 ||
                   detailConditions.otherconditions.length > 0) && (
                   <AdditionalConditions
-                    selectedCondition={detailConditions}
+                    selectedCondition={{
+                      amountconditions: detailConditions.amountconditions,
+                      timeconditions: detailConditions.timeconditions,
+                      otherconditions: detailConditions.otherconditions,
+                      is_amount_required: detailConditions.is_amount_required,
+                      is_time_required: detailConditions.is_time_required,
+                      is_additional_required: detailConditions.is_additional_required
+                    }}
                     onAdditionalConditionsChange={handleAdditionalConditionsChange}
                     onValidityChange={setAdditionalConditionsValid}
                   />
