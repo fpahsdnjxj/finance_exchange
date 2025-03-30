@@ -42,7 +42,7 @@ const CurrencyCalculator = () => {
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [exchangeAmount, setExchangeAmount] = useState("");
   const [finalFee, setFinalFee]=useState(0);
-  const [exchangeRate, setExchangeRate]=useState(0);
+  const [feeRate, setFeeRate]=useState("");
   const [discountRate, setDiscountRate]=useState("");
 
   const [popupContent, setPopupContent] = useState(null);
@@ -83,18 +83,6 @@ const closePopup = () => {
   setPopupContent(null);
   setIsExpanded(false);
 };
-
-useEffect(()=>{
-  if (!selectedCurrency) return;
-  axios
-    .get(`/api/currency/base-rate?currency_code=${selectedCurrency}`) 
-    .then((response) => {
-      setExchangeRate(response.data.P_per_Won)
-    })
-    .catch((error) => {
-      console.error("기본 환율을 불러오는 중 오류 발생:", error);
-    });
-}, [selectedCurrency])
 
 useEffect(() => {
   if (!selectedBank || !selectedCurrency) return;
@@ -160,24 +148,20 @@ useEffect(() =>{
 
 const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
   const numericExchangeAmount = parseFloat(exchangeAmount);
-  const numericExchangeRate = parseFloat(exchangeRate);
-  const numericFinalFeeRate = parseFloat(discountRate);
+  const numericFinalFeeRate = parseFloat(feeRate);
 
   if (isNaN(numericExchangeAmount) || numericExchangeAmount <= 0) return;
     if (isNaN(numericFinalFeeRate)) return;
-    if (isNaN(numericExchangeRate) || numericExchangeRate <= 0) return;
 
-    const final_fee = (1 + numericFinalFeeRate) * numericExchangeAmount * numericExchangeRate;
+    const final_fee = (1 + numericFinalFeeRate) * numericExchangeAmount
     setFinalFee(final_fee.toFixed(2));
   };
 
   useEffect(() => {
-    if (exchangeAmount && discountRate !== "") {
+    if (exchangeAmount && feeRate !== "") {
       calculate_final_fee();
     }
-  }, [exchangeAmount, discountRate]);
-
-
+  }, [exchangeAmount, feeRate]);
 
 useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오는 부분
     if (!selectedBank || !selectedCurrency) return;
@@ -208,7 +192,9 @@ useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오�
           url += `&additional_conditions=${encodeURIComponent(flatAdditional.join("|"))}`;
         } 
         const response = await axios.get(url);
-        setDiscountRate(response.data.final_fee_rate);
+        setFeeRate(response.data.final_fee_rate);
+        setDiscountRate(response.data.apply_preferential_rate);
+
       } catch (error) {
         console.error("은행 수수료 정보를 불러오는 중 오류 발생:", error);
       }
@@ -466,7 +452,7 @@ useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오�
                 <td style={{ borderRight: "none" }}>
                   <div
                   className='input-rate'>
-                    <input type="text" value={discountRate || 0} disabled style={{ width: "90%" }} /> 
+                    <input type="text" value={discountRate * 100 || 0} disabled style={{ width: "90%" }} /> 
                   </div>
                 </td>
               </tr>
