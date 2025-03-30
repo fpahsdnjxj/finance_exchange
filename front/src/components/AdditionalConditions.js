@@ -75,11 +75,11 @@ const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange,
 
       if (isChecked) {
         newSelected[category] = conditionItem;
-        onAdditionalConditionsChange(category, conditionItem);
+        onAdditionalConditionsChange(category, conditionItem, true);
       } else {
         if (newSelected[category] === conditionItem) {
           delete newSelected[category];
-          onAdditionalConditionsChange(category, conditionItem);
+          onAdditionalConditionsChange(category, conditionItem, false);
         }
       }
 

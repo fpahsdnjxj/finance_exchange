@@ -37,7 +37,7 @@ const currencySymbols = {
 const CurrencyCalculator = () => {
   const [selectedCountry, setSelectedCountry] = useState("US");
   const [selectedLocation, setSelectedLocation] = useState("일반영업점");
-  const [selectedBank, setSelectedBank] = useState(null);
+  const [selectedBank, setSelectedBank] = useState("");
   
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [exchangeAmount, setExchangeAmount] = useState("");
@@ -83,6 +83,14 @@ const closePopup = () => {
   setPopupContent(null);
   setIsExpanded(false);
 };
+
+useEffect(() => {
+  setAdditionalConditionsSelections({
+    amount: [],
+    time: [],
+    other: []
+  });
+}, [selectedBasicCondition]);
 
 useEffect(() => {
   if (!selectedBank || !selectedCurrency) return;
@@ -163,45 +171,48 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
     }
   }, [exchangeAmount, feeRate]);
 
-useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오는 부분
+  useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오는 부분
     if (!selectedBank || !selectedCurrency) return;
-
+  
     const encodedBankname = encodeURIComponent(selectedBank);
-
-    const fetchExchangefeerate = async () => { 
+  
+    const fetchExchangefeerate = async () => {
       try {
         let url = `/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}`;
         if (selectedBasicCondition !== "") {
           url += `&condition_type=${encodeURIComponent(selectedBasicCondition)}`;
         }
-        if (additionalConditionsSelections.amount.length === 0) {
-          additionalConditionsSelections.amount.push("default");
-        }
-        if (additionalConditionsSelections.time.length === 0) {
-          additionalConditionsSelections.time.push("default");
-        }
-        if (additionalConditionsSelections.other.length === 0) {
-          additionalConditionsSelections.other.push("default");
-        }
+        
+        const amountArray = additionalConditionsSelections.amount.length > 0 
+          ? additionalConditionsSelections.amount 
+          : ["default"];
+        const timeArray = additionalConditionsSelections.time.length > 0 
+          ? additionalConditionsSelections.time 
+          : ["default"];
+        const otherArray = additionalConditionsSelections.other.length > 0 
+          ? additionalConditionsSelections.other 
+          : ["default"];
+        
         const flatAdditional = [
-          ...additionalConditionsSelections.amount,
-          ...additionalConditionsSelections.time,
-          ...additionalConditionsSelections.other,
+          ...amountArray,
+          ...timeArray,
+          ...otherArray,
         ];
+        
         if (flatAdditional.length > 0) {
           url += `&additional_conditions=${encodeURIComponent(flatAdditional.join("|"))}`;
-        } 
+        }
+        
         const response = await axios.get(url);
         setFeeRate(response.data.final_fee_rate);
         setDiscountRate(response.data.apply_preferential_rate);
-
       } catch (error) {
         console.error("은행 수수료 정보를 불러오는 중 오류 발생:", error);
       }
     };
     fetchExchangefeerate();
   }, [selectedBank, selectedCurrency, selectedBasicCondition, additionalConditionsSelections]);
-
+  
   const getImagePath = (cardName) => { 
   let card = "default";
 
@@ -275,11 +286,24 @@ useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오�
     );
   };  
 
-  const handleAdditionalConditionsChange = (type, selected) => {
-    setAdditionalConditionsSelections((prev) => ({
-      ...prev,
-      [type]: [selected]
-    }));
+  const handleAdditionalConditionsChange = (type, selected, isSelected) => {
+    setAdditionalConditionsSelections((prev) => {
+      const current = prev[type] || [];
+      let newArr;
+      if (isSelected) {
+        if (!current.includes(selected)) {
+          newArr = [...current, selected];
+        } else {
+          newArr = current;
+        }
+      } else {
+        newArr = current.filter(item => item !== selected);
+      }
+      return {
+        ...prev,
+        [type]: newArr
+      };
+    });
   };
 
   return (
@@ -421,7 +445,11 @@ useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오�
                       type="text"
                       value={exchangeAmount}
                       onChange={(e) => { // 조건이 충분이 선택되지 않으면 경고 + 막기
-                        if (additionalConditionsValid === 0) {
+                        if (!selectedBasicCondition) {
+                          alert("모든 조건을 선택하셔야 환전 금액을 입력하실 수 있습니다.");
+                          return;
+                        }
+                        else if (additionalConditionsValid === 0) {
                           alert("필수 세부 조건을 모두 선택해 주세요.");
                           return;
                         }
