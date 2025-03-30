@@ -161,7 +161,7 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
   if (isNaN(numericExchangeAmount) || numericExchangeAmount <= 0) return;
     if (isNaN(numericFinalFeeRate)) return;
 
-    const final_fee = (1 + numericFinalFeeRate) * numericExchangeAmount
+    const final_fee = numericExchangeAmount/numericFinalFeeRate
     setFinalFee(final_fee.toFixed(2));
   };
 
