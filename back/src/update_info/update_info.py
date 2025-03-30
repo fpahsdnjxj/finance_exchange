@@ -1,4 +1,5 @@
 import json
+import logging
 from db.repository import (
     BankInfoRepository, BankConditionRepository, BankExchangeAmountDiscountRepository, 
     CardInfoRepository, CardBenefitRepository
@@ -8,6 +9,9 @@ from db.orm import (
     CardInfo, CardBenefit
 )
 from db.connection import get_db
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 db_session = next(get_db())
 
@@ -28,7 +32,7 @@ def update_bankinfo(data):
             basic_preferential_rate=item["basic_preferential_rate"]
         )
         bankinfo_repo.update_bankinfo(bankinfo=bank_info)
-        print(f"Updated BankInfo: {bank_info}")
+        logger.info(f"Updated BankInfo: {bank_info}")
 
 def update_bankcondition(data):
     """은행 조건을 업데이트하는 함수"""
@@ -86,7 +90,7 @@ def update_cardinfo(data):
             basic_conditions=item["basic_conditions"]
         )
         cardinfo_repo.update_cardinfo(card_info)
-        print(f"Updated CardInfo: {card_info}")
+        logger.info(f"Updated CardInfo: {card_info}")
 
 def update_cardbenefit(data):
     """카드 혜택을 업데이트하는 함수"""

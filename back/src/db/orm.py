@@ -1,6 +1,6 @@
 import json
 from typing import List
-from sqlalchemy import Column, CHAR, VARCHAR, DateTime, Double, Text, ForeignKey, func, JSON
+from sqlalchemy import Column, CHAR, VARCHAR, DateTime, Double, Text, ForeignKey, func, JSON, Boolean
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime, timezone
 import uuid
@@ -33,6 +33,7 @@ class BankInfo(Base):
     currency_code=Column(CHAR(3), nullable=False)
     exchange_fee_rate=Column(Double, nullable=False)
     basic_preferential_rate=Column(Double, nullable=False)
+    bank_detail_info=Column(JSON, nullable=True, default=list)
     update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
     bank_condition=relationship("BankCondition", backref="bank")
@@ -68,6 +69,9 @@ class BankCondition(Base): #환전 금액당 우대율 제외 저장할 table
     apply_preferential_rate=Column(Double, nullable=False)
     update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
     additional_conditions=Column(JSON, nullable=True)
+    is_amount_required=Column(Boolean, nullable=False, default=False)
+    is_time_required=Column(Boolean, nullable=False, default=False)
+    is_additional_required=Column(Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return(f"BankCondition("
@@ -102,6 +106,7 @@ class BankExchangeAmountDiscount(Base):#환전 금액 당 수수료가 깎이는
     max_amount=Column(Double, nullable=True)
     apply_preferential_rate=Column(Double, nullable=False)
     update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
+
 
     def __repr__(self):
         return (f"BankExchangeAmountDiscount("
