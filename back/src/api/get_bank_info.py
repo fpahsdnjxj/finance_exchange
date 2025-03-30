@@ -24,14 +24,15 @@ async def get_get_bank_exchange_fee(
         condition_type=urllib.parse.unquote(condition_type)
         if additional_conditions:
             additional_conditions=urllib.parse.unquote(additional_conditions)
-            additional_conditions=additional_conditions.split(",")
+            additional_conditions=additional_conditions.split("|")
             additional_conditions=json.dumps(additional_conditions, ensure_ascii=False)
         bankcondition=bankcondition_repo.get_particular_bankcondition(condition_type=condition_type, additional_condition=additional_conditions, bankinfo_id=bankinfo.bankinfo_id)
         if bankcondition:
             final_preferential_rate=bankcondition.apply_preferential_rate
         else:
              return FinalExchangeFeeSchema(final_fee_rate=-1, apply_preferential_rate=0, exchange_fee_rate=0)
-
+    else:
+        return FinalExchangeFeeSchema(final_fee_rate=-1, apply_preferential_rate=0, exchange_fee_rate=0)
     final_fee_rate=bankinfo.exchange_fee_rate*(1-final_preferential_rate)
     return   FinalExchangeFeeSchema(final_fee_rate=final_fee_rate, apply_preferential_rate=bankcondition.apply_preferential_rate, exchange_fee_rate=bankinfo.exchange_fee_rate)
 
