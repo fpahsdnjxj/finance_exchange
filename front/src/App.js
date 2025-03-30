@@ -43,6 +43,7 @@ const CurrencyCalculator = () => {
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [exchangeAmount, setExchangeAmount] = useState("");
   const [finalFee, setFinalFee]=useState(0);
+  const [exchangeRate, setExchangeRate]=useState(0);
   const [discountRate, setDiscountRate]=useState("");
 
   const [popupContent, setPopupContent] = useState(null);
@@ -80,6 +81,18 @@ const closePopup = () => {
   setPopupContent(null);
   setIsExpanded(false);
 };
+
+useEffect(()=>{
+  if (!selectedCurrency) return;
+  axios
+    .get(`/api/currency/base-rate?currency_code=${selectedCurrency}`) 
+    .then((response) => {
+      setExchangeRate(response.data.P_per_Won)
+    })
+    .catch((error) => {
+      console.error("기본 환율을 불러오는 중 오류 발생:", error);
+    });
+}, [selectedCurrency])
 
 useEffect(() => {
   if (!selectedBank || !selectedCurrency) return;
@@ -145,11 +158,14 @@ useEffect(() =>{
 
 const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
   const numericExchangeAmount = parseFloat(exchangeAmount);
+  const numericExchangeRate = parseFloat(exchangeRate);
   const numericFinalFeeRate = parseFloat(discountRate);
 
   if (isNaN(numericExchangeAmount) || numericExchangeAmount <= 0) return;
     if (isNaN(numericFinalFeeRate)) return;
-    const final_fee = (1 + numericFinalFeeRate) * numericExchangeAmount;
+    if (isNaN(numericExchangeRate) || numericExchangeRate <= 0) return;
+
+    const final_fee = (1 + numericFinalFeeRate) * numericExchangeAmount * numericExchangeRate;
     setFinalFee(final_fee.toFixed(2));
   };
 
