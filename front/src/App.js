@@ -113,7 +113,7 @@ const handleBankChange = (e) => {
   
 useEffect(() => { // 세부 조건을 불러올 때 boolean 값도 추가적으로 받아오도록 수정
   if (selectedBasicCondition.length > 0) {
-    axios.get(`/api/bank/additional-conditions?default_condition=${encodeURIComponent(selectedBasicCondition)}`)
+    axios.get(`/api/bank/additional-conditions?bank_name=${selectedBank}&currency_code=${selectedCurrency}&default_condition=${encodeURIComponent(selectedBasicCondition)}`)
     .then((response) => { setDetailConditions(response.data); })
     .catch((error) => {
       console.error("세부 조건을 불러오는 중 오류 발생:", error);
