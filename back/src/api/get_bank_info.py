@@ -63,10 +63,15 @@ async def get_bank_conditions(
 @router.get("/additional-conditions", status_code=200)
 async def get_additional_conditions(
     default_condition:str=Query(..., description="default condition is required"),
+    bank_name: str = Query(..., description="Bank name is required"),
+    currency_code:str=Query(..., description="Currency code is required"),
+    bankinfo_refo:BankInfoRepository=Depends(),
     bankcondition_repo: BankConditionRepository =Depends(),
 ):
     default_condition=urllib.parse.unquote(default_condition)
-    condition_list=bankcondition_repo.get_bankcondition_by_conditiontype(condition_type=default_condition)
+    bank_name=urllib.parse.unquote(bank_name)
+    bankinfo=bankinfo_refo.get_particular_bankinfo(currency_code=currency_code, bank_name=bank_name)
+    condition_list=bankcondition_repo.get_bankcondition_by_bankinfoid(bankinfo_id=bankinfo.bankinfo_id)
     condition_list=list(condition_list)
 
     amountconditions=[]
