@@ -154,6 +154,12 @@ useEffect(() =>{
   fetchCards();
 }, [selectedCountry]);
 
+useEffect(() => {
+  setExchangeAmount("");
+  setFinalFee(0);
+}, [selectedBank, selectedCurrency, selectedBasicCondition]);
+
+
 const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
   const numericExchangeAmount = parseFloat(exchangeAmount);
   const numericFinalFeeRate = parseFloat(feeRate);
