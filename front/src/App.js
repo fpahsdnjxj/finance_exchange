@@ -286,7 +286,17 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
     );
   };  
 
-  const handleAdditionalConditionsChange = (type, selected, isSelected) => {
+  const handleAdditionalConditionsChange = (category, newArray) => {
+    setAdditionalConditionsSelections(prev => ({
+      ...prev,
+      [category]: newArray,
+    }));
+  };
+
+
+  
+
+  /* const handleAdditionalConditionsChange = (type, selected, isSelected) => {
     setAdditionalConditionsSelections((prev) => {
       const current = prev[type] || [];
       let newArr;
@@ -304,7 +314,7 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
         [type]: newArr
       };
     });
-  };
+  }; */
 
   return (
     <div className='container'>
