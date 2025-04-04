@@ -83,8 +83,8 @@ class BankConditionRepository:
             query = query.where(BankCondition.additional_conditions.is_(None))
             return self.session.scalar(query)
     
-    def get_bankcondition_by_bankinfoid(self, bankinfo_id: str)->Optional[List[BankCondition]]:
-        return self.session.scalars(select(BankCondition).where(BankCondition.bankinfo_id==bankinfo_id))
+    def get_bankcondition_by_bankinfoid_and_condition_type(self, bankinfo_id: str, condition_type:str)->Optional[List[BankCondition]]:
+        return self.session.scalars(select(BankCondition).where(and_(BankCondition.bankinfo_id==bankinfo_id, BankCondition.condition_type==condition_type)))
         
     
     def get_bankcondition_by_conditiontype(self, condition_type:str)->Optional[List[BankCondition]]:

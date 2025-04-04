@@ -71,7 +71,7 @@ async def get_additional_conditions(
     default_condition=urllib.parse.unquote(default_condition)
     bank_name=urllib.parse.unquote(bank_name)
     bankinfo=bankinfo_refo.get_particular_bankinfo(currency_code=currency_code, bank_name=bank_name)
-    condition_list=bankcondition_repo.get_bankcondition_by_bankinfoid(bankinfo_id=bankinfo.bankinfo_id)
+    condition_list=bankcondition_repo.get_bankcondition_by_bankinfoid_and_condition_type(bankinfo_id=bankinfo.bankinfo_id, condition_type=default_condition)
     condition_list=list(condition_list)
 
     amountconditions=[]
@@ -96,14 +96,16 @@ async def get_additional_conditions(
         is_amount_required=condition_list[0].is_amount_required
         is_additional_required=condition_list[0].is_additional_required
 
-    schema=BankDetailCondtionSchema(
-        amountconditions=amountconditions,
-        timeconditions=timeconditions,
-        otherconditions=otherconditions,
-        is_time_required=is_time_required,
-        is_amount_required=is_amount_required,
-        is_additional_required=is_additional_required
-    )
+        schema=BankDetailCondtionSchema(
+            amountconditions=amountconditions,
+            timeconditions=timeconditions,
+            otherconditions=otherconditions,
+            is_time_required=is_time_required,
+            is_amount_required=is_amount_required,
+            is_additional_required=is_additional_required
+        )
+    else: raise HTTPException(status_code=404, detail="Bank condition not found")
+
 
     return schema
                 
