@@ -50,6 +50,7 @@ const CurrencyCalculator = () => {
 
   const [conditions, setConditions] = useState([]);
   const [selectedBasicCondition, setSelectedBasicCondition] = useState("");
+  const [recommended, setRecommended] = useState(undefined);
   const [detailConditions, setDetailConditions] = useState({
     amountconditions: [],
     timeconditions: [],
@@ -93,21 +94,42 @@ useEffect(() => {
 }, [selectedBasicCondition]);
 
 useEffect(() => {
-  if (!selectedBank || !selectedCurrency) return;
+  if (!selectedBank || !selectedCurrency) {
+    setConditions([]);
+    setBankDetail(null);
+    setRecommended(undefined);
+    setSelectedBasicCondition('');
+    setDetailConditions({
+      amountconditions: [],
+      timeconditions: [],
+      otherconditions: [],
+      is_amount_required: false,
+      is_time_required: false,
+      is_additional_required: false,
+    });
+    return;
+  }
   axios
     .get(`/api/bank/bank-conditions?bank_name=${selectedBank}&currency_code=${selectedCurrency}`)
     .then((response) => {
-      setConditions(response.data.conditions);
+      setConditions(response.data.conditions || []);
       setBankDetail(response.data.bank_detail);
+      console.log(typeof(recommended))
+      setRecommended(response.data.recommended);
+      console.log(typeof(recommended))
     })
     .catch((error) => {
       console.error("조건을 불러오는 중 오류 발생:", error);
+      console.log(typeof(recommended))
     });
+
 }, [selectedBank, selectedCurrency]);
+
 
 const handleBankChange = (e) => {
     setSelectedBank(e.target.value);
     setConditions([]);
+    setRecommended(undefined);
     setSelectedBasicCondition("");
 };
   
@@ -241,7 +263,6 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
   return `/assets/${card}.png`;
 };
 
-
   const formatKRW = (amount) => {
     const number = parseInt(amount, 10);
     if (isNaN(number) || number === 0) return "0";
@@ -298,29 +319,6 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
       [category]: newArray,
     }));
   };
-
-
-  
-
-  /* const handleAdditionalConditionsChange = (type, selected, isSelected) => {
-    setAdditionalConditionsSelections((prev) => {
-      const current = prev[type] || [];
-      let newArr;
-      if (isSelected) {
-        if (!current.includes(selected)) {
-          newArr = [...current, selected];
-        } else {
-          newArr = current;
-        }
-      } else {
-        newArr = current.filter(item => item !== selected);
-      }
-      return {
-        ...prev,
-        [type]: newArr
-      };
-    });
-  }; */
 
   return (
     <div className='container'>
@@ -384,7 +382,7 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
                     onChange={handleBankChange}
                     style={{ fontSize: 12 }}
                   >
-                    <option value="" disabled selected>
+                    <option value="" disabled>
                       {selectedLocation === "일반영업점" ? "은행 선택" : "공항 은행 선택"}
                     </option>
                     {(selectedLocation === "일반영업점" ? Banks : airportBanks).map((bank, index) => (
@@ -422,14 +420,19 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
                   <select
                     value={selectedBasicCondition}
                     onChange={(e) => setSelectedBasicCondition(e.target.value)}
-                    style={{ fontSize: 12 }}
+                    style={{ fontSize: '12px' }}
                   >
                     <option value="" disabled>
                       조건 선택
                     </option>
                     {conditions.map((cond, index) => (
-                      <option key={index} value={cond}>
+                      <option
+                        key={index}
+                        value={cond} 
+                        style={{ color: index === recommended ? '#ff5959' : 'black', fontWeight: index === recommended ? '700' : '400' }}
+                      >
                         {cond}
+                        {index === recommended ? ' (추천 조건)' : ''}
                       </option>
                     ))}
                   </select>
@@ -498,6 +501,32 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
                   className='input-rate'>
                     <input type="text" value={discountRate * 100 || 0} disabled style={{ width: "90%" }} /> 
                   </div>
+                </td>
+              </tr>
+              <tr>
+                <td className="under-t">수수료 계산식</td>
+                <td style={{ borderRight: "none" }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+      <span
+        style={{
+          backgroundColor: "#fffdcf",
+          padding: "2px 4px",
+          borderRadius: "4px",
+          fontSize: "12px",
+          marginBottom: "8px",
+          fontWeight: '600'
+        }}
+      >
+        수수료 = 매매기준율 x 스프레드 x (1 - 우대율)
+      </span>
+      <input
+        type="text"
+        value= {0} /*수수료 계산식 넣는 칸*/
+        disabled
+        style={{ paddingLeft: "15px", width: "94%" }}
+      />
+    </div>
+
                 </td>
               </tr>
             </tbody>
