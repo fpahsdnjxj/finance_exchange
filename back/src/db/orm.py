@@ -1,6 +1,6 @@
 import json
 from typing import List
-from sqlalchemy import Column, CHAR, VARCHAR, DateTime, Double, Text, ForeignKey, func, JSON, Boolean
+from sqlalchemy import Column, CHAR, VARCHAR, DateTime, Double, Text, ForeignKey, func, JSON, Boolean, Integer
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime, timezone
 import uuid
@@ -60,36 +60,40 @@ class BankInfo(Base):
             basic_preferential_rate=basic_preferential_rate
         )
 
-class BankCondition(Base): #환전 금액당 우대율 제외 저장할 table 
-    __tablename__="BankCondition"
-    condition_id=Column(CHAR(36), primary_key=True, index=True, default=lambda:(uuid.uuid4()))
-    bankinfo_id=Column(CHAR(36), ForeignKey("BankInfo.bankinfo_id"))
-    condition_type=Column(VARCHAR(200))
-    condition_detail=Column(Text)
-    apply_preferential_rate=Column(Double, nullable=False)
-    update_date=Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
-    additional_conditions=Column(JSON, nullable=True)
-    is_amount_required=Column(Boolean, nullable=False, default=False)
-    is_time_required=Column(Boolean, nullable=False, default=False)
-    is_additional_required=Column(Boolean, nullable=False, default=False)
+class BankCondition(Base):  # 환전 금액당 우대율 제외 저장할 table
+    __tablename__ = "BankCondition"
+    
+    condition_id = Column(CHAR(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
+    bankinfo_id = Column(CHAR(36), ForeignKey("BankInfo.bankinfo_id"))
+    condition_type = Column(VARCHAR(200))
+    condition_detail = Column(Text)
+    apply_preferential_rate = Column(Double, nullable=False)
+    update_date = Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
+    additional_conditions = Column(JSON, nullable=True)
+    is_amount_required = Column(Boolean, nullable=False, default=False)
+    is_time_required = Column(Boolean, nullable=False, default=False)
+    is_additional_required = Column(Boolean, nullable=False, default=False)
+    
+    # ✅ 추가된 부분
+    is_recommended = Column(Integer, nullable=False, default=0)
 
     def __repr__(self):
-        return(f"BankCondition("
-        f"condition_id={self.condition_id}, "
-        f"bankinfo_id={self.bankinfo_id}, "
-        f"condition_type={self.condition_type}, "
-        f"additional_conditions={self.additional_conditions}, "
-        f"condition_detail={self.condition_detail}, "
-        f"apply_preferential_rate={self.apply_preferential_rate}, "
-        f"update_date={self.update_date}) "
-        )
+        return (f"BankCondition("
+                f"condition_id={self.condition_id}, "
+                f"bankinfo_id={self.bankinfo_id}, "
+                f"condition_type={self.condition_type}, "
+                f"additional_conditions={self.additional_conditions}, "
+                f"condition_detail={self.condition_detail}, "
+                f"apply_preferential_rate={self.apply_preferential_rate}, "
+                f"update_date={self.update_date}, "
+                f"is_recommended={self.is_recommended})")
 
     @classmethod
-    def create(cls,bankinfo_id:str, 
-               condition_type:str,
-               condition_detail:str,
+    def create(cls, bankinfo_id: str,
+               condition_type: str,
+               condition_detail: str,
                additional_conditions: List[str],
-               apply_preferential_rate:float):
+               apply_preferential_rate: float):
         return cls(
             bankinfo_id=bankinfo_id,
             condition_type=condition_type,
