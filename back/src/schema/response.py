@@ -9,6 +9,7 @@ class CurrencySchema(BaseModel):
 class BankBasicConditionSchema(BaseModel):
     conditions: List[str]
     bank_detail: List[str]
+    recommended: int
     class Config:
         from_attributes=True
 
@@ -41,7 +42,7 @@ class ListCardInfoSchema(BaseModel):
     card_infos:List[CardInfoSchema]
 
 class FinalExchangeFeeSchema(BaseModel):
-    final_fee_rate: float
+    P_per_won: float
     apply_preferential_rate: float
     exchange_fee_rate: float
 

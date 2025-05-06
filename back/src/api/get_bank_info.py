@@ -34,13 +34,11 @@ async def get_get_bank_exchange_fee(
         if bankcondition:
             final_preferential_rate=bankcondition.apply_preferential_rate
         else:
-             return FinalExchangeFeeSchema(final_fee_rate=-1, apply_preferential_rate=0, exchange_fee_rate=0)
+             return FinalExchangeFeeSchema(P_per_won=-1, apply_preferential_rate=0, exchange_fee_rate=0)
     else:
-        return FinalExchangeFeeSchema(final_fee_rate=-1, apply_preferential_rate=0, exchange_fee_rate=0)
-    final_fee_rate=bankinfo.exchange_fee_rate*(1-final_preferential_rate)
-    applied_exchange_rate=currency.P_per_Won*(1+final_fee_rate)
+        return FinalExchangeFeeSchema(P_per_won=-1, apply_preferential_rate=0, exchange_fee_rate=0)
     
-    return   FinalExchangeFeeSchema(final_fee_rate=applied_exchange_rate, apply_preferential_rate=bankcondition.apply_preferential_rate, exchange_fee_rate=bankinfo.exchange_fee_rate)
+    return FinalExchangeFeeSchema(P_per_won=currency.P_per_Won, apply_preferential_rate=bankcondition.apply_preferential_rate, exchange_fee_rate=bankinfo.exchange_fee_rate)
 
 @router.get("/bank-conditions", status_code=200)
 async def get_bank_conditions(
@@ -57,8 +55,10 @@ async def get_bank_conditions(
         raise HTTPException(status_code=404, detail="Bank information not found")
 
     conditions = list({bank.condition_type for bank in bankinfo.bank_condition}) if bankinfo.bank_condition else []
-    
-    return BankBasicConditionSchema(conditions=conditions, bank_detail=bankinfo.bank_detail_info)
+    recommended_condition = next((bc.condition_type for bc in bankinfo.bank_condition if bc.is_recommended == 1), None)
+    recommended_index = conditions.index(recommended_condition) if recommended_condition in conditions else -1
+   
+    return BankBasicConditionSchema(conditions=conditions, bank_detail=bankinfo.bank_detail_info, recommended=recommended_index)
 
 @router.get("/additional-conditions", status_code=200)
 async def get_additional_conditions(
