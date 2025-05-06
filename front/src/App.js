@@ -74,6 +74,10 @@ const CurrencyCalculator = () => {
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
 
+  const [PperWon, setPperWon] = useState(0);
+
+  const [feeFormula, setFeeFormula] = useState("");
+
 
 const openPopup = (card) => {
   setPopupContent(card);
@@ -114,17 +118,14 @@ useEffect(() => {
     .then((response) => {
       setConditions(response.data.conditions || []);
       setBankDetail(response.data.bank_detail);
-      console.log(typeof(recommended))
       setRecommended(response.data.recommended);
-      console.log(typeof(recommended))
     })
     .catch((error) => {
       console.error("조건을 불러오는 중 오류 발생:", error);
-      console.log(typeof(recommended))
+      console.log(typeof(recommended));
     });
 
 }, [selectedBank, selectedCurrency]);
-
 
 const handleBankChange = (e) => {
     setSelectedBank(e.target.value);
@@ -184,12 +185,13 @@ useEffect(() => {
 
 const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
   const numericExchangeAmount = parseFloat(exchangeAmount);
-  const numericFinalFeeRate = parseFloat(feeRate);
+  const numericFeeRate = parseFloat(feeRate);
+  const numericDiscountRate = parseFloat(discountRate);
 
   if (isNaN(numericExchangeAmount) || numericExchangeAmount <= 0) return;
-    if (isNaN(numericFinalFeeRate)) return;
+    if (isNaN(numericFeeRate)) return;
 
-    const final_fee = numericExchangeAmount/numericFinalFeeRate
+    const final_fee = numericExchangeAmount*numericFeeRate*(1-numericDiscountRate)
     setFinalFee(final_fee.toFixed(2));
   };
 
@@ -198,6 +200,12 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
       calculate_final_fee();
     }
   }, [exchangeAmount, feeRate]);
+
+  useEffect(() => {
+    if (feeRate !== "" && discountRate !== ""&&PperWon>0) {
+      setFeeFormula(`${PperWon} * ${feeRate} * (1 - ${discountRate})`);
+    }
+  }, [feeRate, discountRate, exchangeAmount, PperWon]);
 
   useEffect(() => { // 추가 조건 값 보내서 수수료, 우대율 받아오는 부분
     if (!selectedBank || !selectedCurrency) return;
@@ -232,14 +240,20 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
         }
         
         const response = await axios.get(url);
-        setFeeRate(response.data.final_fee_rate);
+        setFeeRate(response.data.exchange_fee_rate);
         setDiscountRate(response.data.apply_preferential_rate);
+        setPperWon(response.data.P_per_won);
       } catch (error) {
         console.error("은행 수수료 정보를 불러오는 중 오류 발생:", error);
       }
     };
     fetchExchangefeerate();
+    
   }, [selectedBank, selectedCurrency, selectedBasicCondition, additionalConditionsSelections]);
+
+  useEffect(() => {
+    console.log("feeRate 바뀜:", feeRate);
+  }, [feeRate]);
   
   const getImagePath = (cardName) => { 
   let card = "default";
@@ -521,7 +535,7 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
       </span>
       <input
         type="text"
-        value= {0} /*수수료 계산식 넣는 칸*/
+        value= {feeFormula} /*수수료 계산식 넣는 칸*/
         disabled
         style={{ paddingLeft: "15px", width: "94%" }}
       />
