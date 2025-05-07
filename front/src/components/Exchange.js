@@ -148,12 +148,20 @@ function Exchange() {
       );
     } else {
       return (
-        <ReactCountryFlag
-          countryCode={option.flag}
-          svg
-          style={{ width: "30px", height: "20px" }}
-          title={option.label}
-        />
+        <div
+        style={{
+        marginTop: "5px", 
+        display: "inline-block",
+        boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.3)",        
+        }}
+>
+  <ReactCountryFlag
+    countryCode={option.flag}
+    svg
+    style={{ width: "30px", height: "22px", display: "block" }}
+    title={option.label}
+  />
+</div>
       );
     }
   };
@@ -223,7 +231,7 @@ function Exchange() {
                   <ReactCountryFlag
                     countryCode="KR"
                     svg                    
-                    style={{ width: "60px", height: "25px", margin: "10px" }}
+                    style={{ width: "32px", height: "24px", margin: "10px", boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.3)" }}
                     title="한국"
                   />
 
