@@ -414,3 +414,13 @@ select {
   font-size: 14px;
   color: #616161;
 }
+
+.reactive-dropdown {
+  border: none;
+  outline: none;
+  transition: transform 0.2s ease;
+}
+
+.reactive-dropdown:hover {
+  transform: scale(1.05);
+}

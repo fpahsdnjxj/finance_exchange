@@ -432,7 +432,7 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
                         style={{ color: index === recommended ? '#ff5959' : 'black', fontWeight: index === recommended ? '700' : '400' }}
                       >
                         {cond}
-                        {index === recommended ? ' (추천 조건)' : ''}
+                        {index === recommended ? ' (인기 조건)' : ''}
                       </option>
                     ))}
                   </select>
@@ -601,7 +601,7 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
               <ReactCountryFlag
                 countryCode={selectedCountry}
                 svg
-                style={{ width: 20, height: 15, marginRight: "10px" }}
+                style={{ width: "26px", height: "18px", marginRight: "10px", boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.3)" }}
               />
               <CountryDropdown
                 selectedCountry={selectedCountry}
