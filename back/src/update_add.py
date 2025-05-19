@@ -15,8 +15,8 @@ elif(num1==2):
 
 #update_info_from_json()
 
-#get_currency_data()
+get_currency_data()
 
-add_by_csv()
+#add_by_csv()
 
 

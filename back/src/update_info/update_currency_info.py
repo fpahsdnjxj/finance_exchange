@@ -4,8 +4,9 @@ from dotenv import load_dotenv
 from db.orm import Currency
 from db.repository import CurrencyRepository
 from db.connection import get_db
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
+from zoneinfo import ZoneInfo  
 
 
 load_dotenv()
@@ -13,12 +14,16 @@ load_dotenv()
 def get_currency_data():
     db_session = next(get_db()) 
     currency_repo = CurrencyRepository(session=db_session)
-    today_date = datetime.now().strftime("%Y%m%d")
+    now = datetime.now(ZoneInfo("Asia/Seoul"))
+    if now.hour < 11:
+        target_date = (now - timedelta(days=1)).strftime("%Y%m%d")
+    else:
+        target_date = now.strftime("%Y%m%d")
     api_key=os.getenv("BANK_API_KEY")
     url=f'https://www.koreaexim.go.kr/site/program/financial/exchangeJSON'
     params = {
         "authkey": api_key,  
-        "searchdate": today_date,  
+        "searchdate": target_date,  
         "data": "AP01",  
     }
     headers = {
