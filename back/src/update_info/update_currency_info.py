@@ -27,7 +27,7 @@ def get_currency_data():
         "data": "AP01",  
     }
     headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
     }
     response = requests.get(url, params=params, headers=headers, timeout=30, verify=certifi.where())
 
@@ -45,6 +45,7 @@ def get_currency_data():
             # Currency 객체 생성
             currency = Currency.create(currency_code=currency_code, country_name=country_name, P_per_Won=deal_bas_r)
             currency_repo.update_currency_info(currency)
+        print(f"환율 정보 업데이트 완료: {target_date}")
     else:
         print(f"API 요청 실패: {response.status_code}, {response.text}")
 
