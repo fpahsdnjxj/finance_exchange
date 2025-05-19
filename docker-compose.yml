@@ -23,6 +23,7 @@ services:
         - mysql-exchange
       environment:
         - DATABASE_URL=${DATABASE_URL}
+        - BANK_API_KEY=${BANK_API_KEY}
         - PYTHONPATH=/app
       ports:
         - "8000:8000"
