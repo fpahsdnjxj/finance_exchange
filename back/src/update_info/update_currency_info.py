@@ -33,6 +33,9 @@ def get_currency_data():
 
     if response.status_code==200:
         data = response.json()  
+        if not data:
+            print(f"빈 응답 수신: {target_date}, API는 200 OK 응답했으나 데이터 없음")
+            return
         for item in data:
             if "(" in item["cur_unit"]:
                 base_rate = int(item["cur_unit"].split("(")[1].replace(")", ""))
