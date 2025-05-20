@@ -29,7 +29,7 @@ def get_currency_data():
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
     }
-    response = requests.get(url, params=params, headers=headers, timeout=30, verify=certifi.where())
+    response = requests.get(url, params=params, headers=headers, timeout=30, verify="/etc/ssl/certs/ca-certificates.crt")
 
     if response.status_code==200:
         data = response.json()  
