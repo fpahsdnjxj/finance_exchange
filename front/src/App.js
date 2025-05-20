@@ -334,6 +334,12 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
     }));
   };
 
+const menuItems = [
+    { title: '환전 고수', content: ['팀 소개', '서비스 소개'] },
+    { title: '공지사항', content: ['업데이트'] },
+    { title: '피드백 문의', content: ['문의사항'] },
+  ];
+
   return (
     <div className='container'>
       <div className='top-container exchange-rate-calculator'>
@@ -695,13 +701,29 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
       <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
       <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
     </footer>
-    <div className="top-bar">
-    <img
-            src={`/assets/topicon.png`}
-            alt="아이콘"
-            style={{ width: "100px", borderRadius: "5px", marginRight: "15px" }}
-          />
+<div className="top-bar-container">
+      <div className="top-bar">
+        <img src="/assets/topicon.png" alt="아이콘" className="top-icon" />
+        <nav className="nav-items">
+          {menuItems.map(item => (
+            <div key={item.title} className="nav-item">
+              {item.title}
+            </div>
+          ))}
+        </nav>
       </div>
+      <div className="dropdown-menu">
+        {menuItems.map(item => (
+          <div key={item.title} className="dropdown-column">
+            <ul>
+              {item.content.map((c, idx) => (
+                <li key={idx}>{c}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
       </div>
   );
 };
