@@ -703,6 +703,23 @@ const menuItems = [
     </footer>
 <div className="top-bar-container">
       <div className="top-bar">
+        <img src="/assets/topicon.png" alt="아이콘" className="top-icon2" />
+           <div className="nav-item">
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSezDmKhFuV2TMV44oVzaRupZMTUBlmnw8wj1m5nlgWx_117tA/viewform?usp=header" target="_blank" rel="noopener noreferrer" className="link-button">
+    설문조사에 참여해주세요!
+  </a>
+</div>       
+      </div>
+    </div>
+      </div>
+  );
+};
+
+export default CurrencyCalculator;
+
+/*
+<div className="top-bar-container">
+      <div className="top-bar">
         <img src="/assets/topicon.png" alt="아이콘" className="top-icon" />
         <nav className="nav-items">
           {menuItems.map(item => (
@@ -725,7 +742,4 @@ const menuItems = [
       </div>
     </div>
       </div>
-  );
-};
-
-export default CurrencyCalculator;
+    */
