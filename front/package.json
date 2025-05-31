@@ -14,9 +14,12 @@
     "react-select": "^5.10.0",
     "web-vitals": "^4.2.4"
   },
+  "devDependencies": {
+    "react-snap": "^1.24.0"
+  },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && react-snap",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -25,6 +28,9 @@
       "react-app",
       "react-app/jest"
     ]
+  },
+  "reactSnap": {
+    "inlineCss": true
   },
   "browserslist": {
     "production": [

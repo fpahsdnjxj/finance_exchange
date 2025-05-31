@@ -2,7 +2,8 @@ FROM node:18 AS build
 
 WORKDIR /src
 
-COPY package.json package-lock.json ./
+COPY package*.json ./
+ENV NODE_ENV=development
 RUN npm install
 
 COPY . .
