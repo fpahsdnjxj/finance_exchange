@@ -30,7 +30,8 @@
     ]
   },
   "reactSnap": {
-    "inlineCss": true
+    "inlineCss": true,
+    "puppeteerArgs": ["--no-sandbox"]
   },
   "browserslist": {
     "production": [
