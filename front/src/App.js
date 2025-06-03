@@ -16,7 +16,7 @@ import PrivacyModal from './components/PrivacyModal';
 import CookieConsentPopup from './components/CookieConsentPopup';
 
 const Banks = [
-  "하나은행", "NH농협은행", "신한은행",
+  "하나은행", "NH 농협은행", "신한은행",
   "KB국민은행", "우리은행",
 ];
 
@@ -235,11 +235,12 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
   const numericExchangeAmount = parseFloat(exchangeAmount);
   const numericFeeRate = parseFloat(feeRate);
   const numericDiscountRate = parseFloat(discountRate);
+  const numericPperWon = parseFloat(PperWon);
 
   if (isNaN(numericExchangeAmount) || numericExchangeAmount <= 0) return;
     if (isNaN(numericFeeRate)) return;
 
-    const final_fee = numericExchangeAmount*numericFeeRate*(1-numericDiscountRate)
+    const final_fee = (numericExchangeAmount/numericPperWon)*(1+numericFeeRate*(1-numericDiscountRate))
     setFinalFee(final_fee.toFixed(2));
   };
 
@@ -252,7 +253,7 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
   
   useEffect(() => {
     if (feeRate !== "" && discountRate !== ""&&PperWon>0) {
-      setFeeFormula(`${PperWon} * ${feeRate} * (1 - ${discountRate})`);
+      setFeeFormula(`(${exchangeAmount}/${PperWon}) * (1+(${feeRate} * (1 - ${discountRate})))`);
     }
   }, [feeRate, discountRate, exchangeAmount, PperWon]);
 
