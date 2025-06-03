@@ -187,11 +187,12 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
   const numericExchangeAmount = parseFloat(exchangeAmount);
   const numericFeeRate = parseFloat(feeRate);
   const numericDiscountRate = parseFloat(discountRate);
+  const numericPperWon = parseFloat(PperWon);
 
   if (isNaN(numericExchangeAmount) || numericExchangeAmount <= 0) return;
     if (isNaN(numericFeeRate)) return;
 
-    const final_fee = numericExchangeAmount*numericFeeRate*(1-numericDiscountRate)
+    const final_fee = (numericExchangeAmount/numericPperWon)*(1+(numericFeeRate*(1-numericDiscountRate)))
     setFinalFee(final_fee.toFixed(2));
   };
 
