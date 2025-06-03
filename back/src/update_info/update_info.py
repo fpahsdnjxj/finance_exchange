@@ -9,6 +9,8 @@ from db.orm import (
     CardInfo, CardBenefit
 )
 from db.connection import get_db
+import uuid
+from sqlalchemy.orm import Session
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -137,3 +139,47 @@ def update_info_from_json():
         process_json_data(data_type, json_data)
     except Exception as e:
         print(f"오류 발생: {e}")
+
+
+def copy_conditions_to_airport_branches(db: Session):
+    base_bank_names = ["KB국민은행", "우리은행", "하나은행"]
+    
+    # 공항 BankInfo 리스트 미리 가져오기
+    airport_bankinfo_map = {}
+    airport_banks = db.query(BankInfo).filter(BankInfo.bank_name.like("공항%")).all()
+    for ab in airport_banks:
+        # "공항국민은행" → "국민은행"
+        original_name = ab.bank_name.replace("공항", "")
+        airport_bankinfo_map[(original_name, ab.currency_code)] = ab.bankinfo_id
+    
+    # 조건 복사
+    for bank_name in base_bank_names:
+        original_infos = db.query(BankInfo).filter(BankInfo.bank_name == bank_name).all()
+        for info in original_infos:
+            airport_id = airport_bankinfo_map.get((bank_name, info.currency_code))
+            if not airport_id:
+                continue  # 공항 counterpart 없음
+
+            conditions = db.query(BankCondition).filter(BankCondition.bankinfo_id == info.bankinfo_id).all()
+            for cond in conditions:
+                new_cond = BankCondition(
+                    condition_id=str(uuid.uuid4()),
+                    bankinfo_id=airport_id,
+                    condition_type=cond.condition_type,
+                    condition_detail=cond.condition_detail,
+                    apply_preferential_rate=cond.apply_preferential_rate,
+                    additional_conditions=cond.additional_conditions,
+                    is_amount_required=cond.is_amount_required,
+                    is_time_required=cond.is_time_required,
+                    is_additional_required=cond.is_additional_required,
+                    is_recommended=cond.is_recommended
+                )
+                db.add(new_cond)
+    print("공항 지점 조건 복사 완료")
+    db.commit()
+
+def update_airport_conditions():
+    try:
+        copy_conditions_to_airport_branches(db_session)
+    finally:
+        db_session.close()

@@ -1,6 +1,6 @@
 from update_info.update_currency_info import get_currency_data
 from update_info.add_info import add_info_from_json
-from update_info.update_info import update_info_from_json
+from update_info.update_info import update_info_from_json, update_airport_conditions
 from update_info.temp import add_by_csv
 
 """
@@ -15,8 +15,10 @@ elif(num1==2):
 
 #update_info_from_json()
 
-get_currency_data()
+#get_currency_data()
 
 #add_by_csv()
+
+
 
 
