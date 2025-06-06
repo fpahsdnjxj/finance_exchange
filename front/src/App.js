@@ -20,7 +20,7 @@ const Banks = [
   "KB국민은행", "우리은행",
 ];
 
-const airportBanks = ["하나은행", "KB국민은행", "우리은행", "신한은행"];
+const airportBanks = ["하나은행", "KB국민은행", "우리은행"];
 
 const currencyOptions = [
   { value: "USD", label: "미국", flag: "US" },
@@ -237,7 +237,9 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
   if (isNaN(numericExchangeAmount) || numericExchangeAmount <= 0) return;
     if (isNaN(numericFeeRate)) return;
 
-    const final_fee = (numericExchangeAmount/numericPperWon)*(1+numericFeeRate*(1-numericDiscountRate))
+    const effectiveFeeRate = numericFeeRate * (1 - numericDiscountRate);
+    const adjustedExchangeRate = numericPperWon * (1 + effectiveFeeRate);
+    const final_fee = numericExchangeAmount / adjustedExchangeRate;
     setFinalFee(final_fee.toFixed(2));
   };
 
@@ -249,10 +251,17 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
 
   
   useEffect(() => {
-    if (feeRate !== "" && discountRate !== ""&&PperWon>0) {
-      setFeeFormula(`(${exchangeAmount}/${PperWon}) * (1+(${feeRate} * (1 - ${discountRate})))`);
-    }
-  }, [feeRate, discountRate, exchangeAmount, PperWon]);
+  if (feeRate !== "" && discountRate !== "" && PperWon > 0 && exchangeAmount !== "") {
+    const numericExchangeAmount = parseFloat(exchangeAmount);
+    const numericPperWon = parseFloat(PperWon);
+    const numericFeeRate = parseFloat(feeRate);
+    const numericDiscountRate = parseFloat(discountRate);
+    const effectiveFeeRate = numericFeeRate * (1 - numericDiscountRate);
+    const adjustedExchangeRate = numericPperWon * (1 + effectiveFeeRate);
+    const foreignCurrencyAmount = numericExchangeAmount / adjustedExchangeRate;
+    setFeeFormula(`${numericExchangeAmount} / (${numericPperWon} * (1 + ${numericFeeRate} * (1 - ${numericDiscountRate}))) = ${foreignCurrencyAmount.toFixed(2)}`);
+  }
+}, [feeRate, discountRate, exchangeAmount, PperWon]);
 
   useEffect(() => { 
     if (!selectedBank || !selectedCurrency) {
@@ -308,9 +317,6 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
     
   }, [selectedBank, selectedCurrency, selectedBasicCondition, additionalConditionsSelections, selectedLocation]);
   
-  useEffect(() => {
-    console.log("feeRate 바뀜:", feeRate);
-  }, [feeRate]);
   
   const getImagePath = (cardName) => { 
   let card = "default";
