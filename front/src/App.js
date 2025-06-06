@@ -119,9 +119,6 @@ const handleLocationChange = (newLocation) => {
 
 
 
-
-
-
 useEffect(() => {
   setAdditionalConditionsSelections({
     amount: [],
@@ -153,7 +150,7 @@ useEffect(() => {
   }
 
  axios
-    .get(`/api/bank/bank-conditions?bank_name=${encodeURIComponent(bankNameToFetch)}¤cy_code=${selectedCurrency}`)
+    .get(`/api/bank/bank-conditions?bank_name=${encodeURIComponent(bankNameToFetch)}&currency_code=${selectedCurrency}`)
     .then((response) => {
       setConditions(response.data.conditions || []);
       setBankDetail(response.data.bank_detail);
@@ -184,7 +181,7 @@ useEffect(() => {
     if (selectedLocation === "인천공항점" && selectedBank) {
       bankNameToFetch = "공항" + selectedBank;
     }
-    axios.get(`/api/bank/additional-conditions?bank_name=${encodeURIComponent(bankNameToFetch)}¤cy_code=${selectedCurrency}&default_condition=${encodeURIComponent(selectedBasicCondition)}`)
+    axios.get(`/api/bank/additional-conditions?bank_name=${encodeURIComponent(bankNameToFetch)}&currency_code=${selectedCurrency}&default_condition=${encodeURIComponent(selectedBasicCondition)}`)
     .then((response) => { setDetailConditions(response.data); })
     .catch((error) => {
       console.error("세부 조건을 불러오는 중 오류 발생:", error);
@@ -273,7 +270,7 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
 
     const fetchExchangefeerate = async () => {
       try {
-        let url = `/api/bank/bank-exchange-fee?bank_name=${encodedBankname}¤cy_code=${selectedCurrency}`;
+        let url = `/api/bank/bank-exchange-fee?bank_name=${encodedBankname}&currency_code=${selectedCurrency}`;
         if (selectedBasicCondition !== "") {
           url += `&condition_type=${encodeURIComponent(selectedBasicCondition)}`;
         }
