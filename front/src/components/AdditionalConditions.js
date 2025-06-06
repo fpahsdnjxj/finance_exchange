@@ -70,6 +70,8 @@ const AdditionalConditions = ({ selectedCondition, onAdditionalConditionsChange,
 
   if (conditionBlocks.length === 0) return null;
 
+
+
   const handleCheckboxChange = (category, conditionItem) => {
     setSelectedValues(prev => {
       const newValue = prev[category] === conditionItem ? null : conditionItem;
