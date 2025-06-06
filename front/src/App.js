@@ -562,17 +562,6 @@ const menuItems = [
                 </td>
               </tr> 
               <tr>
-                <td className="under-t">우대 적용 금액</td>
-                <td style={{ borderRight: "none" }}>
-                  <div
-                    className="input-bankch"
-                    data-currency-symbol={currencySymbols[selectedCurrency]}                 
-                  >
-                    <input type="text" value={finalFee || 0} disabled style={{ width: "90%" }} /> 
-                  </div>
-                </td>
-              </tr>
-              <tr>
                 <td className="under-t">적용 우대율</td>
                 <td style={{ borderRight: "none" }}>
                   <div
@@ -605,6 +594,17 @@ const menuItems = [
       />
     </div>
 
+                </td>
+              </tr>
+              <tr>
+                <td className="under-t" style={{fontWeight: "700"}}>우대 적용 금액</td>
+                <td style={{ borderRight: "none" }}>
+                  <div
+                    className="input-bankch"
+                    data-currency-symbol={currencySymbols[selectedCurrency]}                 
+                  >
+                    <input type="text" value={finalFee || 0} disabled style={{ width: "90%" }} /> 
+                  </div>
                 </td>
               </tr>
             </tbody>
