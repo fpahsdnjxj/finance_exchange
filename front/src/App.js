@@ -694,8 +694,7 @@ const menuItems = [
     <tr>
       <th style={{borderTopLeftRadius: '20px',}}></th>
       <th>카드명(카드사)</th>
-      <th>조건 및 혜택</th>
-      <th style={{borderTopRightRadius: '20px',}}>환전 금액</th>
+      <th style={{borderTopRightRadius: '20px',}}>조건 및 혜택</th>
     </tr>
   </thead>
   <tbody>
@@ -719,15 +718,6 @@ const menuItems = [
       : ""}
   </div>
 </td>
-              <td className='fixed'>
-                <span style={{fontSize: 12}}>
-                  {(!(formatKRW(exchangeAmount)) || (formatKRW(exchangeAmount)) === "")
-                    ? "0"
-                    : (formatKRW(exchangeAmount)).length > 10
-                    ? (formatKRW(exchangeAmount)).substring(0, 10) + "..."
-                    : (formatKRW(exchangeAmount))}
-                원</span>{" "}
-              </td>
             </tr>
           ))}
         </tbody>
