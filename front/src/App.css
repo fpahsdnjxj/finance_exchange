@@ -6,7 +6,8 @@ body {
 }
 
 .container {
-  width: 1400px;
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;  
   padding: 20px;
   box-sizing: border-box;
@@ -18,7 +19,7 @@ body {
   height: 100%;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
-  margin-top:100px;
+  margin-top: 100px;
   margin-bottom: 20px;
   box-sizing: border-box;
 }
@@ -345,9 +346,11 @@ select {
   display: flex;
   align-items: center;
   padding: 10px 20px;
-  width: 1800px;
+  width: 100%;
+  max-width: 1800px;
   height: 100px;
   box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .top-icon {
@@ -449,14 +452,18 @@ select {
   flex-direction: column;
   align-items: left;
   padding-top: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .notice-box {
-  width: 550px;
+  width: 100%;
+  max-width: 550px;
   padding: 15px;
   border: 2px solid #ddd;
   border-radius: 20px;  
   background-color: #fff;
+  box-sizing: border-box;
 }
 
 .notice-title {
@@ -467,13 +474,17 @@ select {
 
 .notice-item {
   display: inline-block;
-  width: 530px;
+  width: 100%;
+  max-width: 530px;
   background-color: #d9d9d9;
   padding: 10px;
   margin-top: 8px;
   border-radius: 5px;
   white-space: pre-wrap; 
   font-size: 13px;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .custom-checkbox {
@@ -523,4 +534,309 @@ select {
 
 .link-button:hover {
   background-color: #fb8787;
+}
+
+.exchange-table-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.exchange-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.exchange-cell {
+  flex: 1;
+  min-width: 140px;
+}
+
+.exchange-equals {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  min-width: 40px;
+}
+
+.realtime-clock {
+  font-size: 12px;
+  font-weight: 100;
+  text-align: left;
+  color: #444;
+  padding-left: 80px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .top-container {
+    margin-top: 80px;
+  }
+  
+  .bottom-container {
+    flex-direction: column;
+  }
+  
+  .left-box {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+  
+  .exchange-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .exchange-cell {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .exchange-equals {
+    align-self: center;
+    transform: rotate(90deg);
+    margin: 5px 0;
+  }
+  
+  .amount-buttons {
+    justify-content: center;
+  }
+  
+  .amount-buttons button {
+    flex: 0 0 auto;
+    min-width: 40px;
+    margin: 2px;
+  }
+  
+  .realtime-clock {
+    padding-left: 25px;
+    font-size: 13px;
+  }
+  
+
+  table {
+    font-size: 12px;
+  }
+  
+  td, .under-t {
+    padding: 8px 5px;
+  }
+  
+  .under-t {
+    width: 30%;
+    font-size: 0.7rem;
+  }
+  
+  /* select와 option 폰트 크기 통일 */
+  select {
+    font-size: 12px !important;
+    padding: 6px;
+  }
+  
+  select option {
+    font-size: 12px !important;
+  }
+  
+  /* 카드 테이블 반응형 */
+  .card-table {
+    font-size: 11px;
+  }
+  
+  .card-table th,
+  .card-table td {
+    padding: 8px 5px;
+  }
+  
+  .card-table th {
+    font-size: 13px;
+  }
+  
+  .card-image {
+    width: 40px;
+    padding-left: 5px;
+  }
+  
+  .benefits-cell {
+    font-size: 11px !important;
+  }
+  
+  /* 입력 필드 반응형 */
+  .input-bank input,
+  .input-rate input,
+  .input-bankch input {
+    font-size: 11px;
+    padding-left: 25px;
+  }
+  
+  .input-bank::before,
+  .input-rate::before,
+  .input-bankch::before {
+    font-size: 0.8rem;
+    left: 8px;
+  }
+  
+  /* 박스 반응형 */
+  .box {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .notice-box {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+  }
+  
+  .notice-item {
+    width: 100%;
+    max-width: none;
+    font-size: 11px;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .top-bar {
+    height: 90px;
+    padding: 8px 15px;
+  }
+  
+  .top-icon2 {
+    height: 80px;
+    margin-left: 30px;
+  }
+  
+  .nav-items {
+    display: none;
+  }
+  
+  .link-button {
+    font-size: 12px;
+    padding: 8px 12px;
+    margin-left: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 5px;
+  }
+  
+  .top-container {
+    margin-top: 70px;
+    padding: 10px;
+  }
+  
+  .exchange-table-container {
+    padding: 10px;
+  }
+  
+  .exchange-row {
+    gap: 5px;
+  }
+  
+  .amount-buttons {
+    gap: 2px;
+  }
+  
+  .amount-buttons button {
+    font-size: 0.5rem;
+    padding: 3px;
+    height: 18px;
+  }
+  
+  .realtime-clock {
+    padding-left: 10px;
+    font-size: 9px;
+  }
+  
+  table {
+    font-size: 10px;
+  }
+  
+  td, .under-t {
+    padding: 5px 3px;
+  }
+  
+  .under-t {
+    width: 35%;
+    font-size: 11px;
+  }
+  
+  select {
+    font-size: 11px !important;
+    padding: 4px;
+  }
+  
+  select option {
+    font-size: 11px !important;
+  }
+
+  .card-table {
+    font-size: 11px;
+  }
+  
+  .card-table th,
+  .card-table td {
+    padding: 5px 3px;
+  }
+  
+  .card-table th {
+    font-size: 9px;
+  }
+  
+  .card-image {
+    width: 30px;
+    padding-left: 3px;
+  }
+  
+  .benefits-cell {
+    font-size: 11px !important;
+  }
+  
+  .input-bank input,
+  .input-rate input,
+  .input-bankch input {
+    font-size: 11px;
+    padding-left: 20px;
+  }
+  
+  .input-bank::before,
+  .input-rate::before,
+  .input-bankch::before {
+    font-size: 0.7rem;
+    left: 6px;
+  }
+  
+  /* 박스 반응형 */
+  .notice-box {
+    padding: 10px;
+  }
+  
+  .notice-item {
+    padding: 8px;
+    font-size: 10px;
+  }
+  
+  .top-bar {
+    height: 60px;
+    padding: 5px 10px;
+  }
+  
+  .top-icon2 {
+    height: 50px;
+    margin-left: 20px;
+  }
+  
+  .link-button {
+    font-size: 11px;
+    padding: 6px 10px;
+    margin-left: 5px;
+  }
 }

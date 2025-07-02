@@ -384,7 +384,7 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
     };
   
     return (
-      <div style={{ fontSize: "11px", fontWeight: "100", textAlign: "left", paddingLeft: "80px", color: "#444" }}>
+      <div className="realtime-clock">
         {formatTime(time)}
       </div>
     );
@@ -666,7 +666,7 @@ const menuItems = [
             alignItems: "center",
             paddingLeft: "20px",
             paddingRight: "20px",
-            fontSize: 14,
+            fontSize: "13px",
           }}
           >
           기준 국가

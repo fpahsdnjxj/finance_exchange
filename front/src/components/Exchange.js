@@ -213,150 +213,148 @@ function Exchange() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <table style={{ width: "1200px", borderCollapse: "collapse", margin: "0 auto"}}>
-        <tbody>
-          <tr>        
-            <td style={{ width: "140px", verticalAlign: "top", border: "none" }}>
+      <div className="exchange-table-container">
+        <div className="exchange-row">
+          <div className="exchange-cell">
+            <div
+              style={{
+                display: "flex",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                overflow: "visible",
+                width: "100%",
+                height: "40px",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", padding: "0 10px", borderRight: "1px solid #ccc" }}>
+                <ReactCountryFlag
+                  countryCode="KR"
+                  svg                    
+                  style={{ width: "32px", height: "24px", margin: "10px", boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.3)" }}
+                  title="한국"
+                />
+
+              </div>
               <div
-                style={{
-                  display: "flex",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  overflow: "visible",
-                  width: "100%",
-                  height: "40px",
-                }}
+                className="input-with-currency"
+                data-currency-symbol={currencySymbols[leftCurrency]}
+                style={{ flex: 1 }}
               >
-                <div style={{ display: "flex", alignItems: "center", padding: "0 10px", borderRight: "1px solid #ccc" }}>
-                  <ReactCountryFlag
-                    countryCode="KR"
-                    svg                    
-                    style={{ width: "32px", height: "24px", margin: "10px", boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.3)" }}
-                    title="한국"
-                  />
-
-                </div>
-                <div
-                  className="input-with-currency"
-                  data-currency-symbol={currencySymbols[leftCurrency]}
-                  style={{ flex: 1 }}
-                >
-                  <input
-                    type="number"
-                    value={leftAmount}
-                    onChange={handleLeftChange}
-                    placeholder={`${leftCurrency} 금액 입력`}
-                    style={{
-                      width: "100%",
-                      fontSize: 14,
-                      border: "none",
-                      height: "40px",
-                      padding: "0 40px",
-                      boxSizing: "border-box",
-                    }}
-                  />
-                </div>
+                <input
+                  type="number"
+                  value={leftAmount}
+                  onChange={handleLeftChange}
+                  placeholder={`${leftCurrency} 금액 입력`}
+                  style={{
+                    width: "100%",
+                    fontSize: 14,
+                    border: "none",
+                    height: "40px",
+                    padding: "0 40px",
+                    boxSizing: "border-box",
+                  }}
+                />
               </div>
-              <div className="amount-buttons" style={{ marginTop: "8px" }}>
-                <button onClick={() => handleLeftAddAmount(1000000000000)}>
-                  조
-                </button>
-                <button onClick={() => handleLeftAddAmount(100000000)}>
-                  억
-                </button>
-                <button onClick={() => handleLeftAddAmount(10000000)}>
-                  천만
-                </button>
-                <button onClick={() => handleLeftAddAmount(1000000)}>
-                  백만
-                </button>
-                <button onClick={() => handleLeftAddAmount(100000)}>
-                  십만
-                </button>
-                <button onClick={() => handleLeftAddAmount(10000)}>
-                  만
-                </button>
-                <button onClick={() => handleLeftAddAmount(1000)}>천</button>
-                <button onClick={handleLeftClear}>AC</button>
-              </div>
-            </td>
+            </div>
+            <div className="amount-buttons" style={{ marginTop: "8px" }}>
+              <button onClick={() => handleLeftAddAmount(1000000000000)}>
+                조
+              </button>
+              <button onClick={() => handleLeftAddAmount(100000000)}>
+                억
+              </button>
+              <button onClick={() => handleLeftAddAmount(10000000)}>
+                천만
+              </button>
+              <button onClick={() => handleLeftAddAmount(1000000)}>
+                백만
+              </button>
+              <button onClick={() => handleLeftAddAmount(100000)}>
+                십만
+              </button>
+              <button onClick={() => handleLeftAddAmount(10000)}>
+                만
+              </button>
+              <button onClick={() => handleLeftAddAmount(1000)}>천</button>
+              <button onClick={handleLeftClear}>AC</button>
+            </div>
+          </div>
 
-            <td style={{ width: "10px", textAlign: "center", border: "none" }}>
-              <div style={{ fontSize: 35 }}>=</div>
-            </td>
+          <div className="exchange-equals">
+            <div style={{ fontSize: 35 }}>=</div>
+          </div>
 
-            <td style={{ width: "140px", verticalAlign: "top", border: "none" }}>
+          <div className="exchange-cell">
+            <div
+              style={{
+                display: "flex",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                overflow: "visible",
+                width: "100%",
+                height: "40px",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", padding: "0 10px", borderRight: "1px solid #ccc" }}>
+              <Select
+                value={currencyOptions.find(
+                  (opt) => opt.value === rightCurrency
+                )}
+                onChange={handleRightSelectChange}
+                options={currencyOptions}
+                formatOptionLabel={formatOptionLabel}
+                styles={selectStyles}
+                isSearchable={false}
+                menuPortalTarget={document.body}
+              /></div>
               <div
-                style={{
-                  display: "flex",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  overflow: "visible",
-                  width: "100%",
-                  height: "40px",
-                }}
+                className="input-with-currency"
+                data-currency-symbol={currencySymbols[rightCurrency]}
+                style={{ flex: 1 }}
               >
-                <div style={{ display: "flex", alignItems: "center", padding: "0 10px", borderRight: "1px solid #ccc" }}>
-                <Select
-                  value={currencyOptions.find(
-                    (opt) => opt.value === rightCurrency
-                  )}
-                  onChange={handleRightSelectChange}
-                  options={currencyOptions}
-                  formatOptionLabel={formatOptionLabel}
-                  styles={selectStyles}
-                  isSearchable={false}
-                  menuPortalTarget={document.body}
-                /></div>
-                <div
-                  className="input-with-currency"
-                  data-currency-symbol={currencySymbols[rightCurrency]}
-                  style={{ flex: 1 }}
-                >
-                  <input
-                    type="number"
-                    value={rightAmount}
-                    onChange={handleRightChange}
-                    placeholder={`${rightCurrency} 금액 입력`}
-                    style={{
-                      width: "100%",
-                      fontSize: 14,
-                      border: "none",
-                      height: "40px",
-                      padding: "0 40px",
-                      boxSizing: "border-box",
-                    }}
-                  />
-                </div>
+                <input
+                  type="number"
+                  value={rightAmount}
+                  onChange={handleRightChange}
+                  placeholder={`${rightCurrency} 금액 입력`}
+                  style={{
+                    width: "100%",
+                    fontSize: 14,
+                    border: "none",
+                    height: "40px",
+                    padding: "0 40px",
+                    boxSizing: "border-box",
+                  }}
+                />
               </div>
-              <div className="amount-buttons" style={{ marginTop: "8px" }}>
-                <button onClick={() => handleRightAddAmount(1000000000000)}>
-                  조
-                </button>
-                <button onClick={() => handleRightAddAmount(100000000)}>
-                  억
-                </button>
-                <button onClick={() => handleRightAddAmount(10000000)}>
-                  천만
-                </button>
-                <button onClick={() => handleRightAddAmount(1000000)}>
-                  백만
-                </button>
-                <button onClick={() => handleRightAddAmount(100000)}>
-                  십만
-                </button>
-                <button onClick={() => handleRightAddAmount(10000)}>
-                  만
-                </button>
-                <button onClick={() => handleRightAddAmount(1000)}>
-                  천
-                </button>
-                <button onClick={handleRightClear}>AC</button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+            <div className="amount-buttons" style={{ marginTop: "8px" }}>
+              <button onClick={() => handleRightAddAmount(1000000000000)}>
+                조
+              </button>
+              <button onClick={() => handleRightAddAmount(100000000)}>
+                억
+              </button>
+              <button onClick={() => handleRightAddAmount(10000000)}>
+                천만
+              </button>
+              <button onClick={() => handleRightAddAmount(1000000)}>
+                백만
+              </button>
+              <button onClick={() => handleRightAddAmount(100000)}>
+                십만
+              </button>
+              <button onClick={() => handleRightAddAmount(10000)}>
+                만
+              </button>
+              <button onClick={() => handleRightAddAmount(1000)}>
+                천
+              </button>
+              <button onClick={handleRightClear}>AC</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
