@@ -228,7 +228,7 @@ useEffect(() => {
 }, [selectedBank, selectedCurrency, selectedBasicCondition]);
 
 
-const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
+const calculate_final_fee = () => {
   const numericExchangeAmount = parseFloat(exchangeAmount);
   const numericFeeRate = parseFloat(feeRate);
   const numericDiscountRate = parseFloat(discountRate);
@@ -547,7 +547,7 @@ const menuItems = [
                     <input
                       type="text"
                       value={exchangeAmount}
-                      onChange={(e) => { // 조건이 충분이 선택되지 않으면 경고 + 막기
+                      onChange={(e) => {
                         if (!selectedBasicCondition) {
                           alert("모든 조건을 선택하셔야 환전 금액을 입력하실 수 있습니다.");
                           return;
@@ -622,7 +622,7 @@ const menuItems = [
     Notice for <span>{selectedBank}</span>
   </h2>
 
-  {bankDetail && bankDetail.map((notice, index) => ( // list 형태의 bank detail이 잘 뜨도록
+  {bankDetail && bankDetail.map((notice, index) => (
   <div key={index} className="notice-item">
     {notice.split("\n").map((line, idx) => (
       <span key={idx}>

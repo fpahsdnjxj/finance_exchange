@@ -633,7 +633,6 @@ select {
     font-size: 0.7rem;
   }
   
-  /* select와 option 폰트 크기 통일 */
   select {
     font-size: 12px !important;
     padding: 6px;
@@ -643,7 +642,6 @@ select {
     font-size: 12px !important;
   }
   
-  /* 카드 테이블 반응형 */
   .card-table {
     font-size: 11px;
   }
@@ -666,7 +664,6 @@ select {
     font-size: 11px !important;
   }
   
-  /* 입력 필드 반응형 */
   .input-bank input,
   .input-rate input,
   .input-bankch input {
@@ -681,7 +678,6 @@ select {
     left: 8px;
   }
   
-  /* 박스 반응형 */
   .box {
     width: 100%;
     box-sizing: border-box;
@@ -814,7 +810,6 @@ select {
     left: 6px;
   }
   
-  /* 박스 반응형 */
   .notice-box {
     padding: 10px;
   }
