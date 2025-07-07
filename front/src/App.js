@@ -228,7 +228,7 @@ useEffect(() => {
 }, [selectedBank, selectedCurrency, selectedBasicCondition]);
 
 
-const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
+const calculate_final_fee = () => {
   const numericExchangeAmount = parseFloat(exchangeAmount);
   const numericFeeRate = parseFloat(feeRate);
   const numericDiscountRate = parseFloat(discountRate);
@@ -384,7 +384,7 @@ const calculate_final_fee = () => { // 우대 적용 금액 계산하는 부분
     };
   
     return (
-      <div style={{ fontSize: "11px", fontWeight: "100", textAlign: "left", paddingLeft: "80px", color: "#444" }}>
+      <div className="realtime-clock">
         {formatTime(time)}
       </div>
     );
@@ -547,7 +547,7 @@ const menuItems = [
                     <input
                       type="text"
                       value={exchangeAmount}
-                      onChange={(e) => { // 조건이 충분이 선택되지 않으면 경고 + 막기
+                      onChange={(e) => {
                         if (!selectedBasicCondition) {
                           alert("모든 조건을 선택하셔야 환전 금액을 입력하실 수 있습니다.");
                           return;
@@ -622,7 +622,7 @@ const menuItems = [
     Notice for <span>{selectedBank}</span>
   </h2>
 
-  {bankDetail && bankDetail.map((notice, index) => ( // list 형태의 bank detail이 잘 뜨도록
+  {bankDetail && bankDetail.map((notice, index) => (
   <div key={index} className="notice-item">
     {notice.split("\n").map((line, idx) => (
       <span key={idx}>
@@ -666,7 +666,7 @@ const menuItems = [
             alignItems: "center",
             paddingLeft: "20px",
             paddingRight: "20px",
-            fontSize: 14,
+            fontSize: "13px",
           }}
           >
           기준 국가
@@ -700,8 +700,7 @@ const menuItems = [
     <tr>
       <th style={{borderTopLeftRadius: '20px',}}></th>
       <th>카드명(카드사)</th>
-      <th>조건 및 혜택</th>
-      <th style={{borderTopRightRadius: '20px',}}>환전 금액</th>
+      <th style={{borderTopRightRadius: '20px',}}>조건 및 혜택</th>
     </tr>
   </thead>
   <tbody>
@@ -725,15 +724,6 @@ const menuItems = [
       : ""}
   </div>
 </td>
-              <td className='fixed'>
-                <span style={{fontSize: 12}}>
-                  {(!(formatKRW(exchangeAmount)) || (formatKRW(exchangeAmount)) === "")
-                    ? "0"
-                    : (formatKRW(exchangeAmount)).length > 10
-                    ? (formatKRW(exchangeAmount)).substring(0, 10) + "..."
-                    : (formatKRW(exchangeAmount))}
-                원</span>{" "}
-              </td>
             </tr>
           ))}
         </tbody>
