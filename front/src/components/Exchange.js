@@ -177,7 +177,7 @@ function Exchange() {
       height: "40px",
       minHeight: "40px",
       border: "none",
-      boxShadow: "none",
+      boxShadow: "none",      
     }),
     valueContainer: (provided) => ({
       ...provided,

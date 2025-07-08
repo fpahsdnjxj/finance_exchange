@@ -340,6 +340,7 @@ select {
   z-index: 1000;
   background-color: #ffffff;
   color: rgb(0, 0, 0);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.13);
 }
 
 .top-bar {
@@ -621,7 +622,7 @@ select {
   
 
   table {
-    font-size: 13px;
+    font-size: 16px;
   }
   
   td, .under-t {
@@ -630,20 +631,20 @@ select {
   
   .under-t {
     width: 30%;
-    font-size: 13px;
+    font-size: 16px;
   }
   
   select {
-    font-size: 13px !important;
+    font-size: 16px !important;
     padding: 6px;
   }
   
   select option {
-    font-size: 13px !important;
+    font-size: 16px !important;
   }
   
   .card-table {
-    font-size: 13px;
+    font-size: 16px;
   }
   
   .card-table th,
@@ -652,7 +653,7 @@ select {
   }
   
   .card-table th {
-    font-size: 13px;
+    font-size: 16px;
   }
   
   .card-image {
@@ -661,21 +662,21 @@ select {
   }
   
   .benefits-cell {
-    font-size: 13px !important;
+    font-size: 16px !important;
   }
   
   .input-bank input,
   .input-rate input,
   .input-bankch input {
-    font-size: 13px;
+    font-size: 16px;
     padding-left: 25px;
   }
   
   .input-bank::before,
   .input-rate::before,
   .input-bankch::before {
-    font-size: 0.8rem;
-    left: 8px;
+    font-size: 16px;
+    left: 9px;
   }
   
   .box {
@@ -692,7 +693,7 @@ select {
   .notice-item {
     width: 100%;
     max-width: none;
-    font-size: 13px;
+    font-size: 16px;
     box-sizing: border-box;
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -713,7 +714,7 @@ select {
   }
   
   .link-button {
-    font-size: 13px;
+    font-size: 16px;
     padding: 8px 12px;
     margin-left: 10px;
   }
@@ -726,7 +727,7 @@ select {
   
   .top-container {
     margin-top: 70px;
-    padding: 10px;
+    padding: 15px;
   }
   
   .exchange-table-container {
@@ -743,8 +744,8 @@ select {
   
   .amount-buttons button {
     font-size: 9px;
-    padding: 3px;
-    height: 18px;
+    padding: 5px;
+    height: 25px;
   }
   
   .realtime-clock {
@@ -757,7 +758,7 @@ select {
   }
   
   td, .under-t {
-    padding: 5px 3px;
+    padding: 7px 5px;
   }
   
   .under-t {
@@ -767,7 +768,7 @@ select {
   
   select {
     font-size: 13px !important;
-    padding: 4px;
+    padding: 7px;
   }
   
   select option {
@@ -780,7 +781,8 @@ select {
   
   .card-table th,
   .card-table td {
-    padding: 5px 3px;
+    padding: 7px 5px;
+    font-size: 13px;
   }
   
   .card-table th {
@@ -788,7 +790,7 @@ select {
   }
   
   .card-image {
-    width: 30px;
+    width: 40px;
     padding-left: 3px;
   }
   
@@ -800,7 +802,7 @@ select {
   .input-rate input,
   .input-bankch input {
     font-size: 13px;
-    padding-left: 20px;
+    padding-left: 24px;
   }
   
   .input-bank::before,
@@ -812,6 +814,7 @@ select {
   
   .notice-box {
     padding: 10px;
+    display: none;
   }
   
   .notice-item {
@@ -820,18 +823,19 @@ select {
   }
   
   .top-bar {
-    height: 60px;
+    height: 80px;
     padding: 5px 10px;
   }
   
   .top-icon2 {
-    height: 50px;
+    height: 70px;
     margin-left: 20px;
   }
   
   .link-button {
     font-size: 13px;
-    padding: 6px 10px;
+    padding: 8px 14px;
     margin-left: 5px;
   }
+  
 }

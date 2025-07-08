@@ -666,7 +666,7 @@ const menuItems = [
             alignItems: "center",
             paddingLeft: "20px",
             paddingRight: "20px",
-            fontSize: "13px",
+            fontSize: "14px",
           }}
           >
           기준 국가
