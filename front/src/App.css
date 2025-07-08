@@ -570,7 +570,7 @@ select {
   margin-bottom: 10px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .container {
     padding: 10px;
   }
@@ -621,7 +621,7 @@ select {
   
 
   table {
-    font-size: 12px;
+    font-size: 13px;
   }
   
   td, .under-t {
@@ -630,20 +630,20 @@ select {
   
   .under-t {
     width: 30%;
-    font-size: 0.7rem;
+    font-size: 13px;
   }
   
   select {
-    font-size: 12px !important;
+    font-size: 13px !important;
     padding: 6px;
   }
   
   select option {
-    font-size: 12px !important;
+    font-size: 13px !important;
   }
   
   .card-table {
-    font-size: 11px;
+    font-size: 13px;
   }
   
   .card-table th,
@@ -661,13 +661,13 @@ select {
   }
   
   .benefits-cell {
-    font-size: 11px !important;
+    font-size: 13px !important;
   }
   
   .input-bank input,
   .input-rate input,
   .input-bankch input {
-    font-size: 11px;
+    font-size: 13px;
     padding-left: 25px;
   }
   
@@ -692,7 +692,7 @@ select {
   .notice-item {
     width: 100%;
     max-width: none;
-    font-size: 11px;
+    font-size: 13px;
     box-sizing: border-box;
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -713,13 +713,13 @@ select {
   }
   
   .link-button {
-    font-size: 12px;
+    font-size: 13px;
     padding: 8px 12px;
     margin-left: 10px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .container {
     padding: 5px;
   }
@@ -742,18 +742,18 @@ select {
   }
   
   .amount-buttons button {
-    font-size: 0.5rem;
+    font-size: 9px;
     padding: 3px;
     height: 18px;
   }
   
   .realtime-clock {
     padding-left: 10px;
-    font-size: 9px;
+    font-size: 12px;
   }
   
   table {
-    font-size: 10px;
+    font-size: 13px;
   }
   
   td, .under-t {
@@ -762,20 +762,20 @@ select {
   
   .under-t {
     width: 35%;
-    font-size: 11px;
+    font-size: 13px;
   }
   
   select {
-    font-size: 11px !important;
+    font-size: 13px !important;
     padding: 4px;
   }
   
   select option {
-    font-size: 11px !important;
+    font-size: 13px !important;
   }
 
   .card-table {
-    font-size: 11px;
+    font-size: 13px;
   }
   
   .card-table th,
@@ -784,7 +784,7 @@ select {
   }
   
   .card-table th {
-    font-size: 9px;
+    font-size: 13px;
   }
   
   .card-image {
@@ -793,20 +793,20 @@ select {
   }
   
   .benefits-cell {
-    font-size: 11px !important;
+    font-size: 13px !important;
   }
   
   .input-bank input,
   .input-rate input,
   .input-bankch input {
-    font-size: 11px;
+    font-size: 13px;
     padding-left: 20px;
   }
   
   .input-bank::before,
   .input-rate::before,
   .input-bankch::before {
-    font-size: 0.7rem;
+    font-size: 13px;
     left: 6px;
   }
   
@@ -816,7 +816,7 @@ select {
   
   .notice-item {
     padding: 8px;
-    font-size: 10px;
+    font-size: 13px;
   }
   
   .top-bar {
@@ -830,7 +830,7 @@ select {
   }
   
   .link-button {
-    font-size: 11px;
+    font-size: 13px;
     padding: 6px 10px;
     margin-left: 5px;
   }
