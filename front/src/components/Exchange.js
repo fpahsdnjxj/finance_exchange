@@ -212,7 +212,7 @@ function Exchange() {
   
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "0" }}>
       <div className="exchange-table-container">
         <div className="exchange-row">
           <div className="exchange-cell">

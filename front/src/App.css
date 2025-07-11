@@ -19,7 +19,7 @@ body {
   height: 100%;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
-  margin-top: 100px;
+  margin-top: 80px;
   margin-bottom: 20px;
   box-sizing: border-box;
 }
@@ -51,10 +51,11 @@ body {
 .exchange-rate-calculator {
   background: white;
   margin-bottom: 20px;
-  padding: 20px;
+  padding: 30px;
   border-radius: 4px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
+  box-sizing: border-box;
 }
 
 
@@ -544,6 +545,8 @@ select {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .exchange-row {
@@ -734,7 +737,7 @@ select {
   }
   
   .exchange-table-container {
-    padding: 10px;
+    padding: 0 15px;
   }
   
   .exchange-row {
