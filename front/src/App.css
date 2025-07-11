@@ -189,7 +189,7 @@ select {
 
 .amount-buttons {
   display: flex;
-  flex-wrap: wrap;  
+  flex-wrap: nowrap;  
   gap: 1px;
   margin-top: 10px;
 }
