@@ -190,12 +190,14 @@ select {
 .amount-buttons {
   display: flex;
   flex-wrap: nowrap;  
+  justify-content: center;
   gap: 1px;
   margin-top: 10px;
 }
 
 .amount-buttons button {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0; 
   padding: 5px;
   height: 20px;
   border: none;
@@ -204,6 +206,7 @@ select {
   font-size: 0.5rem;
   border-radius: 3%;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .amount-buttons button:hover {
