@@ -417,9 +417,9 @@ const menuItems = [
         margin: "10px 0 20px",
       }}
     ></div>
-    <div>{RealTimeClock()}</div>
+    <div style={{ marginBottom: "30px"}}>{RealTimeClock()}</div>
       <div style={{ marginTop: "-25px", marginBottom: "-15px"}}>{Exchange()}</div>
-      <div style={{ fontSize: "11px", fontFamily: "sans-serif", textAlign: 'center', color: "#555" }}>기준 환율 계산기는 단순 참고용으로 위 계산 결과는 우대율에 따른 환 차이는 고려되지 않았습니다.</div>
+      <div style={{ marginTop: "25px", fontSize: "11px", fontFamily: "sans-serif", textAlign: 'center', color: "#555" }}>기준 환율 계산기는 단순 참고용으로 위 계산 결과는 우대율에 따른 환 차이는 고려되지 않았습니다.</div>
       </div>
     <div className='bottom-container'>
         <div className='left-box exchange-rate-calculator'>
@@ -740,21 +740,6 @@ const menuItems = [
         </div>
       </div>
       
-      
-      <footer className='footer'>
-      <span onClick={() => setIsTermsOpen(true)} className='footer-link'>
-        이용약관
-      </span>
-
-      <span className='footer-divider'>|</span>
-
-      <strong onClick={() => setIsPrivacyOpen(true)} className='footer-link'>
-        개인정보처리방침
-      </strong>
-
-      <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
-      <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
-    </footer>
 <div className="top-bar-container">
       <div className="top-bar">
         <img src="/assets/topicon.png" alt="아이콘" className="top-icon2" />
@@ -765,35 +750,51 @@ const menuItems = [
 </div>       
       </div>
     </div>
+
+    <footer className="footer">
+  <div className="footer-pc">
+    <div className="footer-left">
+      <div className="footer-title">환전 고수</div>
+      <div className="footer-desc">Currency exchange information</div>
+      <div className="footer-copy">© 2025. exchangegosu. all rights reserved</div>
+    </div>
+    <div className="footer-center">
+    <span onClick={() => setIsTermsOpen(true)} className='footer-link'>
+        이용약관
+      </span>
+      <span className="footer-divider">|</span>
+      <strong onClick={() => setIsPrivacyOpen(true)} className='footer-link'>
+        개인정보처리방침
+      </strong>
+      <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
+      <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
+    </div>
+    <div className="footer-right">
+      <div className="footer-icons">
+        <span className="footer-icon j">J</span>
+        <span className="footer-icon r">R</span>
+        <span className="footer-icon s">S</span>
+      </div>
+      <div className="footer-email">
+        <span className="footer-email-icon">✉️</span>
+        exchangegosu@googlegroups.com
+      </div>
+    </div>
+  </div>
+  <div className="footer-mobile">
+    <div className="footer-title">Currency exchange information</div>
+    <div className="footer-icons">
+      <span className="footer-icon j">J</span>
+      <span className="footer-icon r">R</span>
+      <span className="footer-icon s">S</span>
+    </div>
+    <div className="footer-email">Contact : exchangegosu@googlegroups.com</div>
+    <div className="footer-copy">© 2025. 환전고수(exchangegosu). all rights reserved</div>
+  </div>
+</footer>
+
       </div>
   );
 };
 
 export default CurrencyCalculator;
-
-/*
-<div className="top-bar-container">
-      <div className="top-bar">
-        <img src="/assets/topicon.png" alt="아이콘" className="top-icon" />
-        <nav className="nav-items">
-          {menuItems.map(item => (
-            <div key={item.title} className="nav-item">
-              {item.title}
-            </div>
-          ))}
-        </nav>
-      </div>
-      <div className="dropdown-menu">
-        {menuItems.map(item => (
-          <div key={item.title} className="dropdown-column">
-            <ul>
-              {item.content.map((c, idx) => (
-                <li key={idx}>{c}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </div>
-      </div>
-    */
