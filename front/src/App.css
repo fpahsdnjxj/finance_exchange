@@ -846,17 +846,21 @@ select {
 }
 
 @media (max-width: 768px) {
+  .exchange-rate-calculator {
+    padding: 10px !important;
+  }
+
   .container {
     padding: 5px;
   }
   
   .top-container {
-    margin-top: 70px;
-    padding: 15px;
+    margin-top: 80px;
+    padding: 10px;
   }
   
   .exchange-table-container {
-    padding: 0 15px;
+    padding: 0 8px;
   }
   
   .exchange-row {

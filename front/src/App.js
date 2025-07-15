@@ -407,7 +407,7 @@ const menuItems = [
     <div className='container'>
       <CookieConsentPopup />
       <div className='top-container exchange-rate-calculator'>
-        <h2>기준 환율 계산기</h2>
+        <h2 style={{ marginTop: "10px", marginLeft: "10px"}}>기준 환율 계산기</h2>
         <div
       style={{
         width: "100%",
@@ -423,7 +423,7 @@ const menuItems = [
       </div>
     <div className='bottom-container'>
         <div className='left-box exchange-rate-calculator'>
-          <h2>은행별 환율 계산기</h2>
+          <h2 style={{ marginTop: "10px", marginLeft: "10px"}}>은행별 환율 계산기</h2>
           <div
       style={{
         width: "100%",
@@ -594,7 +594,7 @@ const menuItems = [
       </span>
       <input
         type="text"
-        value= {feeFormula} /*수수료 계산식 넣는 칸*/
+        value= {feeFormula}
         disabled
         style={{ paddingLeft: "15px", width: "94%" }}
       />
@@ -638,7 +638,7 @@ const menuItems = [
         </div>       
 
         <div className='right-box exchange-rate-calculator'>
-          <h2>카드별 환율 계산기</h2>
+          <h2 style={{ marginTop: "10px", marginLeft: "10px"}}>트래블카드</h2>
           <div
             style={{
             width: "100%",
